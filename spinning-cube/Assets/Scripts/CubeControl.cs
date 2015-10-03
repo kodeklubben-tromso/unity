@@ -44,7 +44,7 @@ public class CubeControl : MonoBehaviour {
 			if(GetComponent<Rigidbody>().isKinematic == false)
 			{
 				GetComponent<Rigidbody>().isKinematic = true;
-            }
+            		}
 			transform.position = new Vector3(0f, 5.5f, 0f);
 		}
 		else
