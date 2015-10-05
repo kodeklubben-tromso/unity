@@ -41,6 +41,443 @@ rundt og ramle i bakken. Her har dere noen nyttige lenker dere kan se på:</p>
 <a href="http://unity3d.com/learn/tutorials/modules/beginner/scripting/assignments/spinning-cube">Snurrende kube</a> </li>
 </ul>
 
+<h1>
+<a id="uke-2-roll-a-ball" class="anchor" href="#uke-2-roll-a-ball" aria-hidden="true"><span class="octicon octicon-link"></span></a>Uke 2: Roll-A-Ball</h1>
+
+<p>Denne uka skal vi lage vårt første spill! Spillet går ut på å være en ball og
+samle inn kuber for å få poeng. Spiller er over når man har samlet inn alle
+kubene. </p>
+
+<p>Denne oppgaven tar utgangspunkt i <a href="http://unity3d.com/learn/tutorials/projects/roll-ball-tutorial">Roll-a-Ball på Unity sine sider.</a> tutorialen
+Her finner dere også en video som beskriver alle stegene
+nedenfor.</p>
+
+<h1>
+<a id="1-omgivelser-og-spilleren" class="anchor" href="#1-omgivelser-og-spilleren" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 Omgivelser og spilleren</h1>
+
+<h2>
+<a id="introduksjon" class="anchor" href="#introduksjon" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/introduction?playlist=17141">Introduksjon</a>
+</h2>
+
+<p>Se et bilde nedenfor for å se hvordan det ser ut når man er ferdig! I
+denne oppgaven lærer vi litt enkel fysikk, hvordan vi kan flytter spillobjekter
+med tastaturet, og kollisjon mellom objekter. </p>
+
+<p><img src="skjermbilde.png" alt="Skjermbilde"></p>
+
+<h2>
+<a id="oppsett-av-spillet" class="anchor" href="#oppsett-av-spillet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/set-up?playlist=17141">Oppsett av spillet</a>
+</h2>
+
+<ul>
+<li>Start med å lage et nytt 3D prosjekt.</li>
+<li>Lagre scenen, <code>file -&gt; save scene</code>, legg den i en ny mappe <code>Assets/_Scenes</code> og
+kall den "Minigame"</li>
+<li>Lag brettet vi skal spille på. Dette er et 3D plan. Du finner den i hierakiet under <code>Create -&gt; 3D Objekt -&gt; Plane</code>. Kall dette objektet Ground. </li>
+<li>Tilbakestill posisjonen til planet ved å trykke på tannhjulet i
+Transform-komponenten. Dette flytter planet til (0,0,0).</li>
+<li>Skru av Grid-lines på Scenen. Dette finner du under <code>Gizmos -&gt; Show Grid</code>. </li>
+<li>Lag bakken litt større. Dette kan du gjøre med å dra på pilene eller skrive
+det manuelt inn på høyresida. Vi setter Scale til 2 på x, 1 på y og 2 på z. </li>
+<li>Lag en spiller! Fra hirearkiet <code>Create -&gt; 3D Object -&gt; Sphere</code> og gi den
+navnet Player. Tilbakestill posisjonen på samme måte som vi gjorde med planet. </li>
+<li>Flytt ballen opp 0.5 enhet slik at vi får den til å ligge på planet. Husk at
+ballen
+er 1 høy og 1 brei. Husk at det er y-posisjonen vi endrer med 0.5. </li>
+<li>La oss bytte farge på bakken. Vi lager en ny mappe i Assets-mappa vår og gir
+den navnet Materials. Velg denne mappa og lag et nytt material og kall den
+<code>Background</code>. Endre farge ved å trykke på den hvite boksen til høyre for
+<code>Albedo</code>-feltet og velg en fin blåfarge. Vi kan bruke RGB-verdien (0,32,64). </li>
+<li>Dra Background-material-et ved å drege det på bakken.</li>
+<li>For å få litt bedre lys i spillet kan vi endre rotasjonen på lyset i
+hierarkiet vårt. Endre rotasjon på y-aksen til 60. </li>
+</ul>
+
+<h2>
+<a id="bevege-spilleren" class="anchor" href="#bevege-spilleren" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/moving-the-player?playlist=17141">Bevege spilleren</a>
+</h2>
+
+<ul>
+<li>Siden vi vil at ballen skal rulle rundt på banen, kollidere i vegger, og treffe
+forskjellige objekter for å samle poeng trenger vi litt fysikk. Dette får vi
+ved å legge til en Rigidbody-komponent til Player-objektet. Trykk på "Add
+Component" når du har valgt spilleren og velg <code>Physics -&gt; Rigidbody</code>.</li>
+<li>Lag en ny mappe <code>Assets/Scripts</code> og et nytt C#-script som vi kaller
+PlayerController. Åpne det nye scriptet og legg til koden under: </li>
+</ul>
+
+<p>PlayerController.cs: </p>
+
+<pre><code>
+using UnityEngine;
+using System.Collections;
+
+public class PlayerController : MonoBehaviour {
+
+    public float speed = 10.0f;
+
+    private Rigidbody rb;
+
+    void Start ()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+    }
+
+    void FixedUpdate ()
+    {
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce (movement * speed);
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Siden vi vil at scriptet må vi dra det inn på Player-objektet. </li>
+<li>Start spillet og test at alt fungerer! </li>
+</ul>
+
+<h1>
+<a id="2-kamera-og-spilleområde" class="anchor" href="#2-kamera-og-spilleomr%C3%A5de" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Kamera og spilleområde</h1>
+
+<h2>
+<a id="-flytte-kameraet" class="anchor" href="#-flytte-kameraet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/moving-the-camera?playlist=17141"> Flytte kameraet</a>
+</h2>
+
+<ul>
+<li>Først flytt opp kameraet 10 enheter (på y-aksen) og vipp det ned med 45
+grader (x-aksen). </li>
+<li>Flytt kameraet til et barn av Player-objektet, dette vil gjøre at kameraet
+følger etter spilleren. Se at kameraet (nesten) flytter seg med spilleren. </li>
+<li>Test spillet og se hva som skjer. </li>
+<li>Siden ikke alt gikk etter planen må vi lage et script for å flytte kameraet.
+Flytt kameraet tilbake ut av Player-objektet slik at det ikke snurrer rundt
+lengre. </li>
+<li>Lag et nytt C#-script som du kaller CameraController og legg til koden: </li>
+</ul>
+
+<pre><code>
+using UnityEngine;
+using System.Collections;
+
+public class CameraController : MonoBehaviour {
+
+    public GameObject player;
+
+    private Vector3 offset;
+
+    void Start ()
+    {
+        offset = transform.position - player.transform.position;
+    }
+
+    void LateUpdate ()
+    {
+        transform.position = player.transform.position + offset;
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Dra scriptet over til kameraet og med kameraet valgt dra Player-objektet til
+Player-referansen på høyresida. </li>
+<li>Test spillet og se at kameraet følger etter ballen. </li>
+</ul>
+
+<h2>
+<a id="sette-opp-spilleområdet" class="anchor" href="#sette-opp-spilleomr%C3%A5det" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/setting-up-the-play-area?playlist=17141">Sette opp spilleområdet</a>
+</h2>
+
+<ul>
+<li>La oss lage noen vegger! Lag et nytt tomt objekt som du kaller 'Walls'.
+<code>Create -&gt; Create Empty</code>. Dette blir en mappe for alle veggene. Tilbakestill
+posisjonen til Walls til (0,0,0).</li>
+<li>Lag første vegg. <code>Create -&gt; 3D Object -&gt; Cube</code> og tilbakestill posisjonen til
+denne. Sjekk at ballen havner oppi denne kuben. Legg denne som et barn av
+Walls og kall den 'West Wall'. </li>
+<li>Lag veggen lang og tynn. Under Scale setter vi 0.5, 2 og 20.5. </li>
+<li>Flytt veggen til siden ved å sette x til -10. </li>
+<li>Dupliser veggen vi har og kall den 'East Wall'. Endre x-posisjon til 10 og se
+at den kommer på plass. </li>
+<li>Dupliser 'East Wall' og kall den 'North Wall'. Tilbakestill posisjonen og sett
+scale til 20.5, 2, 0.5. Sett posisjon på z-aksen til 10 for å se at den kommer
+på riktig plass.</li>
+<li>Dipliser 'North Wall' og kall den 'South Wall'. Sett posisjon på z-aksen til
+-10.</li>
+<li>Prøv spillet og se at alt blir som det skal!</li>
+</ul>
+
+<h1>
+<a id="3-samle-objekter-og-poeng" class="anchor" href="#3-samle-objekter-og-poeng" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 Samle objekter og poeng</h1>
+
+<h2>
+<a id="lag-objekter-vi-kan-samle-inn" class="anchor" href="#lag-objekter-vi-kan-samle-inn" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/creating-collectables?playlist=17141">Lag objekter vi kan samle inn</a>
+</h2>
+
+<ul>
+<li>Lag en kube vi kan samle inn. <code>Create -&gt; 3D Object -&gt; Cube</code> og kall den
+<code>Pick Up</code>.  Tilbakestill posisjonen og se at ballen havner inni denne kuben. </li>
+<li>Deaktiver Player-objektet</li>
+<li>Flytt opp kuben med 0.5 enheter og sett scale til 0.5 i alle aksene. La oss
+tippe den litt over. Endre rotasjon til 45 på alle aksene.<br>
+</li>
+<li>La oss få kuben til å snurre litt for å tiltrekke oppmerksomhet.</li>
+<li>Lag et nytt C# Script og kall det Rotator. Legg til koden: </li>
+</ul>
+
+<pre><code>
+using UnityEngine;
+using System.Collections;
+
+public class Rotator : MonoBehaviour {
+
+    void Update () 
+    {
+        transform.Rotate (new Vector3 (15, 30, 45) * Time.deltaTime);
+    }
+}
+
+</code></pre>
+
+<ul>
+<li> Start spillet og se at kuben snurrer rundt. Husk å legge til scriptet i
+Pick Up-objektet. </li>
+<li>Siden vi trenger mange av disse må vi gjøre Pick up-objektet om til en Prefab.
+En prefab er en slags skisse for hvordan et spillobjekt skal se ut og oppføre
+seg. </li>
+<li>Lag en ny mappe og kall den Prefabs. Dra Pick Up-objektet inn i denne mappa. </li>
+<li>Lag en nytt tomt objekt for å organisere objektene våre. Kall dette Pick Ups
+og legg Pick Up til her. </li>
+<li>Endre synsvinkel til rett over spillebrettet og lag 10 nye kuber ved å
+duplisere Pick Up objektet vi har. Legg de rundt om kring på brettet. </li>
+<li>Start spillet og se at alle snurrer.</li>
+<li>La oss endre fargen til kuben! Dupliser Background Material-et og kall det
+Pick up. velg en fin gulfarge under Albedo og dra den ned på Pick Up prefab-en.</li>
+<li>Start spillet og se at alle er gule og snurrer rundt! </li>
+</ul>
+
+<h2>
+<a id="samle-inn-objekter" class="anchor" href="#samle-inn-objekter" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/collecting-pick-up-objects?playlist=17141">Samle inn objekter</a>
+</h2>
+
+<ul>
+<li>Vis spilleren igjen.</li>
+<li>Se at Player-objektet har en Sphere Collider-komponent. Denne skal vi bruke
+til å sjekke kollisjon mot Pick Up objektene. </li>
+<li>Åple PlayerController-scriptet igjen og legg til funksjonen under i
+PlayerCoontroller-klassen: </li>
+</ul>
+
+<pre><code>void OnTriggerEnter(Collider other) 
+{
+    if (other.gameObject.CompareTag ("Pick Up"))
+    {
+        other.gameObject.SetActive (false);
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Velg Pick Up prefab-en og legg til en ny Tag vi kaller "Pick Up". Det er
+veldig viktig at den heter "Pick Up". Husk store bokstaver på P og U!</li>
+<li>Prøv spillet og se hva som skjer.</li>
+<li>For å hindre at Unity lager en kollisjon mellom ballen og kubene må vi krysse
+for "Is trigger?" på Box Collider-komponenten til Pick Up-prefaben. Dette gjør
+at Unity registrerer at de to objektene har kollidert, men den flytter
+ikke på noen av objektene. </li>
+<li>Test spillet og se at alt er som det skal! </li>
+<li>(BONUS) For å gjøre en liten optimisering kan vi legge til en Rigidbody-komponent til
+kubene. Prøv å spille spillet nå. Se at alle kubene faller gjennom gulvet.
+Dette er fordi vi har satt en Trigger-collider til kubene. Sett Is Kinematic
+for å fikse dette. Les mer om dette på <a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/collecting-pick-up-objects?playlist=17141">tutorialen</a>. </li>
+</ul>
+
+<h2>
+<a id="vis-poengscore" class="anchor" href="#vis-poengscore" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/displaying-text?playlist=17141">Vis poengscore</a>
+</h2>
+
+<ul>
+<li>Vi trenger noen variabler for å holde styr på hvor mange objekter vi har
+samlet inn. </li>
+<li>Åpne PlayerControlleren og endre det til å være som følger: </li>
+</ul>
+
+<pre><code>using UnityEngine;
+using UnityEngine.UI;
+
+public class PlayerController : MonoBehaviour {
+
+    public float speed;
+
+    private Rigidbody rb;
+    public int count;
+
+    void Start ()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        count = 0;
+    }
+
+    void FixedUpdate ()
+    {
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce (movement * speed);
+    }
+
+    void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.CompareTag ( "Pick Up"))
+        {
+            other.gameObject.SetActive (false);
+            count = count + 1;
+        }
+    }
+
+}
+</code></pre>
+
+<ul>
+<li>Sjekk at count endres når vi treffer kubene. </li>
+<li>Vi trenger noe på skjermen som viser poengene våre. Under hierarkiet, lag et
+nytt Text-objekt (<code>Create -&gt; UI -&gt; Text</code>). Gi objektet navnet "CountText". </li>
+<li>Endre farge på teksten til hvit og endre posisjon til (0,0,0). Storrelsen til
+CountText skal være 160 brei og 30 høy. Endre teksten som står der til Count
+Text. </li>
+<li>Flytt teksten øverst til vekstre. Trykk på firkanten inne i Rect Transform og
+velg "top left" mens du holder inne <code>shift</code> og <code>alt</code>.</li>
+<li>Endre Pos X og Pos Y til 10 og -10. </li>
+<li>Nå vil vi endre denne teksten med PlayerController-scriptet. Åpne det opp og
+endre det til: </li>
+</ul>
+
+<pre><code>using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class PlayerController : MonoBehaviour {
+
+    public float speed;
+    public Text countText;
+
+    private Rigidbody rb;
+    private int count;
+
+    void Start ()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        count = 0;
+        SetCountText ();
+    }
+
+    void FixedUpdate ()
+    {
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce (movement * speed);
+    }
+
+    void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.CompareTag ( "Pick Up"))
+        {
+            other.gameObject.SetActive (false);
+            count = count + 1;
+            SetCountText ();
+        }
+    }
+
+    void SetCountText ()
+    {
+        countText.text = "Count: " + count.ToString ();
+    }
+}
+</code></pre>
+
+<ul>
+<li>Dra inn CountText inn i Count Text-referansen til Player-objektet. </li>
+<li>Lagre og test spillet! </li>
+<li>Lag et nytt UI Text-ojekt og kall det Win Text. Lag teksten hvit, sett
+skriftstørrelse til 24 og sett den sentrert i midten. Sett teksten til å være
+Win Text og flytt den litt opp. Pos X skal være 0 og pos Y skal være 10. </li>
+<li>Lagre og gå tilbake til PlayerController-scriptet.</li>
+<li>Lag en ny variabel <code>winText</code>, initialiser den i <code>Start</code> og endre den i <code>SetCountText</code>.
+Når du har kodet ferdig skal det se slik ut: </li>
+</ul>
+
+<pre><code>
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class PlayerController : MonoBehaviour {
+
+    public float speed;
+    public Text countText;
+    public Text winText;
+
+    private Rigidbody rb;
+    private int count;
+
+    void Start ()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        count = 0;
+        SetCountText ();
+        winText.text = "";
+    }
+
+    void FixedUpdate ()
+    {
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce (movement * speed);
+    }
+
+    void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.CompareTag ( "Pick Up"))
+        {
+            other.gameObject.SetActive (false);
+            count = count + 1;
+            SetCountText ();
+        }
+    }
+
+    void SetCountText ()
+    {
+        countText.text = "Count: " + count.ToString ();
+        if (count &gt;= 12)
+        {
+            winText.text = "You Win!";
+        }
+    }
+}
+</code></pre>
+
+<ul>
+<li>Legg til en referanse i Player-objektet og prøv spillet!! </li>
+</ul>
+
+<h2>
+<a id="bonus-bygg-spillet" class="anchor" href="#bonus-bygg-spillet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/building?playlist=17141">(Bonus) Bygg spillet</a>
+</h2>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
 
