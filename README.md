@@ -12,3 +12,5 @@ rundt og ramle i bakken. Her har dere noen nyttige lenker dere kan se på:
 - [Snurrende kube](http://unity3d.com/learn/tutorials/modules/beginner/scripting/assignments/spinning-cube) 
 
 
+# Uke 2: Roll-A-Ball
+Denne uka jobbet vi med vårt første spill, [Roll-A-Ball!](https://github.com/kodeklubben-tromso/unity/tree/master/Roll-A-Ball)
