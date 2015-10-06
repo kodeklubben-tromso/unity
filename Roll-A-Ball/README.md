@@ -48,7 +48,9 @@ b
   ved å legge til en Rigidbody-komponent til Player-objektet. Trykk på "Add
   Component" når du har valgt spilleren og velg `Physics -> Rigidbody`.
 - Lag en ny mappe `Assets/Scripts` og et nytt C#-script som vi kaller
-  PlayerController. Åpne det nye scriptet og legg til koden under: 
+  PlayerController. Koden vi skal legge inn der er det best å skrive selv.
+ Siden noen av dere jobber hjemmefra legger vi inn hele kodesnutten under. Ikke kopier
+ den, men skriv inn alle linjene! 
 
 PlayerController.cs: 
 
