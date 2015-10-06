@@ -42,13 +42,13 @@ rundt og ramle i bakken. Her har dere noen nyttige lenker dere kan se på:</p>
 </ul>
 
 <h1>
-<a id="uke-2-roll-a-ball" class="anchor" href="#uke-2-roll-a-ball" aria-hidden="true"><span class="octicon octicon-link"></span></a>Uke 2: Roll-A-Ball</h1>
+<a id="roll-a-ball" class="anchor" href="#roll-a-ball" aria-hidden="true"><span class="octicon octicon-link"></span></a>Roll-A-Ball</h1>
 
 <p>Denne uka skal vi lage vårt første spill! Spillet går ut på å være en ball og
 samle inn kuber for å få poeng. Spiller er over når man har samlet inn alle
 kubene. </p>
 
-<p>Denne oppgaven tar utgangspunkt i <a href="http://unity3d.com/learn/tutorials/projects/roll-ball-tutorial">Roll-a-Ball tutorialen på Unity sine sider</a>.
+<p>Denne oppgaven tar utgangspunkt i <a href="http://unity3d.com/learn/tutorials/projects/roll-ball-tutorial">Roll-a-Ball på Unity sine sider.</a> tutorialen
 Her finner dere også en video som beskriver alle stegene
 nedenfor.</p>
 
@@ -61,9 +61,9 @@ nedenfor.</p>
 
 <p>Se et bilde nedenfor for å se hvordan det ser ut når man er ferdig! I
 denne oppgaven lærer vi litt enkel fysikk, hvordan vi kan flytter spillobjekter
-med tastaturet, og kollisjon mellom objekter. </p>
-
-<p><img src="https://raw.githubusercontent.com/kodeklubben-tromso/unity/master/Roll-A-Ball/skjermbilde.png" alt="Skjermbilde"></p>
+med tastaturet, og kollisjon mellom objekter. 
+b
+<img src="https://raw.githubusercontent.com/kodeklubben-tromso/unity/master/Roll-A-Ball/skjermbilde.png" alt="Skjermbilde"></p>
 
 <h2>
 <a id="oppsett-av-spillet" class="anchor" href="#oppsett-av-spillet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/set-up?playlist=17141">Oppsett av spillet</a>
@@ -103,7 +103,9 @@ forskjellige objekter for å samle poeng trenger vi litt fysikk. Dette får vi
 ved å legge til en Rigidbody-komponent til Player-objektet. Trykk på "Add
 Component" når du har valgt spilleren og velg <code>Physics -&gt; Rigidbody</code>.</li>
 <li>Lag en ny mappe <code>Assets/Scripts</code> og et nytt C#-script som vi kaller
-PlayerController. Åpne det nye scriptet og legg til koden under: </li>
+PlayerController. Koden vi skal legge inn der er det best å skrive selv.
+Siden noen av dere jobber hjemmefra legger vi inn hele kodesnutten under. Ikke kopier
+den, men skriv inn alle linjene! </li>
 </ul>
 
 <p>PlayerController.cs: </p>
@@ -151,8 +153,10 @@ public class PlayerController : MonoBehaviour {
 <ul>
 <li>Først flytt opp kameraet 10 enheter (på y-aksen) og vipp det ned med 45
 grader (x-aksen). </li>
-<li>Flytt kameraet til et barn av Player-objektet, dette vil gjøre at kameraet
-følger etter spilleren. Se at kameraet (nesten) flytter seg med spilleren. </li>
+<li>Flytt kameraet til et "barn" av Player-objektet, dette vil gjøre at kameraet
+følger etter spilleren. (et barn er bare et programmeringsbegrep som sier noe om at noe 
+er under noe annet, f.eks en undermappe. Du gjør kameraet til et "barn" av Player-objektet
+ved å dra det og slippe det på Player-objektet i hierarkiet). Se at kameraet (nesten) flytter seg med spilleren. </li>
 <li>Test spillet og se hva som skjer. </li>
 <li>Siden ikke alt gikk etter planen må vi lage et script for å flytte kameraet.
 Flytt kameraet tilbake ut av Player-objektet slik at det ikke snurrer rundt
