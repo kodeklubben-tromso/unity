@@ -15,8 +15,8 @@ nedenfor.
 Se et bilde nedenfor for å se hvordan det ser ut når man er ferdig! I
 denne oppgaven lærer vi litt enkel fysikk, hvordan vi kan flytter spillobjekter
 med tastaturet, og kollisjon mellom objekter. 
-
-![Skjermbilde](skjermbilde.png)
+b
+![Skjermbilde](https://raw.githubusercontent.com/kodeklubben-tromso/unity/master/Roll-A-Ball/skjermbilde.png)
 
 ## [Oppsett av spillet](http://unity3d.com/learn/tutorials/projects/roll-a-ball/set-up?playlist=17141)
 - Start med å lage et nytt 3D prosjekt.
@@ -90,8 +90,10 @@ public class PlayerController : MonoBehaviour {
 ## [ Flytte kameraet](http://unity3d.com/learn/tutorials/projects/roll-a-ball/moving-the-camera?playlist=17141)
 - Først flytt opp kameraet 10 enheter (på y-aksen) og vipp det ned med 45
   grader (x-aksen). 
-- Flytt kameraet til et barn av Player-objektet, dette vil gjøre at kameraet
-  følger etter spilleren. Se at kameraet (nesten) flytter seg med spilleren. 
+- Flytt kameraet til et "barn" av Player-objektet, dette vil gjøre at kameraet
+  følger etter spilleren. (et barn er bare et programmeringsbegrep som sier noe om at noe 
+  er under noe annet, f.eks en undermappe. Du gjør kameraet til et "barn" av Player-objektet
+  ved å dra det og slippe det på Player-objektet i hierarkiet). Se at kameraet (nesten) flytter seg med spilleren. 
 - Test spillet og se hva som skjer. 
 - Siden ikke alt gikk etter planen må vi lage et script for å flytte kameraet.
   Flytt kameraet tilbake ut av Player-objektet slik at det ikke snurrer rundt
