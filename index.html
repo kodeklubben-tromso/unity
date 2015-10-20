@@ -510,12 +510,12 @@ Inne på siden trykker du på "open in unity", da vil du komme i asset store i u
 <a id="player-karakteren" class="anchor" href="#player-karakteren" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player karakteren</h2>
 
 <ul>
-<li>Finn PLayer modellen i <code>Models -&gt; Characters</code>, og dra den inn i Scenen.</li>
+<li>Finn Player modellen i <code>Models -&gt; Characters</code>, og dra den inn i Scenen.</li>
 <li>Sett posisjonen til (0,0,0) </li>
 <li>Sett tag i Player til Player</li>
 <li>Høyreklikk på Animation mappen og trykk create etterfulgt av "Animation Controller" og gi den navnet <code>PlayerAC</code>
 </li>
-<li>Dra så den nye Animasjons kontrolleren inn in Player</li>
+<li>Dra så den nye Animasjons kontrolleren inn i Player</li>
 <li>Dobbelt-klikk på PlayerAC da vil du endre fra bilde fra Scene til Animator</li>
 <li>Finn så frem attributtene til <code>Models -&gt; Characters -&gt; Player</code> dra så blokkene Death, Idle og Move inn i Animator vinduet</li>
 <li>Høyreklikk på Idle modusen og velg "Set as Default"</li>
@@ -545,7 +545,7 @@ public class PlayerMovement : MonoBehaviour
     Animator anim;
     Rigidbody playerRigidbody;
     int floorMask;
-    float camRayLenght = 100f;
+    float camRayLength = 100f;
 
     void Awake()
     {
@@ -576,7 +576,7 @@ public class PlayerMovement : MonoBehaviour
 
         RaycastHit floorHit;
 
-       if (Physics.Raycast (camRay, out floorHit, camRayLenght, floorMask))
+       if (Physics.Raycast (camRay, out floorHit, camRayLength, floorMask))
        {
            Vector3 playerToMouse = floorHit.point - transform.position;
            playerToMouse.y = 0f;
