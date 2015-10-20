@@ -491,15 +491,17 @@ Inne på siden trykker du på "open in unity", da vil du komme i asset store i u
 <a id="omgivelser" class="anchor" href="#omgivelser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Omgivelser</h2>
 
 <ul>
-<li>Velg File -&gt; New Scene for å lage en ny scene, lagre den som Level 01 i Scenes mappen.</li>
+<li>Velg <code>File -&gt; New Scene</code> for å lage en ny scene, lagre den som Level 01 i Scenes mappen.</li>
 <li>Finn frem Evironment under prefabs og dra den til Hierarchy.</li>
 <li>Pass på at den er på Posisjon (0,0,0).</li>
 <li>Gjør det samme for Lights under prefab.</li>
+<li>Lag et nytt Gameobject (<code>Create -&gt; 3D Object -&gt; Quad</code>) og kall det Floor</li>
+<li>Sett Position til (0,0,0), Rotation til (90,0,0) og Scale til (100,100,0)</li>
 <li>Gå i Floor objektet under Envoirnment og deaktiver "Mesh Renderer".</li>
 <li>Sett Floor objectet til å bruke Floor som layer.</li>
-<li>Lag et nytt tomt objekt (GameObject -&gt; Create Empty).</li>
+<li>Lag et nytt tomt objekt (<code>GameObject -&gt; Create Empty</code>).</li>
 <li>Kall det for BackgroundMusic.</li>
-<li>Klikk på Add Component -&gt; Audio -&gt; Audio Source.</li>
+<li>Klikk på <code>Add Component -&gt; Audio -&gt; Audio Source</code>.</li>
 <li>Der velger du bakgrunnsmusikken ved å trykke på sirkelen til høyre for Audio Clip så velger du Background Music.</li>
 <li>Huk av Loop under Audio Source og sett volumet til 0.1.</li>
 </ul>
@@ -508,13 +510,14 @@ Inne på siden trykker du på "open in unity", da vil du komme i asset store i u
 <a id="player-karakteren" class="anchor" href="#player-karakteren" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player karakteren</h2>
 
 <ul>
-<li>Finn PLayer modellen i Models -&gt; Characters, og dra den inn i Scenen.</li>
+<li>Finn PLayer modellen i <code>Models -&gt; Characters</code>, og dra den inn i Scenen.</li>
 <li>Sett posisjonen til (0,0,0) </li>
 <li>Sett tag i Player til Player</li>
-<li>Høyreklikk på Animation mappen og trykk create etterfulgt av "Animation Controller" og gi den navnet PlayerAC</li>
+<li>Høyreklikk på Animation mappen og trykk create etterfulgt av "Animation Controller" og gi den navnet <code>PlayerAC</code>
+</li>
 <li>Dra så den nye Animasjons kontrolleren inn in Player</li>
 <li>Dobbelt-klikk på PlayerAC da vil du endre fra bilde fra Scene til Animator</li>
-<li>Finn så frem attributtene til Models-&gt;Characters-&gt;Player dra så blokkene Death, Idle og Move inn i Animator vinduet</li>
+<li>Finn så frem attributtene til <code>Models -&gt; Characters -&gt; Player</code> dra så blokkene Death, Idle og Move inn i Animator vinduet</li>
 <li>Høyreklikk på Idle modusen og velg "Set as Default"</li>
 <li>Under Parameters klikk på pluss tegnet og velg "bool", kall denne for IsWalking.</li>
 <li>Lag så et Trigger parameter kalt "Die"</li>
@@ -523,11 +526,11 @@ Inne på siden trykker du på "open in unity", da vil du komme i asset store i u
 <li>Høyreklikk så på Move og lag en overgang til Idle, Der skal du gjøre det samme men IsWalking skal være false</li>
 <li>Lag en overgang fra 'Any state' til Death</li>
 <li>Sett så condition til overgangen til Die</li>
-<li>Legg til Rigidbody til Player (Player-&gt;Add Component-&gt;Physics-&gt;Rigidbody), så setter du Drag og Angular Drag til "Infinity".</li>
+<li>Legg til Rigidbody til Player (<code>Player-&gt;Add Component-&gt;Physics-&gt;Rigidbody</code>), så setter du Drag og Angular Drag til "Infinity".</li>
 <li>Under Rigidbody og Constraints, huk av Freeze position Y og Freeze Rotation X og Y</li>
 <li>Legg til En Capsule Collider Component til Playeren (Sett Center til (0.2,0.6,0) og høyde til 1.2)</li>
 <li>Nå skal vi legge til lyd når spilleren blir skadet, legg til komponent Audio Source, Under Audio Clip legg til lyden "Player Hurt" og deaktiver "Play On Awake"</li>
-<li>Finn PlayerMovement scriptet under Scripts-&gt;Player og dra det på Playeren.</li>
+<li>Finn PlayerMovement scriptet under <code>Scripts-&gt;Player</code> og dra det på Playeren.</li>
 <li>Nå skal vi kode litt, åpne scriptet PlayerMovement i editoren.</li>
 </ul>
 
@@ -604,11 +607,41 @@ public class PlayerMovement : MonoBehaviour
 <a id="camera-opsett" class="anchor" href="#camera-opsett" aria-hidden="true"><span class="octicon octicon-link"></span></a>Camera Opsett</h2>
 
 <ul>
-<li>Velg Main Camera og sett posisjonen til (1, 15,-22) og rotasjon til (30,0,0) og endre Projection til "Orthographic"</li>
+<li>Velg Main Camera og sett posisjonen til (1, 15,-22) og rotasjon til (30,0,0) og endre Projection til <code>Orthographic</code>
+</li>
+<li>Sett Size under til 4.5 og sett Bakgrunnsfargen til svart</li>
+<li>Lag ett nytt script i Camera mappen som ligger inni Script mappen, kall det for <code>CameraFollow</code>
+</li>
+<li>Dra så CameraFollow scriptet over Main Camera, deretter åpne scriptet i en editor</li>
 </ul>
 
-<h2>
-<a id="--sett-size-under-til-45-og-sett-bakgrunnsfargen-til-svart" class="anchor" href="#--sett-size-under-til-45-og-sett-bakgrunnsfargen-til-svart" aria-hidden="true"><span class="octicon octicon-link"></span></a>- Sett Size under til 4.5 og sett Bakgrunnsfargen til svart</h2>
+<pre><code>
+public class CameraFollow : MonoBehaviour {
+
+    public Transform target;
+    public float smoothing = 5f;
+
+    Vector3 offset;
+
+    void Start () {
+        offset = transform.position - target.position;
+    }
+
+    void FixedUpdate () {
+        Vector3 targetCamPos = target.position + offset;
+        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Legg til Skriptet over i <code>CameraFollow</code>
+</li>
+<li>Lagre og gå tilbake til unity, her skal du dra Player objektet inn i 
+Target under CameraFollow scriptet i Main Camera objektet</li>
+<li>For å lagre Player dra den inn i Prefabs mappen, lagre og trykk Play!</li>
+</ul>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
