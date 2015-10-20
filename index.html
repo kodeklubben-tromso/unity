@@ -475,12 +475,57 @@ public class PlayerController : MonoBehaviour {
 </code></pre>
 
 <ul>
-<li>Legg til en referanse i Player-objektet og prøv spillet!! </li>
+<li>Legg til en referanse i Player-objektet og prøv spillet!! 
+## <a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/building?playlist=17141">(Bonus) Bygg spillet</a> </li>
+</ul>
+
+<h1>
+<a id="survival-shooter" class="anchor" href="#survival-shooter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Survival Shooter</h1>
+
+<p>Denne oppgaven tar utgangspunkt i <a href="https://unity3d.com/learn/tutorials/projects/survival-shooter-project">denne</a> Survival shooter på Unity sine sider.</p>
+
+<p>Først må du laste ned et ferdig rammeverk for spillet <a href="https://www.assetstore.unity3d.com/en/#!/content/40756">her</a>.
+Inne på siden trykker du på "open in unity", da vil du komme i asset store i unity. Deretter finner du "Unity 5 Survival Shooter", trykker på den også på import for å laste inn prosjektet. </p>
+
+<h2>
+<a id="omgivelser" class="anchor" href="#omgivelser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Omgivelser</h2>
+
+<ul>
+<li>Velg File -&gt; New Scene for å lage en ny scene, lagre den som Level 01 i Scenes mappen.</li>
+<li>Finn frem Evironment under prefabs og dra den til Hierarchy.</li>
+<li>Pass på at den er på Posisjon (0,0,0).</li>
+<li>Gjør det samme for Lights under prefab.</li>
+<li>Gå i Floor objektet under Envoirnment og deaktiver "Mesh Renderer".</li>
+<li>Sett Floor objectet til å bruke Floor som layer.</li>
+<li>Lag et nytt tomt objekt (GameObject -&gt; Create Empty).</li>
+<li>Kall det for BackgroundMusic.</li>
+<li>Klikk på Add Component -&gt; Audio -&gt; Audio Source.</li>
+<li>Der velger du bakgrunnsmusikken ved å trykke på sirkelen til høyre for Audio Clip så velger du Background Music.</li>
+<li>Huk av Loop under Audio Source og sett volumet til 0.1.</li>
 </ul>
 
 <h2>
-<a id="bonus-bygg-spillet" class="anchor" href="#bonus-bygg-spillet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/building?playlist=17141">(Bonus) Bygg spillet</a>
-</h2>
+<a id="player-karakteren" class="anchor" href="#player-karakteren" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player karakteren</h2>
+
+<ul>
+<li>Finn PLayer modellen i Models -&gt; Characters, og dra den inn i Scenen.</li>
+<li>Sett posisjonen til (0,0,0) </li>
+<li>Sett tag i Player til Player</li>
+<li>Høyreklikk på Animation mappen og trykk create etterfulgt av "Animation Controller" og gi den navnet PlayerAC</li>
+<li>Dra så den nye Animasjons kontrolleren inn in Player</li>
+<li>Dobbelt-klikk på PlayerAC da vil du endre fra bilde fra Scene til Animator</li>
+<li>Finn så frem attributtene til Models-&gt;Characters-&gt;Player dra så blokkene Death, Idle og Move inn i Animator vinduet</li>
+<li>Høyreklikk på Idle modusen og velg "Set as Default"</li>
+<li>Under Parameters klikk på pluss tegnet og velg "bool", kall denne for IsWalking.</li>
+<li>Lag så et Trigger parameter kalt "Die"</li>
+<li>Høreklikk så på Moduset idle og velg Make Transition, for så å trykke på Move</li>
+<li>Trykk på pila som du lagde mellom Idle og Move, under Inspection og Condition legg til IsWalking og sett den til True</li>
+<li>Høyreklikk så på Move og lag en overgang til Idle, Der skal du gjøre det samme men IsWalking skal være false</li>
+<li>Lag en overgang fra 'Any state' til Death</li>
+</ul>
+
+<h2>
+<a id="--sett-så-condition-til-overgangen-til-die" class="anchor" href="#--sett-s%C3%A5-condition-til-overgangen-til-die" aria-hidden="true"><span class="octicon octicon-link"></span></a>- Sett så condition til overgangen til Die</h2>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
