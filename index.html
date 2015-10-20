@@ -522,10 +522,93 @@ Inne på siden trykker du på "open in unity", da vil du komme i asset store i u
 <li>Trykk på pila som du lagde mellom Idle og Move, under Inspection og Condition legg til IsWalking og sett den til True</li>
 <li>Høyreklikk så på Move og lag en overgang til Idle, Der skal du gjøre det samme men IsWalking skal være false</li>
 <li>Lag en overgang fra 'Any state' til Death</li>
+<li>Sett så condition til overgangen til Die</li>
+<li>Legg til Rigidbody til Player (Player-&gt;Add Component-&gt;Physics-&gt;Rigidbody), så setter du Drag og Angular Drag til "Infinity".</li>
+<li>Under Rigidbody og Constraints, huk av Freeze position Y og Freeze Rotation X og Y</li>
+<li>Legg til En Capsule Collider Component til Playeren (Sett Center til (0.2,0.6,0) og høyde til 1.2)</li>
+<li>Nå skal vi legge til lyd når spilleren blir skadet, legg til komponent Audio Source, Under Audio Clip legg til lyden "Player Hurt" og deaktiver "Play On Awake"</li>
+<li>Finn PlayerMovement scriptet under Scripts-&gt;Player og dra det på Playeren.</li>
+<li>Nå skal vi kode litt, åpne scriptet PlayerMovement i editoren.</li>
+</ul>
+
+<pre><code>
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    public float speed = 6f;
+
+    Vector3 movement;
+    Animator anim;
+    Rigidbody playerRigidbody;
+    int floorMask;
+    float camRayLenght = 100f;
+
+    void Awake()
+    {
+        floorMask = LayerMask.GetMask("Floor");
+        anim = GetComponent&lt;Animator&gt;();
+        playerRigidbody = GetComponent&lt;Rigidbody&gt;();
+    }
+
+    void FixedUpdate ()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        Move(h,v);
+        Turning ();
+        Animating();
+    }
+
+    void Move (float h, float v)
+    {
+        movement.Set(h, 0f, v);
+        movement = movement.normalized * speed * Time.deltaTime;
+        playerRigidbody.MovePosition(transform.position + movement);
+   } 
+
+   void Turning ()
+    {
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit floorHit;
+
+       if (Physics.Raycast (camRay, out floorHit, camRayLenght, floorMask))
+       {
+           Vector3 playerToMouse = floorHit.point - transform.position;
+           playerToMouse.y = 0f;
+
+           Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+           playerRigidbody.MoveRotation(newRotation);
+       }
+
+
+    }
+
+    void Animating (float hideFlags, float v)
+    {
+        bool walking = hideFlags != 0f || v != 0f;
+        anim.SetBool("IsWalking", walking);
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Endre scriptet slik at det ser ut som det ovenfor</li>
+<li>Nå kan du prøve å lagre skripte å trykke Play!</li>
+<li>Når du skal stoppe det må du huske å stoppe play og ikke trykk på pause!</li>
 </ul>
 
 <h2>
-<a id="--sett-så-condition-til-overgangen-til-die" class="anchor" href="#--sett-s%C3%A5-condition-til-overgangen-til-die" aria-hidden="true"><span class="octicon octicon-link"></span></a>- Sett så condition til overgangen til Die</h2>
+<a id="camera-opsett" class="anchor" href="#camera-opsett" aria-hidden="true"><span class="octicon octicon-link"></span></a>Camera Opsett</h2>
+
+<ul>
+<li>Velg Main Camera og sett posisjonen til (1, 15,-22) og rotasjon til (30,0,0) og endre Projection til "Orthographic"</li>
+</ul>
+
+<h2>
+<a id="--sett-size-under-til-45-og-sett-bakgrunnsfargen-til-svart" class="anchor" href="#--sett-size-under-til-45-og-sett-bakgrunnsfargen-til-svart" aria-hidden="true"><span class="octicon octicon-link"></span></a>- Sett Size under til 4.5 og sett Bakgrunnsfargen til svart</h2>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
