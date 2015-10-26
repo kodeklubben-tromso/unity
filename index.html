@@ -646,6 +646,130 @@ Target under CameraFollow scriptet i Main Camera objektet</li>
 <li>For å lagre Player dra den inn i Prefabs mappen, lagre og trykk Play!</li>
 </ul>
 
+<h2>
+<a id="fiende-nr-1" class="anchor" href="#fiende-nr-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fiende nr 1</h2>
+
+<ul>
+<li>Finn <strong>Zombunny</strong> modellen i <strong>Models&gt;Characters</strong> mappen i prosjektet.</li>
+<li>Dra modellen inn på scenen</li>
+<li>Finn <strong>HitParticles</strong> i <strong>Prefabs</strong> mappen, dra den på <strong>Zombunny</strong> i <strong>Hierarchy</strong>
+</li>
+<li>Velg <strong>Shootable</strong> layeret for dette objektet.</li>
+<li>Legg til rigidbody til objektet ved å gå på <strong>Add Component&gt;Physics&gt;Rigidbody</strong>
+</li>
+<li>Sett <strong>Drag</strong> og <strong>Angular Drag</strong> til <strong>Infinity</strong>
+</li>
+<li>I <strong>Constraints</strong> frys posisjon <strong>Y</strong> og rotasjon <strong>X</strong> og <strong>Y</strong>
+</li>
+<li>Så <strong>Add Component&gt;Physics&gt;Capsule Collider</strong>
+</li>
+<li>Sett <strong>Center Y</strong> til <strong>0.8</strong> og <strong>Height</strong> til <strong>1.5</strong>
+</li>
+<li>Deretter <strong>Add Component&gt;Physics&gt;Sphere Collider</strong>
+</li>
+<li>Huk av <strong>Is Trigger</strong>
+</li>
+<li>Sett <strong>Center Y</strong> og <strong>Radius</strong>, begge til <strong>0.8</strong>
+</li>
+<li><strong>Add Component&gt;Audio&gt;Audio Source</strong></li>
+<li>Velg <strong>Zombunny Hurt</strong> lydklippet</li>
+<li>Slå av <strong>Play On Awake</strong> boksen</li>
+<li><strong>Add Component&gt;Navigation&gt;Nav Mesh Agent</strong></li>
+<li>Sett så <strong>Radius</strong> til <strong>0.3</strong>
+</li>
+<li>Sett <strong>Speed</strong> til <strong>3</strong>
+</li>
+<li>Sett <strong>Stopping Distance</strong> til <strong>1.3</strong>
+</li>
+<li>Sett <strong>Height</strong> til <strong>1.1</strong>
+</li>
+<li>Gå til <strong>Window&gt;Navigation</strong>
+</li>
+<li>Velg <strong>Bake</strong> tabben øverst</li>
+<li>Sett <strong>Radius</strong> til <strong>0.75</strong>
+</li>
+<li>Sett <strong>Height</strong> til <strong>1.2</strong> og <strong>Step Height</strong> til <strong>0.1</strong>
+</li>
+<li>I <strong>Advanced</strong> området, sett <strong>Width Inaccuracy %</strong> til <strong>1</strong>
+</li>
+<li>Klikk <strong>Bake</strong> nederst.</li>
+<li>Velg <strong>Animation</strong> mappen i <strong>Project</strong> panelet.</li>
+<li>Høyreklikk den og <strong>Create&gt;Animation Controller</strong>
+</li>
+<li>Navngi den <strong>EnemyAC</strong>, og dra den på <strong>Zombunny</strong> parent objektet i hierarkiet.</li>
+<li>Dobbelklikk <strong>EnemyAC</strong> for å åpne den i <strong>Animator</strong> vinduet.</li>
+<li>Expander <strong>Zombunny</strong> modellen i <strong>Models&gt;Characters</strong> mappen i prosjekt panelet</li>
+<li>Det er 3 animasjoner der, <strong>Idle, Move</strong> og <strong>Death</strong>
+</li>
+<li>Dra hver av dem til Animatoren, begynn med <strong>Move</strong>
+</li>
+<li>Posisjoner <strong>Idle</strong> og <strong>Move</strong> nær hverandre, og put <strong>Death</strong> nær <strong>Any State</strong>
+</li>
+<li>Dobbelsjekk at <strong>Move</strong> er standard animasjonen/default, den burde være farget orange. Hvis ikke, så høyreklikk å velg <strong>Set as Default</strong>
+</li>
+<li>I <strong>Animator</strong> vinduet's <strong>Parameters</strong>, klikk på <strong>+</strong> og lag en <strong>Trigger</strong> parameter som heter <strong>PlayerDead</strong>
+</li>
+<li>Lag enda en <strong>Trigger</strong> parameter som heter <strong>Dead</strong>
+</li>
+<li>Høyreklikk på <strong>Move</strong> og lag en overgang/transition til <strong>Idle</strong>
+</li>
+<li>Høyreklikk på <strong>Any State</strong> og lag en overgang/transition til <strong>Death</strong>
+</li>
+<li>Sett <strong>Condition</strong> for <strong>Move -&gt; Idle</strong> til <strong>PlayerDead</strong>
+</li>
+<li>Sett <strong>Condition</strong> for <strong>Any State -&gt; Death</strong> til <strong>Dead</strong>
+</li>
+<li>Under <strong>Scripts&gt;Enemy</strong> mappen, i prosjektet, finn <strong>EnemyMovement</strong> scriptet, og dra det på <strong>Zombunny</strong>
+</li>
+<li>Lagre scenen din.</li>
+<li>Dobbelklikk på script ikonet for å åpne det for redigering.</li>
+<li>Skriv inn koden under</li>
+</ul>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+
+public class EnemyMovement : MonoBehaviour
+{
+    Transform player;               // Reference to the player's position.
+    PlayerHealth playerHealth;      // Reference to the player's health.
+    EnemyHealth enemyHealth;        // Reference to this enemy's health.
+    NavMeshAgent nav;               // Reference to the nav mesh agent.
+
+
+    void Awake ()
+    {
+        // Set up the references.
+        player = GameObject.FindGameObjectWithTag ("Player").transform;
+        playerHealth = player.GetComponent &lt;PlayerHealth&gt; ();
+        enemyHealth = GetComponent &lt;EnemyHealth&gt; ();
+        nav = GetComponent &lt;NavMeshAgent&gt; ();
+    }
+
+
+    void Update ()
+    {
+        // If the enemy and the player have health left...
+        if(enemyHealth.currentHealth &gt; 0 &amp;&amp; playerHealth.currentHealth &gt; 0)
+        {
+            // ... set the destination of the nav mesh agent to the player.
+            nav.SetDestination (player.position);
+        }
+        // Otherwise...
+        else
+        {
+            // ... disable the nav mesh agent.
+            nav.enabled = false;
+        }
+    } 
+}
+
+</code></pre>
+
+<ul>
+<li>Trykk på <strong>Play</strong> for å teste spillet.</li>
+</ul>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
 
