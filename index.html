@@ -770,6 +770,260 @@ public class EnemyMovement : MonoBehaviour
 <li>Trykk på <strong>Play</strong> for å teste spillet.</li>
 </ul>
 
+<h2>
+<a id="health-hud" class="anchor" href="#health-hud" aria-hidden="true"><span class="octicon octicon-link"></span></a>Health HUD</h2>
+
+<ul>
+<li>Klikk på <strong>2D</strong> mode knappen.</li>
+<li>Velg <strong>GameObject&gt;UI&gt;Canvas</strong> fra menyen</li>
+<li>Gi nytt navn til ditt <strong>Canvas</strong>, det skal hete <strong>HUDCanvas</strong>
+</li>
+<li><strong>Add Component&gt;Miscellaneous&gt;Canvas Group</strong></li>
+<li>Slå av <strong>Interactable</strong> og <strong>Blocks Raycasts</strong> boksene.</li>
+<li>Høyreklikk <strong>HUDCanvas&gt;Create Empty</strong>
+</li>
+<li>Kall den for <strong>HealthUI</strong>
+</li>
+<li>I <strong>Rect Transform</strong> klikk på <strong>Anchor Presets</strong>, og sett <strong>HealthUI</strong>'s <strong>Anchor, Position</strong> og <strong>Pivot</strong> til det nedre venstre hjørnet ved å holde inne <strong>Alt-Shift</strong> å så klikke på ankerpunktet.</li>
+<li>I <strong>Rect Transform</strong>, sett <strong>Width</strong> til <strong>75</strong> og <strong>Height</strong> til <strong>60</strong>
+</li>
+<li>Høyreklikk <strong>HealthUI&gt;UI&gt;Image</strong> </li>
+<li>Kall Image for <strong>Heart</strong>
+</li>
+<li>I <strong>Rect Transform</strong> set <strong>Position X og Y</strong> til <strong>0</strong>
+</li>
+<li>Sett <strong>Width</strong> og <strong>Height</strong> til <strong>30</strong>
+</li>
+<li>I <strong>Image</strong> for <strong>Source Image</strong>, velg <strong>Heart</strong> spriten fra <strong>Assets</strong>
+</li>
+<li>Høyreklikk <strong>HealthUI&gt;UI&gt;Slider</strong>
+</li>
+<li>Kall <strong>Slider</strong> for <strong>HealthSlider</strong>
+</li>
+<li>I <strong>Rect Transform</strong>, set <strong>Position X</strong> til <strong>95</strong>, <strong>Y</strong> til <strong>0</strong>
+</li>
+<li>Ekspander <strong>HealthSlider</strong> for å vise children, velg <strong>Handle Slide Area</strong> childen til <strong>HealthSlider</strong> og slett den fra hierarkiet(delete).</li>
+<li>I <strong>Slider</strong> componenten til <strong>HealthSlider</strong>, sett <strong>Transition</strong> mode til <strong>None</strong>
+</li>
+<li>Set <strong>Max Value</strong> verdien til <strong>100</strong>, også sett <strong>Value</strong> til <strong>100</strong>.</li>
+<li>Høyreklikk <strong>HUDCanvas</strong> og lag et <strong>UI&gt;Image</strong>
+</li>
+<li>Kall det for <strong>DamageImage</strong> og sett <strong>Rect Transform</strong> ankerpunkt presetten til <strong>Stretch</strong> i begge dimensjoner, ved å holde inne <strong>Alt</strong> mens du klikker den nederste høyre presetten.</li>
+<li>I <strong>Image</strong> komponenten, klikk på <strong>Colour</strong> blokken og set <strong>Alpha</strong>(A) verdien til <strong>0</strong>
+</li>
+</ul>
+
+<h2>
+<a id="player-health" class="anchor" href="#player-health" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player Health</h2>
+
+<ul>
+<li>I <strong>Scripts&gt;Player</strong> mappen, finn <strong>PlayerHealth</strong>, å dra denn inn på <strong>Player</strong> i hierarkiet.</li>
+<li>Åpne <strong>PlayerHealth</strong> scriptet å se på det.</li>
+</ul>
+
+<pre><code>using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class PlayerHealth : MonoBehaviour
+{
+    public int startingHealth = 100;                            // The amount of health the player starts the game with.
+    public int currentHealth;                                   // The current health the player has.
+    public Slider healthSlider;                                 // Reference to the UI's health bar.
+    public Image damageImage;                                   // Reference to an image to flash on the screen on being hurt.
+    public AudioClip deathClip;                                 // The audio clip to play when the player dies.
+    public float flashSpeed = 5f;                               // The speed the damageImage will fade at.
+    public Color flashColour = new Color(1f, 0f, 0f, 0.1f);     // The colour the damageImage is set to, to flash.
+
+
+    Animator anim;                                              // Reference to the Animator component.
+    AudioSource playerAudio;                                    // Reference to the AudioSource component.
+    PlayerMovement playerMovement;                              // Reference to the player's movement.
+    PlayerShooting playerShooting;                              // Reference to the PlayerShooting script.
+    bool isDead;                                                // Whether the player is dead.
+    bool damaged;                                               // True when the player gets damaged.
+
+
+    void Awake ()
+    {
+        // Setting up the references.
+        anim = GetComponent &lt;Animator&gt; ();
+        playerAudio = GetComponent &lt;AudioSource&gt; ();
+        playerMovement = GetComponent &lt;PlayerMovement&gt; ();
+        playerShooting = GetComponentInChildren &lt;PlayerShooting&gt; ();
+
+        // Set the initial health of the player.
+        currentHealth = startingHealth;
+    }
+
+
+    void Update ()
+    {
+        // If the player has just been damaged...
+        if(damaged)
+        {
+            // ... set the colour of the damageImage to the flash colour.
+            damageImage.color = flashColour;
+        }
+        // Otherwise...
+        else
+        {
+            // ... transition the colour back to clear.
+            damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
+        }
+
+        // Reset the damaged flag.
+        damaged = false;
+    }
+
+
+    public void TakeDamage (int amount)
+    {
+        // Set the damaged flag so the screen will flash.
+        damaged = true;
+
+        // Reduce the current health by the damage amount.
+        currentHealth -= amount;
+
+        // Set the health bar's value to the current health.
+        healthSlider.value = currentHealth;
+
+        // Play the hurt sound effect.
+        playerAudio.Play ();
+
+        // If the player has lost all it's health and the death flag hasn't been set yet...
+        if(currentHealth &lt;= 0 &amp;&amp; !isDead)
+        {
+            // ... it should die.
+            Death ();
+        }
+    }
+
+
+    void Death ()
+    {
+        // Set the death flag so this function won't be called again.
+        isDead = true;
+
+        // Turn off any remaining shooting effects.
+        playerShooting.DisableEffects ();
+
+        // Tell the animator that the player is dead.
+        anim.SetTrigger ("Die");
+
+        // Set the audiosource to play the death clip and play it (this will stop the hurt sound from playing).
+        playerAudio.clip = deathClip;
+        playerAudio.Play ();
+
+        // Turn off the movement and shooting scripts.
+        playerMovement.enabled = false;
+        playerShooting.enabled = false;
+    }       
+}
+
+</code></pre>
+
+<ul>
+<li>Legg skriptet over til i script filen</li>
+<li>Gå så tilbake til Unity å i <strong>PlayerHealth (Script)</strong> komponenten, legg til <strong>HealthSlider</strong> fra hierarkiet til <strong>Health Slider</strong> public variable, ved å dra det dit.</li>
+<li>På samme komponenten legg til <strong>DamageImage</strong> fra hierarkiet til <strong>Damage Image</strong> public variable, ved å dra det dit.</li>
+<li>På <strong>PlayerHealth (Script)</strong> komponenten, legg til <strong>Player Death</strong> lydklippet til <strong>Death Clip</strong>.</li>
+<li>Finn <strong>EnemyAttack</strong> i <strong>Scripts&gt;Enemy</strong> mappen til prosjektet, og dra den på <strong>Zombunny</strong> i hierarkiet.</li>
+<li>Åpne <strong>EnemyAttack</strong> scriptet for redigering ved å dobbelklikke på script ikonet i prosjektet.</li>
+</ul>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+
+
+public class EnemyAttack : MonoBehaviour
+{
+    public float timeBetweenAttacks = 0.5f;     // The time in seconds between each attack.
+    public int attackDamage = 10;               // The amount of health taken away per attack.
+
+
+    Animator anim;                              // Reference to the animator component.
+    GameObject player;                          // Reference to the player GameObject.
+    PlayerHealth playerHealth;                  // Reference to the player's health.
+    EnemyHealth enemyHealth;                    // Reference to this enemy's health.
+    bool playerInRange;                         // Whether player is within the trigger collider and can be attacked.
+    float timer;                                // Timer for counting up to the next attack.
+
+
+    void Awake ()
+    {
+        // Setting up the references.
+        player = GameObject.FindGameObjectWithTag ("Player");
+        playerHealth = player.GetComponent &lt;PlayerHealth&gt; ();
+        enemyHealth = GetComponent&lt;EnemyHealth&gt;();
+        anim = GetComponent &lt;Animator&gt; ();
+    }
+
+
+    void OnTriggerEnter (Collider other)
+    {
+        // If the entering collider is the player...
+        if(other.gameObject == player)
+        {
+            // ... the player is in range.
+            playerInRange = true;
+        }
+    }
+
+
+    void OnTriggerExit (Collider other)
+    {
+        // If the exiting collider is the player...
+        if(other.gameObject == player)
+        {
+            // ... the player is no longer in range.
+            playerInRange = false;
+        }
+    }
+
+
+    void Update ()
+    {
+        // Add the time since Update was last called to the timer.
+        timer += Time.deltaTime;
+
+        // If the timer exceeds the time between attacks, the player is in range and this enemy is alive...
+        if(timer &gt;= timeBetweenAttacks &amp;&amp; playerInRange &amp;&amp; enemyHealth.currentHealth &gt; 0)
+        {
+            // ... attack.
+            Attack ();
+        }
+
+        // If the player has zero or less health...
+        if(playerHealth.currentHealth &lt;= 0)
+        {
+            // ... tell the animator the player is dead.
+            anim.SetTrigger ("PlayerDead");
+        }
+    }
+
+
+    void Attack ()
+    {
+        // Reset the timer.
+        timer = 0f;
+
+        // If the player has health to lose...
+        if(playerHealth.currentHealth &gt; 0)
+        {
+            // ... damage the player.
+            playerHealth.TakeDamage (attackDamage);
+        }
+    }
+}
+
+</code></pre>
+
+<ul>
+<li>Legg til scriptet ovenfor i scriptfilen.</li>
+<li>Gå så tilbake til unity å lagre prosjektet ditt.</li>
+</ul>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
 
