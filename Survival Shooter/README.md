@@ -685,40 +685,28 @@ HUDCanvas
 - Velg og flytt alle **end keyframes** til **0:30** 
 
 
-- Flytt markøren i tidslinja til **0:20**, velg **GameOverText > RectTransform >
-  Scale** og trykk **K** for å lage en **keyframe**. 
-- Gå til frame **0** og velg **GameOverText > RectTransform > Scale** og sett
-  verdiene til **0**. 
-- Flytt markøren i tidslinja til **0:20** og sett **GameOverText > RectTransform
-  > Scale** verdiene til **1.2**
+- Flytt markøren i tidslinja til **0:20**, velg **GameOverText > RectTransform > Scale** og trykk **K** for å lage en **keyframe**. 
+- Gå til frame **0** og velg **GameOverText > RectTransform > Scale** og sett verdiene til **0**. 
+- Flytt markøren i tidslinja til **0:20** og sett **GameOverText > RectTransform > Scale** verdiene til **1.2**
 
-- Flytt markøren til **0:30** og sett: **GameOverText > Text > Color > Alpha**
-  til **1**, **ScreenFader > Image > Color > Alpha** til **1**, **Score Text > RectTransform > Scale** til **0.8**
-- Velg alle **Keyframes** og flytt dem slik at de starter på **1:30** (frame 90)
-  og disable **Record** mode 
+- Flytt markøren til **0:30** og sett: **GameOverText > Text > Color > Alpha** til **1**, **ScreenFader > Image > Color > Alpha** til **1**, **Score Text > RectTransform > Scale** til **0.8**
+- Velg alle **Keyframes** og flytt dem slik at de starter på **1:30** (frame 90) og disable **Record** mode 
 
 
 
-- I **Project** panelet åpner du **Animation** mappa og velger **GameOverClip**,
-  klikk bort **Loop time**
-- Velg nå **HUDCanvas** og dobbel klikk på den for å åpne den i
-  **Animator**-vinduet
-- I **Animator**-vinduet høyreklikker du og velger **Create State > Empty** og
-  kall den **Empty**
-- Høyreklikk på **Empty state** og **Create Transition** til
-  **GameoverClip**-staten ved å velge den
+- I **Project** panelet åpner du **Animation** mappa og velger **GameOverClip**, klikk bort **Loop time**
+- Velg nå **HUDCanvas** og dobbel klikk på den for å åpne den i **Animator**-vinduet
+- I **Animator**-vinduet høyreklikker du og velger **Create State > Empty** og kall den **Empty**
+- Høyreklikk på **Empty state** og **Create Transition** til **GameoverClip**-staten ved å velge den
 - Lag en ny **Animator Trigger**-parameter **GameOver**
 
 
 
 - Høyreklikk på **Empty**-staten og velg **Set as Default**
-- Velg overgangen fra **Empty** til **GameOverClip** og sett **Condition** til
-  **GameOver** 
-- Velg **HUDCanvas** fra hierarkiet og dra inn **GameOverManager** fra **Scripts
-  > Managers** mappa til **HUDCanvas**. 
+- Velg overgangen fra **Empty** til **GameOverClip** og sett **Condition** til **GameOver** 
+- Velg **HUDCanvas** fra hierarkiet og dra inn **GameOverManager** fra **Scripts > Managers** mappa til **HUDCanvas**. 
 
-- Dra inn **Player** fra hierarkiet til **Player Health** variabelen til
-  **GameOverManager** script-komponenten
+- Dra inn **Player** fra hierarkiet til **Player Health** variabelen til **GameOverManager** script-komponenten
 - **File > Save Scene** og **File > Save Project**
 
 ## SPILL SPILLET DITT! 
