@@ -692,10 +692,8 @@ HUDCanvas
 - Flytt markøren i tidslinja til **0:20** og sett **GameOverText > RectTransform
   > Scale** verdiene til **1.2**
 
-- Flytt markøren til **0:30** og sett 
-    - **GameOverText > Text > Color > Alpha** til **1**
-    - **ScreenFader > Image > Color > Alpha** til **1**
-    - **Score Text > RectTransform > Scale ** til **0.8**
+- Flytt markøren til **0:30** og sett: **GameOverText > Text > Color > Alpha**
+  til **1**, **ScreenFader > Image > Color > Alpha** til **1**, **Score Text > RectTransform > Scale** til **0.8**
 - Velg alle **Keyframes** og flytt dem slik at de starter på **1:30** (frame 90)
   og disable **Record** mode 
 
