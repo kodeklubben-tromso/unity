@@ -673,15 +673,15 @@ HUDCanvas
 
 
 - Velg **HUDCanvas** i hierarkiet
-- Gå til **Window > Animation** og klikk på **Add Curve**
+- Gå til **Window > Animation** og klikk på **Create Animation**
 - I **Create Animation** vinduet velger du **Animation**-mappa som destinasjon
   og kall den **GameOverClip**. (Unity lager en **Animator Controller** også,
   men den trenger du ikke bry deg om nå)
 
-- Lag **Curve** til **GameOverText > Text > Color**
-- Lag **Curve** til **GameOverText > RectTransform > Scale** 
-- Lag **Curve** til **ScreenFader > Image > Color**
-- Lag **Curve** til **ScoreText > RectTransform > Scale** 
+- Lag **Property** til **GameOverText > Text > Color**
+- Lag **Property** til **GameOverText > RectTransform > Scale** 
+- Lag **Property** til **ScreenFader > Image > Color**
+- Lag **Property** til **ScoreText > RectTransform > Scale** 
 - Velg og flytt alle **end keyframes** til **0:30** 
 
 
