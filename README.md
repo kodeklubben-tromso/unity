@@ -9,7 +9,8 @@ rundt og ramle i bakken. Her har dere noen nyttige lenker dere kan se på:
 - [Mortens presentasjon](https://github.com/kodeklubben-tromso/unity/raw/master/spinning-cube/Kodeklubben1.pdf)
 - [Introduksjon til Unity Editoren](https://unity3d.com/learn/tutorials/modules/beginner/editor/interface-overview?playlist=17090) 
 - [Hva er variabler og funksjoner](https://unity3d.com/learn/tutorials/modules/beginner/scripting/variables-and-functions?playlist=17117) 
-- [Snurrende kube](http://unity3d.com/learn/tutorials/modules/beginner/scripting/assignments/spinning-cube) 
+- [Snurrende kube](http://unity3d.com/learn/tutorials/modules/beginner/scripting/assignments/spinning-cube)
+- [Importere en Figur](https://unity3d.com/learn/tutorials/projects/survival-shooter/player-character?playlist=17144)
 
 
 # Uke 2: Roll-A-Ball
