@@ -1024,6 +1024,312 @@ public class EnemyAttack : MonoBehaviour
 <li>Gå så tilbake til unity å lagre prosjektet ditt.</li>
 </ul>
 
+<h2>
+<a id="harming-enemies" class="anchor" href="#harming-enemies" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/harming-enemies?playlist=17144">Harming enemies</a>
+</h2>
+
+<p>Nå skal vi gjøre det mulig å skade fiendene! </p>
+
+<ul>
+<li>I <code>Scripts -&gt; Enemy</code>-mappa finner du <code>EnemyHealth</code> scriptet. Dra og slipp det
+på <strong>Zombunny</strong> i hierarkiet </li>
+<li>I <code>Enemy Health</code> script componenten gir du <code>Zombunny death</code>-lydklippet til
+<code>Death Clip</code> variabelen: </li>
+<li>Åpne <code>EnemyHealth</code> scriptet og ta en titt på variablene. Her finner dere
+variabler for hvor mye liv fienden har, om den er død eller levende, om den
+synker gjennom gulvet osv. Om du vil ha en god gjennomgang av scriptet kan du
+se <a href="https://youtu.be/l86gpYbQFzY?t=1m">denne</a>. </li>
+</ul>
+
+<p>Nå skal vi få til litt skyting! </p>
+
+<ul>
+<li>I <code>Project &gt; Prefabs</code> trykk på GunParticles</li>
+<li>Klikk på tannhjulet til høyre og velg <code>Copy Component</code>
+</li>
+<li>Utvid <strong>Player</strong> game objektet i hierarkiet og velg <strong>GunBarrelEnd</strong>
+</li>
+<li>Klikk på tannhjulet og velg <strong>Paste Component as New</strong>
+</li>
+<li>Lukk den nye <strong>Particle System</strong> componenten og med <strong>GunBarrelEnd</strong> fortsatt
+valgt legger du til en <strong>Line Renderer</strong>-komponent: <code>Add Component &gt; Effects &gt;
+Line Renderer</code>. </li>
+<li>Utvid <strong>Materials</strong>-området og bruk sirkelen til å velge <strong>LineRenderMaterial</strong>. </li>
+<li>Utvid parametrene til <strong>Line Renderer</strong> og sett <strong>Line Renderer</strong> sin <strong>Start
+Width</strong> og <strong>End Width</strong> til <strong>0.05</strong>. </li>
+<li>Skru av <strong>Line Renderer</strong> komponenten ved å trkke bort krysset i boksen</li>
+</ul>
+
+<p>Nå trenger vi å lage litt lys som lyser opp når spilleren skyter </p>
+
+<ul>
+<li>La oss lage et lys, <code>Add Component &gt; Rendering &gt; Light</code>.</li>
+<li>Velg en gulfarge gra <strong>Color blick / Picker</strong>
+</li>
+<li>Skru av <strong>Light</strong>-komponenten ved å krysse den ut</li>
+<li>Legg til en ny <strong>Audio Source</strong> komponent: <code>Add Component &gt; Audio &gt; Audio
+Source</code> og velg <strong>Player Gunshot</strong> som lydklipp</li>
+<li>Klikk bort <strong>Play On Awake</strong> for denne lydkilden </li>
+<li>I <code>Project &gt; Scripts &gt; Player</code>-mappa gi <strong>PlayerShooting</strong> til
+<strong>GunBarrelEnd</strong> i hierarkiet</li>
+<li>Velg <strong>Player</strong> i hierarkiet og klikk på <strong>Apply</strong> på toppen av Inspector-en
+for å oppdatere <strong>Prefab</strong>-en vår. </li>
+</ul>
+
+<p>La oss teste at alt fungerer bra! </p>
+
+<ul>
+<li>Lagre scenen og trykk Play! </li>
+<li>Om du får noen feil åpne opp <strong>EnemyMovement</strong>-scriptet i <code>Scripts &gt; Enemy</code>
+og ta bort alle <code>//</code> i scriptet og lagre scriptet </li>
+<li>Det kan også være noe i <strong>PlayerHealth</strong> så åpne det også og fjern alle <code>//</code>.</li>
+</ul>
+
+<h2>
+<a id="scoring-points" class="anchor" href="#scoring-points" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/scoring-points?playlist=17144">Scoring Points</a>
+</h2>
+
+<p>Nå skal vi gi spilleren poeng for å skyte zombunnies og oppdatere denne for hver
+gang han skyter en! </p>
+
+<ul>
+<li>Velg <strong>HUDCanvas</strong> i hierarkiet og høyreklikk for å lage et nytt <strong>Tekst</strong>
+objekt. <code>UI &gt; Text</code>. Husk at den må ligge i <strong>HUDCanvas</strong> i
+Hierarkiet. </li>
+<li>Kall dette objektet <strong>ScoreTet</strong>
+</li>
+<li>Sett <strong>Anchor position</strong> i <strong>RectTransform</strong> til <strong>Top Center</strong>. </li>
+<li>Sett <code>x</code> posisjon til <strong>0</strong> og <code>y</code> posisjon til <strong>-55</strong>.</li>
+<li>Endre <code>width</code> til <strong>300</strong> og <code>height</code> til <strong>50</strong>
+</li>
+<li>I <strong>Text</strong> komponenten setter du teksten til <strong>"Score: "</strong>. Denne vil vi endre
+på etterhvert til å vise hvor mange poeng spilleren har</li>
+<li>Sett <strong>Font size</strong> til <strong>50</strong> for litt større skrift</li>
+<li>Sett <strong>Alignments</strong> til <strong>Center</strong> og <strong>Middle</strong>
+</li>
+<li>Endre skriftfargen til hvit ved å klikke på <strong>color</strong>-blokka </li>
+</ul>
+
+<p>Nå skal vi legge litt skygge til teksten.</p>
+
+<ul>
+<li>Trykk på <strong>Add Component</strong>, søk etter <strong>Shadow</strong> og legg den til. Velg
+<strong>Effect Distance</strong> til <code>(2, -2)</code>. </li>
+<li>I <code>Scripts &gt; Managers</code> finn fram <strong>ScoreManager</strong>-scriptet og dra den over
+<strong>ScoreText</strong>-spillobjektet. </li>
+</ul>
+
+<p>Nå skal vi oppdatere <strong>EnemyHealth</strong>-scriptet</p>
+
+<ul>
+<li>Velg <strong>Zombunny</strong> i hierarkie, finn <strong>EnemyHealth</strong> scirptet og åpne det. </li>
+<li>Fjern <code>//</code> på linje 77</li>
+<li>Lagre den og trykk <strong>Play</strong> i unity for å teste prosjektet! </li>
+</ul>
+
+<p>For å få flere fiende lagrer vi <strong>Zombunny</strong> som en prefab: </p>
+
+<ul>
+<li>Dra <strong>Zombunny</strong> inn i <strong>Prefabs</strong>-mappa</li>
+<li>Fjern <strong>Zombunny</strong> fra hierarkiet og lagre scenen</li>
+</ul>
+
+<h2>
+<a id="more-enemies" class="anchor" href="#more-enemies" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/more-enemies?playlist=17144">More Enemies</a>
+</h2>
+
+<p>La oss lage en <strong>Zombear</strong>! </p>
+
+<ul>
+<li>I prefabs-mappa velger du <strong>ZomBear</strong>
+</li>
+<li>Åpne <strong>Zombear</strong> sin <strong>Animator</strong> og fra prosjektet drar du inn <strong>EnemyAC</strong>
+fra <strong>Animation</strong>-mappa. Denne skal dras over til <strong>Animator controller</strong>
+</li>
+</ul>
+
+<p>Nå kommer en <strong>Hellephant</strong></p>
+
+<ul>
+<li>I <strong>prefabs</strong>-mappa velger du <strong>Hellephant</strong>, </li>
+<li>Velg <strong>Animation</strong>-mappa og lag en <strong>Animator Override Controller</strong>: <code>Create &gt;
+Animator Override Controller</code>.</li>
+<li>Kall den <strong>HellephanAOC</strong>
+</li>
+<li><p>Gi <strong>EnemyAC</strong> til <strong>Controller</strong> egenskapen til høyre i <strong>inspector</strong>-en</p></li>
+<li><p>I <code>Models &gt; Characters</code> utvid <strong>Hellephant</strong> for å se på animasjonene</p></li>
+<li>Dra <strong>Idle</strong>, <strong>Move</strong>, og <strong>Death</strong> til de ledige feltene i <strong>HellephanAOC
+Override</strong>-tabellen</li>
+<li>Velg <strong>Hellephant</strong> i prefabs-mappa og gi <strong>HellephanAOC</strong> til dens <strong>Animator
+Controller</strong>. </li>
+</ul>
+
+<p>La oss få styr på de nye fiendene våre </p>
+
+<ul>
+<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den <strong>EnemyManager</strong>
+</li>
+<li>I <code>Script &gt; Managers</code> finner du <strong>EnemyManager</strong> scriptet og drar den over til
+<strong>EnemyManager</strong>
+</li>
+</ul>
+
+<p>La oss lage noen spawn points to zombiene våre </p>
+
+<ul>
+<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
+<strong>ZombunnySpawnPoint</strong>
+</li>
+<li>I inspectoren setter du <strong>Gizmo</strong>-en til <strong>ZombunnySpawnPoint</strong> til en fin
+blåfarge.</li>
+<li>Sett posisjonnen til <code>(-20.5, 0, 12.5)</code> </li>
+<li>Sett rotasjon til <code>(0,130,0)</code>
+</li>
+</ul>
+
+<p>La oss lage spawn points to zombears også</p>
+
+<ul>
+<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
+<strong>ZombearSpawnPoint</strong>
+</li>
+<li>Sett <strong>Gizmo</strong>-en til <strong>ZombearSpawnPoint</strong> rosa</li>
+<li>Sett posisjonen til <code>(22.5,0,15)</code>
+</li>
+<li>Sett rotasjon til <code>(0,240,0)</code>
+</li>
+</ul>
+
+<p>La oss lage spawn points to hellephants også</p>
+
+<ul>
+<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
+<strong>HellephantSpawnPoint</strong>
+</li>
+<li>Sett <strong>Gizmo</strong>-en til <strong>HellephantSpawnPoint</strong> gul</li>
+<li>Sett posisjonen til <code>(0,0,32)</code>
+</li>
+<li>Sett rotasjon til <code>(0,230,0)</code>
+</li>
+</ul>
+
+<p>La oss spawne noen fiender</p>
+
+<ul>
+<li>Velg <strong>EnemyManager</strong> i hierarkiet. I <strong>EnemyManager</strong> komponenten setter du
+<strong>Player</strong> til <strong>PlayerHealth</strong> variablen</li>
+<li>I prefabs-mappa drar du <strong>Zombunny</strong> inn som <strong>Enemy</strong> </li>
+<li>Dobbelsjekk at <strong>Spawn Time</strong> er satt til 3 sekunder, hvis ikke blir det
+kanskje litt for mange fiender! </li>
+<li>Dra inn <strong>ZombunnySpawnPoint</strong> fra hierarkiet til tittelen til
+<strong>SpawnPoints</strong>-arrayet </li>
+<li>Lagre og test spillet! </li>
+</ul>
+
+<p>Nå må vi få inn de andre fiendene våre også </p>
+
+<ul>
+<li>I <code>Scripts &gt; Managers</code>-mappa finner du <strong>EnemyManager</strong> scriptet og drar det
+inn i <strong>EnemyManager</strong> objektet 2 ganger til</li>
+<li>Sjekk at det er 3 <strong>EnemyManager</strong> spawner-komponenter i <strong>EnemyManager</strong>
+objektet</li>
+<li>Dra over <strong>Player</strong> objektet til <strong>PlayerHealth</strong> variablene til begge de nye
+<strong>EnemyManager</strong> komponentene. </li>
+<li>Fra <strong>Prefabs</strong>-mappa drar du <strong>Zombear</strong> til <strong>Enemy</strong>-feltet til den andre <strong>EnemyManager</strong> </li>
+<li>Fra <strong>Prefabs</strong>-mappa drar du <strong>Hellephant</strong> til <strong>Enemy</strong>-feltet til den tredje <strong>EnemyManager</strong> </li>
+<li>Dra inn <strong>ZombearSpawnPoint</strong> fra hierarkiet til tittelen til <strong>SpawnPoints</strong>
+arrayet til den andre <strong>EnemyManager</strong>
+</li>
+<li>Dra inn <strong>HellephantSpawnPoint</strong> fra hierarkiet til tittelen til <strong>SpawnPoints</strong>
+arrayet til den tredje <strong>EnemyManager</strong>
+</li>
+<li>I den tredje <strong>EnemyManager</strong> til <strong>Hellephant</strong>-en setter du <strong>Spawn Time</strong>
+til 10.</li>
+<li>Lagre og test spillet! </li>
+</ul>
+
+<h2>
+<a id="game-over" class="anchor" href="#game-over" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/game-over?playlist=17144">Game Over</a>
+</h2>
+
+<p>La oss legge inn et bilde som vises når spillet er over</p>
+
+<ul>
+<li>Høyreklikk på <strong>HUDCanvas</strong> og lag en <strong>UI &gt; Image</strong>
+</li>
+<li>Kall denne <strong>ScreenFader</strong>
+</li>
+<li>I <strong>Rect Transform</strong> klikk på <strong>Anchor Presets</strong> og <strong>Alt-klikk</strong> på <strong>Stratch
+both</strong>.
+:make</li>
+<li><p>I <strong>Image</strong> komponenten klikker du på <strong>Color</strong> og velger en lys blåfarge</p></li>
+<li><p>Høyreklikk på <strong>HUDCanvas</strong> og lag en <strong>UI &gt; Text</strong></p></li>
+<li>Kall denne <strong>GameOverText</strong>
+</li>
+<li>I <strong>Rect Transform</strong> klikker du på <strong>Anchor Presets</strong> og <strong>Alt-klikk</strong> på
+<strong>Middle center</strong>
+</li>
+<li><p>Sett <code>width</code> til <strong>300</strong> og <code>height</code> til <strong>50</strong></p></li>
+<li><p>I <strong>Text</strong>-komponenten setter du teksten til å være <strong>'Game Over!'</strong></p></li>
+<li>Bytt <strong>skrifttype</strong> til <strong>Luckiest Guy</strong>
+</li>
+<li>Sett <strong>skriftstørrelse</strong> til <strong>50</strong> og <strong>Alignment</strong> til <strong>Middle</strong> og <strong>Center</strong>
+</li>
+<li>Sett <strong>sktiftfarge</strong> til hvit </li>
+<li><p>Legg til en <strong>Shadow</strong> komponent: <strong>Add component</strong> og søk etter <strong>Shadow</strong>. </p></li>
+<li><p>Stokk om i hierarkiet slik at det som ligger under HUDCanvas ser slik ut: </p></li>
+</ul>
+
+<pre><code>HUDCanvas
+- HealthUI
+- DamageImage
+- ScreenFader
+- GameOverText
+- ScoreText
+</code></pre>
+
+<ul>
+<li>Velg <strong>ScreenFader</strong> fra i hierarkiet</li>
+<li>I <strong>Image</strong> komponenten setter du <strong>Color</strong> sin <strong>alpha</strong>-verdi til 0</li>
+<li><p>Velg <strong>GameOverText</strong> i hierarkiet og sett <strong>Color</strong> sin <strong>alpha</strong>-verdi til 0</p></li>
+<li><p>Velg <strong>HUDCanvas</strong> i hierarkiet</p></li>
+<li>Gå til <strong>Window &gt; Animation</strong> og klikk på <strong>Add Curve</strong>
+</li>
+<li><p>I <strong>Create Animation</strong> vinduet velger du <strong>Animation</strong>-mappa som destinasjon
+og kall den <strong>GameOverClip</strong>. (Unity lager en <strong>Animator Controller</strong> også,
+men den trenger du ikke bry deg om nå)</p></li>
+<li><p>Lag <strong>Curve</strong> til <strong>GameOverText &gt; Text &gt; Color</strong></p></li>
+<li>Lag <strong>Curve</strong> til <strong>GameOverText &gt; RectTransform &gt; Scale</strong> </li>
+<li>Lag <strong>Curve</strong> til <strong>ScreenFader &gt; Image &gt; Color</strong>
+</li>
+<li>Lag <strong>Curve</strong> til <strong>ScoreText &gt; RectTransform &gt; Scale</strong> </li>
+<li><p>Velg og flytt alle <strong>end keyframes</strong> til <strong>0:30</strong> </p></li>
+<li><p>Flytt markøren i tidslinja til <strong>0:20</strong>, velg <strong>GameOverText &gt; RectTransform &gt; Scale</strong> og trykk <strong>K</strong> for å lage en <strong>keyframe</strong>. </p></li>
+<li>Gå til frame <strong>0</strong> og velg <strong>GameOverText &gt; RectTransform &gt; Scale</strong> og sett verdiene til <strong>0</strong>. </li>
+<li><p>Flytt markøren i tidslinja til <strong>0:20</strong> og sett <strong>GameOverText &gt; RectTransform &gt; Scale</strong> verdiene til <strong>1.2</strong></p></li>
+<li><p>Flytt markøren til <strong>0:30</strong> og sett: <strong>GameOverText &gt; Text &gt; Color &gt; Alpha</strong> til <strong>1</strong>, <strong>ScreenFader &gt; Image &gt; Color &gt; Alpha</strong> til <strong>1</strong>, <strong>Score Text &gt; RectTransform &gt; Scale</strong> til <strong>0.8</strong></p></li>
+<li><p>Velg alle <strong>Keyframes</strong> og flytt dem slik at de starter på <strong>1:30</strong> (frame 90) og disable <strong>Record</strong> mode </p></li>
+<li><p>I <strong>Project</strong> panelet åpner du <strong>Animation</strong> mappa og velger <strong>GameOverClip</strong>, klikk bort <strong>Loop time</strong></p></li>
+<li>Velg nå <strong>HUDCanvas</strong> og dobbel klikk på den for å åpne den i <strong>Animator</strong>-vinduet</li>
+<li>I <strong>Animator</strong>-vinduet høyreklikker du og velger <strong>Create State &gt; Empty</strong> og kall den <strong>Empty</strong>
+</li>
+<li>Høyreklikk på <strong>Empty state</strong> og <strong>Create Transition</strong> til <strong>GameoverClip</strong>-staten ved å velge den</li>
+<li><p>Lag en ny <strong>Animator Trigger</strong>-parameter <strong>GameOver</strong></p></li>
+<li><p>Høyreklikk på <strong>Empty</strong>-staten og velg <strong>Set as Default</strong></p></li>
+<li>Velg overgangen fra <strong>Empty</strong> til <strong>GameOverClip</strong> og sett <strong>Condition</strong> til <strong>GameOver</strong> </li>
+<li><p>Velg <strong>HUDCanvas</strong> fra hierarkiet og dra inn <strong>GameOverManager</strong> fra <strong>Scripts &gt; Managers</strong> mappa til <strong>HUDCanvas</strong>. </p></li>
+<li><p>Dra inn <strong>Player</strong> fra hierarkiet til <strong>Player Health</strong> variabelen til <strong>GameOverManager</strong> script-komponenten</p></li>
+<li>
+<strong>File &gt; Save Scene</strong> og <strong>File &gt; Save Project</strong>
+</li>
+</ul>
+
+<h2>
+<a id="spill-spillet-ditt" class="anchor" href="#spill-spillet-ditt" aria-hidden="true"><span class="octicon octicon-link"></span></a>SPILL SPILLET DITT!</h2>
+
+<h3>
+<a id="bonus-lek-rundt-med-forskjellige-variabler-for-åendre-på-spawn-tidere-og-hastighet" class="anchor" href="#bonus-lek-rundt-med-forskjellige-variabler-for-%C3%A5endre-p%C3%A5-spawn-tidere-og-hastighet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bonus: Lek rundt med forskjellige variabler for å endre på spawn tidere og hastighet.</h3>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
 
