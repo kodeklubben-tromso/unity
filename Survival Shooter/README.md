@@ -678,10 +678,9 @@ HUDCanvas
   og kall den **GameOverClip**. (Unity lager en **Animator Controller** også,
   men den trenger du ikke bry deg om nå)
 
-
-- Lag **Curve** til **GameOverText > Text > Color **
+- Lag **Curve** til **GameOverText > Text > Color**
 - Lag **Curve** til **GameOverText > RectTransform > Scale** 
-- Lag **Curve** til **ScreenFader > Image > Color **
+- Lag **Curve** til **ScreenFader > Image > Color**
 - Lag **Curve** til **ScoreText > RectTransform > Scale** 
 - Velg og flytt alle **end keyframes** til **0:30** 
 
@@ -725,4 +724,6 @@ HUDCanvas
 - **File > Save Scene** og **File > Save Project**
 
 ## SPILL SPILLET DITT! 
+
+### Bonus: Lek rundt med forskjellige variabler for å endre på spawn tidere og hastighet. 
 
