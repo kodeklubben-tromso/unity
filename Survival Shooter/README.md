@@ -468,3 +468,261 @@ public class EnemyAttack : MonoBehaviour
 - Legg til scriptet ovenfor i scriptfilen.
 - Gå så tilbake til unity å lagre prosjektet ditt.
 
+## [Harming enemies](http://unity3d.com/learn/tutorials/projects/survival-shooter/harming-enemies?playlist=17144) 
+
+Nå skal vi gjøre det mulig å skade fiendene! 
+
+- I `Scripts -> Enemy`-mappa finner du `EnemyHealth` scriptet. Dra og slipp det
+  på **Zombunny** i hierarkiet 
+- I `Enemy Health` script componenten gir du `Zombunny death`-lydklippet til
+  `Death Clip` variabelen: 
+- Åpne `EnemyHealth` scriptet og ta en titt på variablene. Her finner dere
+  variabler for hvor mye liv fienden har, om den er død eller levende, om den
+  synker gjennom gulvet osv. Om du vil ha en god gjennomgang av scriptet kan du
+  se [denne](https://youtu.be/l86gpYbQFzY?t=1m). 
+
+Nå skal vi få til litt skyting! 
+
+- I `Project > Prefabs` trykk på GunParticles
+- Klikk på tannhjulet til høyre og velg `Copy Component`
+- Utvid **Player** game objektet i hierarkiet og velg **GunBarrelEnd**
+- Klikk på tannhjulet og velg **Paste Component as New**
+- Lukk den nye **Particle System** componenten og med **GunBarrelEnd** fortsatt
+  valgt legger du til en **Line Renderer**-komponent: `Add Component > Effects >
+  Line Renderer`. 
+- Utvid **Materials**-området og bruk sirkelen til å velge **LineRenderMaterial**. 
+- Utvid parametrene til **Line Renderer** og sett **Line Renderer** sin **Start
+  Width** og **End Width** til **0.05**. 
+- Skru av **Line Renderer** komponenten ved å trkke bort krysset i boksen
+
+Nå trenger vi å lage litt lys som lyser opp når spilleren skyter 
+
+- La oss lage et lys, `Add Component > Rendering > Light`.
+- Velg en gulfarge gra **Color blick / Picker**
+- Skru av **Light**-komponenten ved å krysse den ut
+- Legg til en ny **Audio Source** komponent: `Add Component > Audio > Audio
+  Source` og velg **Player Gunshot** som lydklipp
+- Klikk bort **Play On Awake** for denne lydkilden 
+- I `Project > Scripts > Player`-mappa gi **PlayerShooting** til
+  **GunBarrelEnd** i hierarkiet
+- Velg **Player** i hierarkiet og klikk på **Apply** på toppen av Inspector-en
+  for å oppdatere **Prefab**-en vår. 
+
+La oss teste at alt fungerer bra! 
+
+- Lagre scenen og trykk Play! 
+- Om du får noen feil åpne opp **EnemyMovement**-scriptet i `Scripts > Enemy`
+    og ta bort alle `//` i scriptet og lagre scriptet 
+- Det kan også være noe i **PlayerHealth** så åpne det også og fjern alle `//`.
+
+
+## [Scoring Points](http://unity3d.com/learn/tutorials/projects/survival-shooter/scoring-points?playlist=17144)
+Nå skal vi gi spilleren poeng for å skyte zombunnies og oppdatere denne for hver
+gang han skyter en! 
+
+- Velg **HUDCanvas** i hierarkiet og høyreklikk for å lage et nytt **Tekst**
+objekt. `UI > Text`. Husk at den må ligge i **HUDCanvas** i
+Hierarkiet. 
+- Kall dette objektet **ScoreTet**
+- Sett **Anchor position** i **RectTransform** til **Top Center**. 
+- Sett `x` posisjon til **0** og `y` posisjon til **-55**.
+- Endre `width` til **300** og `height` til **50**
+- I **Text** komponenten setter du teksten til **"Score: "**. Denne vil vi endre
+  på etterhvert til å vise hvor mange poeng spilleren har
+- Sett **Font size** til **50** for litt større skrift
+- Sett **Alignments** til **Center** og **Middle**
+- Endre skriftfargen til hvit ved å klikke på **color**-blokka 
+
+Nå skal vi legge litt skygge til teksten.
+
+- Trykk på **Add Component**, søk etter **Shadow** og legg den til. Velg
+  **Effect Distance** til `(2, -2)`. 
+- I `Scripts > Managers` finn fram **ScoreManager**-scriptet og dra den over
+  **ScoreText**-spillobjektet. 
+
+Nå skal vi oppdatere **EnemyHealth**-scriptet
+
+- Velg **Zombunny** i hierarkie, finn **EnemyHealth** scirptet og åpne det. 
+- Fjern `//` på linje 77
+- Lagre den og trykk **Play** i unity for å teste prosjektet! 
+
+For å få flere fiende lagrer vi **Zombunny** som en prefab: 
+
+- Dra **Zombunny** inn i **Prefabs**-mappa
+- Fjern **Zombunny** fra hierarkiet og lagre scenen
+
+
+## [More Enemies](http://unity3d.com/learn/tutorials/projects/survival-shooter/more-enemies?playlist=17144)
+La oss lage en **Zombear**! 
+
+- I prefabs-mappa velger du **ZomBear**
+- Åpne **Zombear** sin **Animator** og fra prosjektet drar du inn **EnemyAC**
+  fra **Animation**-mappa. Denne skal dras over til **Animator controller**
+
+Nå kommer en **Hellephant**
+
+- I **prefabs**-mappa velger du **Hellephant**, 
+- Velg **Animation**-mappa og lag en **Animator Override Controller**: `Create >
+  Animator Override Controller`.
+- Kall den **HellephanAOC**
+- Gi **EnemyAC** til **Controller** egenskapen til høyre i **inspector**-en
+
+
+- I `Models > Characters` utvid **Hellephant** for å se på animasjonene
+- Dra **Idle**, **Move**, og **Death** til de ledige feltene i **HellephanAOC
+  Override**-tabellen
+- Velg **Hellephant** i prefabs-mappa og gi **HellephanAOC** til dens **Animator
+  Controller**. 
+
+La oss få styr på de nye fiendene våre 
+- Lag et tomt objekt: `GameObject > Create Empty` og kall den **EnemyManager**
+- I `Script > Managers` finner du **EnemyManager** scriptet og drar den over til
+  **EnemyManager**
+
+La oss lage noen spawn points to zombiene våre 
+- Lag et tomt objekt: `GameObject > Create Empty` og kall den
+  **ZombunnySpawnPoint**
+- I inspectoren setter du **Gizmo**-en til **ZombunnySpawnPoint** til en fin
+  blåfarge.
+- Sett posisjonnen til `(-20.5, 0, 12.5)` 
+- Sett rotasjon til `(0,130,0)`
+
+La oss lage spawn points to zombears også
+
+- Lag et tomt objekt: `GameObject > Create Empty` og kall den
+  **ZombearSpawnPoint**
+- Sett **Gizmo**-en til **ZombearSpawnPoint** rosa
+- Sett posisjonen til `(22.5,0,15)`
+- Sett rotasjon til `(0,240,0)`
+
+
+La oss lage spawn points to hellephants også
+
+- Lag et tomt objekt: `GameObject > Create Empty` og kall den
+  **HellephantSpawnPoint**
+- Sett **Gizmo**-en til **HellephantSpawnPoint** gul
+- Sett posisjonen til `(0,0,32)`
+- Sett rotasjon til `(0,230,0)`
+
+La oss spawne noen fiender
+
+- Velg **EnemyManager** i hierarkiet. I **EnemyManager** komponenten setter du
+  **Player** til **PlayerHealth** variablen
+- I prefabs-mappa drar du **Zombunny** inn som **Enemy** 
+- Dobbelsjekk at **Spawn Time** er satt til 3 sekunder, hvis ikke blir det
+  kanskje litt for mange fiender! 
+- Dra inn **ZombunnySpawnPoint** fra hierarkiet til tittelen til
+  **SpawnPoints**-arrayet 
+- Lagre og test spillet! 
+
+Nå må vi få inn de andre fiendene våre også 
+- I `Scripts > Managers`-mappa finner du **EnemyManager** scriptet og drar det
+  inn i **EnemyManager** objektet 2 ganger til
+- Sjekk at det er 3 **EnemyManager** spawner-komponenter i **EnemyManager**
+  objektet
+- Dra over **Player** objektet til **PlayerHealth** variablene til begge de nye
+  **EnemyManager** komponentene. 
+- Fra **Prefabs**-mappa drar du **Zombear** til **Enemy**-feltet til den andre **EnemyManager** 
+- Fra **Prefabs**-mappa drar du **Hellephant** til **Enemy**-feltet til den tredje **EnemyManager** 
+- Dra inn **ZombearSpawnPoint** fra hierarkiet til tittelen til **SpawnPoints**
+  arrayet til den andre **EnemyManager**
+- Dra inn **HellephantSpawnPoint** fra hierarkiet til tittelen til **SpawnPoints**
+  arrayet til den tredje **EnemyManager**
+- I den tredje **EnemyManager** til **Hellephant**-en setter du **Spawn Time**
+  til 10.
+- Lagre og test spillet! 
+
+## [Game Over](http://unity3d.com/learn/tutorials/projects/survival-shooter/game-over?playlist=17144)
+La oss legge inn et bilde som vises når spillet er over
+
+
+- Høyreklikk på **HUDCanvas** og lag en **UI > Image**
+- Kall denne **ScreenFader**
+- I **Rect Transform** klikk på **Anchor Presets** og **Alt-klikk** på **Stratch
+  both**.
+:make
+- I **Image** komponenten klikker du på **Color** og velger en lys blåfarge
+
+- Høyreklikk på **HUDCanvas** og lag en **UI > Text**
+- Kall denne **GameOverText**
+- I **Rect Transform** klikker du på **Anchor Presets** og **Alt-klikk** på
+  **Middle center**
+- Sett `width` til **300** og `height` til **50**
+
+- I **Text**-komponenten setter du teksten til å være **'Game Over!'**
+- Bytt **skrifttype** til **Luckiest Guy**
+- Sett **skriftstørrelse** til **50** og **Alignment** til **Middle** og **Center**
+- Sett **sktiftfarge** til hvit 
+- Legg til en **Shadow** komponent: **Add component** og søk etter **Shadow**. 
+
+- Stokk om i hierarkiet slik at det som ligger under HUDCanvas ser slik ut: 
+
+```
+HUDCanvas
+- HealthUI
+- DamageImage
+- ScreenFader
+- GameOverText
+- ScoreText
+```
+
+- Velg **ScreenFader** fra i hierarkiet
+- I **Image** komponenten setter du **Color** sin **alpha**-verdi til 0
+- Velg **GameOverText** i hierarkiet og sett **Color** sin **alpha**-verdi til 0
+
+
+
+- Velg **HUDCanvas** i hierarkiet
+- Gå til **Window > Animation** og klikk på **Add Curve**
+- I **Create Animation** vinduet velger du **Animation**-mappa som destinasjon
+  og kall den **GameOverClip**. (Unity lager en **Animator Controller** også,
+  men den trenger du ikke bry deg om nå)
+
+
+- Lag **Curve** til **GameOverText > Text > Color **
+- Lag **Curve** til **GameOverText > RectTransform > Scale** 
+- Lag **Curve** til **ScreenFader > Image > Color **
+- Lag **Curve** til **ScoreText > RectTransform > Scale** 
+- Velg og flytt alle **end keyframes** til **0:30** 
+
+
+- Flytt markøren i tidslinja til **0:20**, velg **GameOverText > RectTransform >
+  Scale** og trykk **K** for å lage en **keyframe**. 
+- Gå til frame **0** og velg **GameOverText > RectTransform > Scale** og sett
+  verdiene til **0**. 
+- Flytt markøren i tidslinja til **0:20** og sett **GameOverText > RectTransform
+  > Scale** verdiene til **1.2**
+
+- Flytt markøren til **0:30** og sett 
+    - **GameOverText > Text > Color > Alpha** til **1**
+    - **ScreenFader > Image > Color > Alpha** til **1**
+    - **Score Text > RectTransform > Scale ** til **0.8**
+- Velg alle **Keyframes** og flytt dem slik at de starter på **1:30** (frame 90)
+  og disable **Record** mode 
+
+
+
+- I **Project** panelet åpner du **Animation** mappa og velger **GameOverClip**,
+  klikk bort **Loop time**
+- Velg nå **HUDCanvas** og dobbel klikk på den for å åpne den i
+  **Animator**-vinduet
+- I **Animator**-vinduet høyreklikker du og velger **Create State > Empty** og
+  kall den **Empty**
+- Høyreklikk på **Empty state** og **Create Transition** til
+  **GameoverClip**-staten ved å velge den
+- Lag en ny **Animator Trigger**-parameter **GameOver**
+
+
+
+- Høyreklikk på **Empty**-staten og velg **Set as Default**
+- Velg overgangen fra **Empty** til **GameOverClip** og sett **Condition** til
+  **GameOver** 
+- Velg **HUDCanvas** fra hierarkiet og dra inn **GameOverManager** fra **Scripts
+  > Managers** mappa til **HUDCanvas**. 
+
+- Dra inn **Player** fra hierarkiet til **Player Health** variabelen til
+  **GameOverManager** script-komponenten
+- **File > Save Scene** og **File > Save Project**
+
+## SPILL SPILLET DITT! 
+
