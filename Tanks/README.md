@@ -10,11 +10,11 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
 - Slett lyskilden som heter `Directional Light` i hierarkiet fra scenen.
 - Dra `Prefaben` som heter **Level Art** inn i hierarkiet. Denne ligger i mappen `Prefabs` i prosjektet:
 
-![Alt text](/Pictures/levelart.png)
+![ScreenShot](Pictures/levelart.png)
 
 - Fra `Window` menyen, åpne `Lighting` panelet. På dette panelet så skrur vi av **Auto** helt nederst på vinduet og **Baked GI**. Under **Precomputed Realtime GI** så setter vi `Realtime Resolution` til 0.5:
 
-![Alt text](/Pictures/bakedgi.png)
+![ScreenShot](Pictures/bakedgi.png)
 
 - Under **Environment Lighting** forandre `Ambient Source` fra `Skybox` til `Color` og bytt fargen til RGB verdiene (72,62,113).
 - Klikk Build nederst på Panelet.
@@ -26,7 +26,7 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
 - Forandre `Background` farge til RGB (80,60,50)
 - Lagre Scenen din.
 
-![Alt text](/Pictures/camerasetup.png)
+![ScreenShot](Pictures/camerasetup.png)
 
 ## Miniquiz
 
