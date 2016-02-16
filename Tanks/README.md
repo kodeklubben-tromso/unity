@@ -74,6 +74,7 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
 - I scriptet så har vi noen ferdiglagde funksjoner, disse er kommentert ut, så vi må fjerne kommentar tegnene `/* */`
 - Koden for scriptet ligger under, men vi vil gjerne tenke oss frem til hva vi vil gjøre først.
 
+
 ```
 
  	private void Update ()
@@ -145,10 +146,23 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
     }
 ```
 
-
+# Miniquiz
 
 ### Hva er en Prefab?
 1. En Unity pakke for Grafikk
 2. Et ferdiglagd objekt som vi kan bruke i Unity
 3. Et bilde
 4. En ny smarttelefon
+
+### Hva er en variabel?
+1. Et navn som holder en verdi i programmet vårt
+2. Et program som varierer i hvor bra det er
+3. En ukjent verdi som vi ikke kan se på
+4. Et program som gir varierende resultat
+
+
+### Hva betyr public i Unity?
+1. Public betyr at noe kan nåes overalt i programmet vårt
+2. Public betyr at det ligger ute på nett
+3. Public betyr at noe er lagd i all offentlighet
+4. Public betyr ingenting i Unity
