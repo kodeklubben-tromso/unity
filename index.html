@@ -20,1315 +20,190 @@
 
     <section class="main-content">
       <h1>
-<a id="unity" class="anchor" href="#unity" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unity</h1>
+<a id="tanks" class="anchor" href="#tanks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tanks</h1>
 
-<p>Kodeklubben Tromsø sitt Unity-kurs. Dette kurset holder vi høsten 2015 og kommer
-til å bli oppdatert etterhvert som vi lager oppgaver. </p>
+<p>Denne oppgaven tar utgangspunkt i <a href="http://unity3d.com/learn/tutorials/projects/tanks-tutorial">dette</a> prosjektet på Unity sine sider.</p>
+
+<p>Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kalle hva man selv vil, vi kommer til å kalle det for Tanks i denne tutorialen. Når vi har åpnet Unity så må vi laste ned alle prosjekt filene, dette gjør vi ved å velge <strong>Window</strong> oppe på verktøylinjen og velger <strong>Asset Store</strong>. Inne i <strong>Asset Store</strong> så søker vi på <strong>Tanks Tutorial</strong>. Når vi har funnet prosjektet så klikker vi på Download og Import etter nedlastingen er ferdig.</p>
+
+<h2>
+<a id="1-sette-opp-prosjektet" class="anchor" href="#1-sette-opp-prosjektet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1 Sette Opp Prosjektet</h2>
+
+<ul>
+<li>Velg <code>File -&gt; New Scene</code> oppe på verktøylinjen for å lage en ny Scene, lagre den nye scenen som <code>Main</code> i <code>Scenes</code> mappen.</li>
+<li>Slett lyskilden som heter <code>Directional Light</code> i hierarkiet fra scenen.</li>
+<li>Dra <code>Prefaben</code> som heter <strong>Level Art</strong> inn i hierarkiet. Denne ligger i mappen <code>Prefabs</code> i prosjektet:</li>
+</ul>
+
+<p><img src="Pictures/levelart.png" alt="ScreenShot"></p>
+
+<ul>
+<li>Fra <code>Window</code> menyen, åpne <code>Lighting</code> panelet. På dette panelet så skrur vi av <strong>Auto</strong> helt nederst på vinduet og <strong>Baked GI</strong>. Under <strong>Precomputed Realtime GI</strong> så setter vi <code>Realtime Resolution</code> til 0.5:</li>
+</ul>
+
+<p><img src="Pictures/bakedgi.png" alt="ScreenShot"></p>
+
+<ul>
+<li>Under <strong>Environment Lighting</strong> forandre <code>Ambient Source</code> fra <code>Skybox</code> til <code>Color</code> og bytt fargen til RGB verdiene (72,62,113).</li>
+<li>Klikk Build nederst på Panelet.</li>
+<li>Lukk <code>Lighting</code> panelet, eller klikk på <code>Inspector</code> panelet.</li>
+<li>Velg <code>Main Camera</code> fra hierarkiet og bytt posisjon til (-43,42,-25)</li>
+<li>Bytt rotasjon til (40,60,0)</li>
+<li>Forandre kameraet sin <code>Projection</code> til <code>Ortographic</code>
+</li>
+<li>Forandre kameraet sin <code>Clear Flags</code> fra <code>Skybox</code> til <code>Solid Color</code>.</li>
+<li>Forandre <code>Background</code> farge til RGB (80,60,50)</li>
+<li>Lagre Scenen din.</li>
+</ul>
+
+<p><img src="Pictures/camerasetup.png" alt="ScreenShot"></p>
 
 <h1>
-<a id="uke-1" class="anchor" href="#uke-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Uke 1</h1>
-
-<p>Denne uka startet vi med å få opp Unity-editoren og få en kube til å snurre
-rundt og ramle i bakken. Her har dere noen nyttige lenker dere kan se på:</p>
-
-<ul>
-<li><a href="https://github.com/kodeklubben-tromso/unity/raw/master/spinning-cube/Kodeklubben1.pdf">Mortens presentasjon</a></li>
-<li>
-<a href="https://unity3d.com/learn/tutorials/modules/beginner/editor/interface-overview?playlist=17090">Introduksjon til Unity Editoren</a> </li>
-<li>
-<a href="https://unity3d.com/learn/tutorials/modules/beginner/scripting/variables-and-functions?playlist=17117">Hva er variabler og funksjoner</a> </li>
-<li>
-<a href="http://unity3d.com/learn/tutorials/modules/beginner/scripting/assignments/spinning-cube">Snurrende kube</a> </li>
-</ul>
-
-<h1>
-<a id="roll-a-ball" class="anchor" href="#roll-a-ball" aria-hidden="true"><span class="octicon octicon-link"></span></a>Roll-A-Ball</h1>
-
-<p>Denne uka skal vi lage vårt første spill! Spillet går ut på å være en ball og
-samle inn kuber for å få poeng. Spiller er over når man har samlet inn alle
-kubene. </p>
-
-<p>Denne oppgaven tar utgangspunkt i <a href="http://unity3d.com/learn/tutorials/projects/roll-ball-tutorial">Roll-a-Ball på Unity sine sider.</a> tutorialen
-Her finner dere også en video som beskriver alle stegene
-nedenfor.</p>
-
-<h1>
-<a id="1-omgivelser-og-spilleren" class="anchor" href="#1-omgivelser-og-spilleren" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 Omgivelser og spilleren</h1>
-
-<h2>
-<a id="introduksjon" class="anchor" href="#introduksjon" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/introduction?playlist=17141">Introduksjon</a>
-</h2>
-
-<p>Se et bilde nedenfor for å se hvordan det ser ut når man er ferdig! I
-denne oppgaven lærer vi litt enkel fysikk, hvordan vi kan flytter spillobjekter
-med tastaturet, og kollisjon mellom objekter. 
-b
-<img src="https://raw.githubusercontent.com/kodeklubben-tromso/unity/master/Roll-A-Ball/skjermbilde.png" alt="Skjermbilde"></p>
-
-<h2>
-<a id="oppsett-av-spillet" class="anchor" href="#oppsett-av-spillet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/set-up?playlist=17141">Oppsett av spillet</a>
-</h2>
-
-<ul>
-<li>Start med å lage et nytt 3D prosjekt.</li>
-<li>Lagre scenen, <code>file -&gt; save scene</code>, legg den i en ny mappe <code>Assets/_Scenes</code> og
-kall den "Minigame"</li>
-<li>Lag brettet vi skal spille på. Dette er et 3D plan. Du finner den i hierakiet under <code>Create -&gt; 3D Objekt -&gt; Plane</code>. Kall dette objektet Ground. </li>
-<li>Tilbakestill posisjonen til planet ved å trykke på tannhjulet i
-Transform-komponenten. Dette flytter planet til (0,0,0).</li>
-<li>Skru av Grid-lines på Scenen. Dette finner du under <code>Gizmos -&gt; Show Grid</code>. </li>
-<li>Lag bakken litt større. Dette kan du gjøre med å dra på pilene eller skrive
-det manuelt inn på høyresida. Vi setter Scale til 2 på x, 1 på y og 2 på z. </li>
-<li>Lag en spiller! Fra hirearkiet <code>Create -&gt; 3D Object -&gt; Sphere</code> og gi den
-navnet Player. Tilbakestill posisjonen på samme måte som vi gjorde med planet. </li>
-<li>Flytt ballen opp 0.5 enhet slik at vi får den til å ligge på planet. Husk at
-ballen
-er 1 høy og 1 brei. Husk at det er y-posisjonen vi endrer med 0.5. </li>
-<li>La oss bytte farge på bakken. Vi lager en ny mappe i Assets-mappa vår og gir
-den navnet Materials. Velg denne mappa og lag et nytt material og kall den
-<code>Background</code>. Endre farge ved å trykke på den hvite boksen til høyre for
-<code>Albedo</code>-feltet og velg en fin blåfarge. Vi kan bruke RGB-verdien (0,32,64). </li>
-<li>Dra Background-material-et ved å drege det på bakken.</li>
-<li>For å få litt bedre lys i spillet kan vi endre rotasjonen på lyset i
-hierarkiet vårt. Endre rotasjon på y-aksen til 60. </li>
-</ul>
-
-<h2>
-<a id="bevege-spilleren" class="anchor" href="#bevege-spilleren" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/moving-the-player?playlist=17141">Bevege spilleren</a>
-</h2>
-
-<ul>
-<li>Siden vi vil at ballen skal rulle rundt på banen, kollidere i vegger, og treffe
-forskjellige objekter for å samle poeng trenger vi litt fysikk. Dette får vi
-ved å legge til en Rigidbody-komponent til Player-objektet. Trykk på "Add
-Component" når du har valgt spilleren og velg <code>Physics -&gt; Rigidbody</code>.</li>
-<li>Lag en ny mappe <code>Assets/Scripts</code> og et nytt C#-script som vi kaller
-PlayerController. Koden vi skal legge inn der er det best å skrive selv.
-Siden noen av dere jobber hjemmefra legger vi inn hele kodesnutten under. Ikke kopier
-den, men skriv inn alle linjene! </li>
-</ul>
-
-<p>PlayerController.cs: </p>
-
-<pre><code>
-using UnityEngine;
-using System.Collections;
-
-public class PlayerController : MonoBehaviour {
-
-    public float speed = 10.0f;
-
-    private Rigidbody rb;
-
-    void Start ()
-    {
-        rb = GetComponent&lt;Rigidbody&gt;();
-    }
-
-    void FixedUpdate ()
-    {
-        float moveHorizontal = Input.GetAxis ("Horizontal");
-        float moveVertical = Input.GetAxis ("Vertical");
-
-        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce (movement * speed);
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Siden vi vil at scriptet må vi dra det inn på Player-objektet. </li>
-<li>Start spillet og test at alt fungerer! </li>
-</ul>
-
-<h1>
-<a id="2-kamera-og-spilleområde" class="anchor" href="#2-kamera-og-spilleomr%C3%A5de" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Kamera og spilleområde</h1>
-
-<h2>
-<a id="-flytte-kameraet" class="anchor" href="#-flytte-kameraet" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/moving-the-camera?playlist=17141"> Flytte kameraet</a>
-</h2>
-
-<ul>
-<li>Først flytt opp kameraet 10 enheter (på y-aksen) og vipp det ned med 45
-grader (x-aksen). </li>
-<li>Flytt kameraet til et "barn" av Player-objektet, dette vil gjøre at kameraet
-følger etter spilleren. (et barn er bare et programmeringsbegrep som sier noe om at noe 
-er under noe annet, f.eks en undermappe. Du gjør kameraet til et "barn" av Player-objektet
-ved å dra det og slippe det på Player-objektet i hierarkiet). Se at kameraet (nesten) flytter seg med spilleren. </li>
-<li>Test spillet og se hva som skjer. </li>
-<li>Siden ikke alt gikk etter planen må vi lage et script for å flytte kameraet.
-Flytt kameraet tilbake ut av Player-objektet slik at det ikke snurrer rundt
-lengre. </li>
-<li>Lag et nytt C#-script som du kaller CameraController og legg til koden: </li>
-</ul>
-
-<pre><code>
-using UnityEngine;
-using System.Collections;
-
-public class CameraController : MonoBehaviour {
-
-    public GameObject player;
-
-    private Vector3 offset;
-
-    void Start ()
-    {
-        offset = transform.position - player.transform.position;
-    }
-
-    void LateUpdate ()
-    {
-        transform.position = player.transform.position + offset;
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Dra scriptet over til kameraet og med kameraet valgt dra Player-objektet til
-Player-referansen på høyresida. </li>
-<li>Test spillet og se at kameraet følger etter ballen. </li>
-</ul>
-
-<h2>
-<a id="sette-opp-spilleområdet" class="anchor" href="#sette-opp-spilleomr%C3%A5det" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/setting-up-the-play-area?playlist=17141">Sette opp spilleområdet</a>
-</h2>
-
-<ul>
-<li>La oss lage noen vegger! Lag et nytt tomt objekt som du kaller 'Walls'.
-<code>Create -&gt; Create Empty</code>. Dette blir en mappe for alle veggene. Tilbakestill
-posisjonen til Walls til (0,0,0).</li>
-<li>Lag første vegg. <code>Create -&gt; 3D Object -&gt; Cube</code> og tilbakestill posisjonen til
-denne. Sjekk at ballen havner oppi denne kuben. Legg denne som et barn av
-Walls og kall den 'West Wall'. </li>
-<li>Lag veggen lang og tynn. Under Scale setter vi 0.5, 2 og 20.5. </li>
-<li>Flytt veggen til siden ved å sette x til -10. </li>
-<li>Dupliser veggen vi har og kall den 'East Wall'. Endre x-posisjon til 10 og se
-at den kommer på plass. </li>
-<li>Dupliser 'East Wall' og kall den 'North Wall'. Tilbakestill posisjonen og sett
-scale til 20.5, 2, 0.5. Sett posisjon på z-aksen til 10 for å se at den kommer
-på riktig plass.</li>
-<li>Dipliser 'North Wall' og kall den 'South Wall'. Sett posisjon på z-aksen til
--10.</li>
-<li>Prøv spillet og se at alt blir som det skal!</li>
-</ul>
-
-<h1>
-<a id="3-samle-objekter-og-poeng" class="anchor" href="#3-samle-objekter-og-poeng" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 Samle objekter og poeng</h1>
-
-<h2>
-<a id="lag-objekter-vi-kan-samle-inn" class="anchor" href="#lag-objekter-vi-kan-samle-inn" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/creating-collectables?playlist=17141">Lag objekter vi kan samle inn</a>
-</h2>
-
-<ul>
-<li>Lag en kube vi kan samle inn. <code>Create -&gt; 3D Object -&gt; Cube</code> og kall den
-<code>Pick Up</code>.  Tilbakestill posisjonen og se at ballen havner inni denne kuben. </li>
-<li>Deaktiver Player-objektet</li>
-<li>Flytt opp kuben med 0.5 enheter og sett scale til 0.5 i alle aksene. La oss
-tippe den litt over. Endre rotasjon til 45 på alle aksene.<br>
-</li>
-<li>La oss få kuben til å snurre litt for å tiltrekke oppmerksomhet.</li>
-<li>Lag et nytt C# Script og kall det Rotator. Legg til koden: </li>
-</ul>
-
-<pre><code>
-using UnityEngine;
-using System.Collections;
-
-public class Rotator : MonoBehaviour {
-
-    void Update () 
-    {
-        transform.Rotate (new Vector3 (15, 30, 45) * Time.deltaTime);
-    }
-}
-
-</code></pre>
-
-<ul>
-<li> Start spillet og se at kuben snurrer rundt. Husk å legge til scriptet i
-Pick Up-objektet. </li>
-<li>Siden vi trenger mange av disse må vi gjøre Pick up-objektet om til en Prefab.
-En prefab er en slags skisse for hvordan et spillobjekt skal se ut og oppføre
-seg. </li>
-<li>Lag en ny mappe og kall den Prefabs. Dra Pick Up-objektet inn i denne mappa. </li>
-<li>Lag en nytt tomt objekt for å organisere objektene våre. Kall dette Pick Ups
-og legg Pick Up til her. </li>
-<li>Endre synsvinkel til rett over spillebrettet og lag 10 nye kuber ved å
-duplisere Pick Up objektet vi har. Legg de rundt om kring på brettet. </li>
-<li>Start spillet og se at alle snurrer.</li>
-<li>La oss endre fargen til kuben! Dupliser Background Material-et og kall det
-Pick up. velg en fin gulfarge under Albedo og dra den ned på Pick Up prefab-en.</li>
-<li>Start spillet og se at alle er gule og snurrer rundt! </li>
-</ul>
-
-<h2>
-<a id="samle-inn-objekter" class="anchor" href="#samle-inn-objekter" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/collecting-pick-up-objects?playlist=17141">Samle inn objekter</a>
-</h2>
-
-<ul>
-<li>Vis spilleren igjen.</li>
-<li>Se at Player-objektet har en Sphere Collider-komponent. Denne skal vi bruke
-til å sjekke kollisjon mot Pick Up objektene. </li>
-<li>Åple PlayerController-scriptet igjen og legg til funksjonen under i
-PlayerCoontroller-klassen: </li>
-</ul>
-
-<pre><code>void OnTriggerEnter(Collider other) 
-{
-    if (other.gameObject.CompareTag ("Pick Up"))
-    {
-        other.gameObject.SetActive (false);
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Velg Pick Up prefab-en og legg til en ny Tag vi kaller "Pick Up". Det er
-veldig viktig at den heter "Pick Up". Husk store bokstaver på P og U!</li>
-<li>Prøv spillet og se hva som skjer.</li>
-<li>For å hindre at Unity lager en kollisjon mellom ballen og kubene må vi krysse
-for "Is trigger?" på Box Collider-komponenten til Pick Up-prefaben. Dette gjør
-at Unity registrerer at de to objektene har kollidert, men den flytter
-ikke på noen av objektene. </li>
-<li>Test spillet og se at alt er som det skal! </li>
-<li>(BONUS) For å gjøre en liten optimisering kan vi legge til en Rigidbody-komponent til
-kubene. Prøv å spille spillet nå. Se at alle kubene faller gjennom gulvet.
-Dette er fordi vi har satt en Trigger-collider til kubene. Sett Is Kinematic
-for å fikse dette. Les mer om dette på <a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/collecting-pick-up-objects?playlist=17141">tutorialen</a>. </li>
-</ul>
-
-<h2>
-<a id="vis-poengscore" class="anchor" href="#vis-poengscore" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/displaying-text?playlist=17141">Vis poengscore</a>
-</h2>
-
-<ul>
-<li>Vi trenger noen variabler for å holde styr på hvor mange objekter vi har
-samlet inn. </li>
-<li>Åpne PlayerControlleren og endre det til å være som følger: </li>
-</ul>
-
-<pre><code>using UnityEngine;
-using UnityEngine.UI;
-
-public class PlayerController : MonoBehaviour {
-
-    public float speed;
-
-    private Rigidbody rb;
-    public int count;
-
-    void Start ()
-    {
-        rb = GetComponent&lt;Rigidbody&gt;();
-        count = 0;
-    }
-
-    void FixedUpdate ()
-    {
-        float moveHorizontal = Input.GetAxis ("Horizontal");
-        float moveVertical = Input.GetAxis ("Vertical");
-
-        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce (movement * speed);
-    }
-
-    void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.CompareTag ( "Pick Up"))
-        {
-            other.gameObject.SetActive (false);
-            count = count + 1;
-        }
-    }
-
-}
-</code></pre>
-
-<ul>
-<li>Sjekk at count endres når vi treffer kubene. </li>
-<li>Vi trenger noe på skjermen som viser poengene våre. Under hierarkiet, lag et
-nytt Text-objekt (<code>Create -&gt; UI -&gt; Text</code>). Gi objektet navnet "CountText". </li>
-<li>Endre farge på teksten til hvit og endre posisjon til (0,0,0). Storrelsen til
-CountText skal være 160 brei og 30 høy. Endre teksten som står der til Count
-Text. </li>
-<li>Flytt teksten øverst til vekstre. Trykk på firkanten inne i Rect Transform og
-velg "top left" mens du holder inne <code>shift</code> og <code>alt</code>.</li>
-<li>Endre Pos X og Pos Y til 10 og -10. </li>
-<li>Nå vil vi endre denne teksten med PlayerController-scriptet. Åpne det opp og
-endre det til: </li>
-</ul>
-
-<pre><code>using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-
-public class PlayerController : MonoBehaviour {
-
-    public float speed;
-    public Text countText;
-
-    private Rigidbody rb;
-    private int count;
-
-    void Start ()
-    {
-        rb = GetComponent&lt;Rigidbody&gt;();
-        count = 0;
-        SetCountText ();
-    }
-
-    void FixedUpdate ()
-    {
-        float moveHorizontal = Input.GetAxis ("Horizontal");
-        float moveVertical = Input.GetAxis ("Vertical");
-
-        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce (movement * speed);
-    }
-
-    void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.CompareTag ( "Pick Up"))
-        {
-            other.gameObject.SetActive (false);
-            count = count + 1;
-            SetCountText ();
-        }
-    }
-
-    void SetCountText ()
-    {
-        countText.text = "Count: " + count.ToString ();
-    }
-}
-</code></pre>
-
-<ul>
-<li>Dra inn CountText inn i Count Text-referansen til Player-objektet. </li>
-<li>Lagre og test spillet! </li>
-<li>Lag et nytt UI Text-ojekt og kall det Win Text. Lag teksten hvit, sett
-skriftstørrelse til 24 og sett den sentrert i midten. Sett teksten til å være
-Win Text og flytt den litt opp. Pos X skal være 0 og pos Y skal være 10. </li>
-<li>Lagre og gå tilbake til PlayerController-scriptet.</li>
-<li>Lag en ny variabel <code>winText</code>, initialiser den i <code>Start</code> og endre den i <code>SetCountText</code>.
-Når du har kodet ferdig skal det se slik ut: </li>
-</ul>
-
-<pre><code>
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-
-public class PlayerController : MonoBehaviour {
-
-    public float speed;
-    public Text countText;
-    public Text winText;
-
-    private Rigidbody rb;
-    private int count;
-
-    void Start ()
-    {
-        rb = GetComponent&lt;Rigidbody&gt;();
-        count = 0;
-        SetCountText ();
-        winText.text = "";
-    }
-
-    void FixedUpdate ()
-    {
-        float moveHorizontal = Input.GetAxis ("Horizontal");
-        float moveVertical = Input.GetAxis ("Vertical");
-
-        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce (movement * speed);
-    }
-
-    void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.CompareTag ( "Pick Up"))
-        {
-            other.gameObject.SetActive (false);
-            count = count + 1;
-            SetCountText ();
-        }
-    }
-
-    void SetCountText ()
-    {
-        countText.text = "Count: " + count.ToString ();
-        if (count &gt;= 12)
-        {
-            winText.text = "You Win!";
-        }
-    }
-}
-</code></pre>
-
-<ul>
-<li>Legg til en referanse i Player-objektet og prøv spillet!! 
-## <a href="http://unity3d.com/learn/tutorials/projects/roll-a-ball/building?playlist=17141">(Bonus) Bygg spillet</a> </li>
-</ul>
-
-<h1>
-<a id="survival-shooter" class="anchor" href="#survival-shooter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Survival Shooter</h1>
-
-<p>Denne oppgaven tar utgangspunkt i <a href="https://unity3d.com/learn/tutorials/projects/survival-shooter-project">denne</a> Survival shooter på Unity sine sider.</p>
-
-<p>Først må du laste ned et ferdig rammeverk for spillet <a href="https://www.assetstore.unity3d.com/en/#!/content/40756">her</a>.
-Inne på siden trykker du på "open in unity", da vil du komme i asset store i unity. Deretter finner du "Unity 5 Survival Shooter", trykker på den også på import for å laste inn prosjektet. </p>
-
-<h2>
-<a id="omgivelser" class="anchor" href="#omgivelser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Omgivelser</h2>
-
-<ul>
-<li>Velg <code>File -&gt; New Scene</code> for å lage en ny scene, lagre den som Level 01 i Scenes mappen.</li>
-<li>Finn frem Evironment under prefabs og dra den til Hierarchy.</li>
-<li>Pass på at den er på Posisjon (0,0,0).</li>
-<li>Gjør det samme for Lights under prefab.</li>
-<li>Lag et nytt Gameobject (<code>Create -&gt; 3D Object -&gt; Quad</code>) og kall det Floor</li>
-<li>Sett Position til (0,0,0), Rotation til (90,0,0) og Scale til (100,100,0)</li>
-<li>Gå i Floor objektet og deaktiver "Mesh Renderer".</li>
-<li>Sett Floor objectet til å bruke Floor som layer.</li>
-<li>Lag et nytt tomt objekt (<code>GameObject -&gt; Create Empty</code>).</li>
-<li>Kall det for BackgroundMusic.</li>
-<li>Klikk på <code>Add Component -&gt; Audio -&gt; Audio Source</code>.</li>
-<li>Der velger du bakgrunnsmusikken ved å trykke på sirkelen til høyre for Audio Clip så velger du Background Music.</li>
-<li>Huk av Loop under Audio Source og sett volumet til 0.1.</li>
-</ul>
-
-<h2>
-<a id="player-karakteren" class="anchor" href="#player-karakteren" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player karakteren</h2>
-
-<ul>
-<li>Finn Player modellen i <code>Models -&gt; Characters</code>, og dra den inn i Scenen.</li>
-<li>Sett posisjonen til (0,0,0) </li>
-<li>Sett tag i Player til Player</li>
-<li>Høyreklikk på Animation mappen og trykk create etterfulgt av "Animation Controller" og gi den navnet <code>PlayerAC</code>
-</li>
-<li>Dra så den nye Animasjons kontrolleren inn i Player</li>
-<li>Dobbelt-klikk på PlayerAC da vil du endre fra bilde fra Scene til Animator</li>
-<li>Finn så frem attributtene til <code>Models -&gt; Characters -&gt; Player</code> dra så blokkene Death, Idle og Move inn i Animator vinduet</li>
-<li>Høyreklikk på Idle modusen og velg "Set as Default"</li>
-<li>Under Parameters klikk på pluss tegnet og velg "bool", kall denne for IsWalking.</li>
-<li>Lag så et Trigger parameter kalt "Die"</li>
-<li>Høreklikk så på Moduset idle og velg Make Transition, for så å trykke på Move</li>
-<li>Trykk på pila som du lagde mellom Idle og Move, under Inspection og Condition legg til IsWalking og sett den til True</li>
-<li>Høyreklikk så på Move og lag en overgang til Idle, Der skal du gjøre det samme men IsWalking skal være false</li>
-<li>Lag en overgang fra 'Any state' til Death</li>
-<li>Sett så condition til overgangen til Die</li>
-<li>Legg til Rigidbody til Player (<code>Player-&gt;Add Component-&gt;Physics-&gt;Rigidbody</code>), så setter du Drag og Angular Drag til "Infinity".</li>
-<li>Under Rigidbody og Constraints, huk av Freeze position Y og Freeze Rotation X og Y</li>
-<li>Legg til En Capsule Collider Component til Playeren (Sett Center til (0.2,0.6,0) og høyde til 1.2)</li>
-<li>Nå skal vi legge til lyd når spilleren blir skadet, legg til komponent Audio Source, Under Audio Clip legg til lyden "Player Hurt" og deaktiver "Play On Awake"</li>
-<li>Finn PlayerMovement scriptet under <code>Scripts-&gt;Player</code> og dra det på Playeren.</li>
-<li>Nå skal vi kode litt, åpne scriptet PlayerMovement i editoren.</li>
-</ul>
-
-<pre><code>
-using UnityEngine;
-
-public class PlayerMovement : MonoBehaviour
-{
-    public float speed = 6f;
-
-    Vector3 movement;
-    Animator anim;
-    Rigidbody playerRigidbody;
-    int floorMask;
-    float camRayLength = 100f;
-
-    void Awake()
-    {
-        floorMask = LayerMask.GetMask("Floor");
-        anim = GetComponent&lt;Animator&gt;();
-        playerRigidbody = GetComponent&lt;Rigidbody&gt;();
-    }
-
-    void FixedUpdate ()
-    {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        Move(h,v);
-        Turning ();
-        Animating(h,v);
-    }
-
-    void Move (float h, float v)
-    {
-        movement.Set(h, 0f, v);
-        movement = movement.normalized * speed * Time.deltaTime;
-        playerRigidbody.MovePosition(transform.position + movement);
-   } 
-
-   void Turning ()
-    {
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit floorHit;
-
-       if (Physics.Raycast (camRay, out floorHit, camRayLength, floorMask))
-       {
-           Vector3 playerToMouse = floorHit.point - transform.position;
-           playerToMouse.y = 0f;
-
-           Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
-           playerRigidbody.MoveRotation(newRotation);
-       }
-
-
-    }
-
-    void Animating (float hideFlags, float v)
-    {
-        bool walking = hideFlags != 0f || v != 0f;
-        anim.SetBool("IsWalking", walking);
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Endre scriptet slik at det ser ut som det ovenfor</li>
-<li>Nå kan du prøve å lagre skripte å trykke Play!</li>
-<li>Når du skal stoppe det må du huske å stoppe play og ikke trykk på pause!</li>
-</ul>
-
-<h2>
-<a id="camera-opsett" class="anchor" href="#camera-opsett" aria-hidden="true"><span class="octicon octicon-link"></span></a>Camera Opsett</h2>
-
-<ul>
-<li>Velg Main Camera og sett posisjonen til (1, 15,-22) og rotasjon til (30,0,0) og endre Projection til <code>Orthographic</code>
-</li>
-<li>Sett Size under til 4.5 og sett Bakgrunnsfargen til svart</li>
-<li>Lag ett nytt script i Camera mappen som ligger inni Script mappen, kall det for <code>CameraFollow</code>
-</li>
-<li>Dra så CameraFollow scriptet over Main Camera, deretter åpne scriptet i en editor</li>
-</ul>
-
-<pre><code>
-using UnityEngine;
-using System.Collections;
-
-public class CameraFollow : MonoBehaviour {
-
-    public Transform target;
-    public float smoothing = 5f;
-
-    Vector3 offset;
-
-    void Start () {
-        offset = transform.position - target.position;
-    }
-
-    void FixedUpdate () {
-        Vector3 targetCamPos = target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Legg til Skriptet over i <code>CameraFollow</code>
-</li>
-<li>Lagre og gå tilbake til unity, her skal du dra Player objektet inn i 
-Target under CameraFollow scriptet i Main Camera objektet</li>
-<li>For å lagre Player dra den inn i Prefabs mappen, lagre og trykk Play!</li>
-</ul>
-
-<h2>
-<a id="fiende-nr-1" class="anchor" href="#fiende-nr-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fiende nr 1</h2>
-
-<ul>
-<li>Finn <strong>Zombunny</strong> modellen i <strong>Models&gt;Characters</strong> mappen i prosjektet.</li>
-<li>Dra modellen inn på scenen</li>
-<li>Finn <strong>HitParticles</strong> i <strong>Prefabs</strong> mappen, dra den på <strong>Zombunny</strong> i <strong>Hierarchy</strong>
-</li>
-<li>Velg <strong>Shootable</strong> layeret for dette objektet.</li>
-<li>Legg til rigidbody til objektet ved å gå på <strong>Add Component&gt;Physics&gt;Rigidbody</strong>
-</li>
-<li>Sett <strong>Drag</strong> og <strong>Angular Drag</strong> til <strong>Infinity</strong>
-</li>
-<li>I <strong>Constraints</strong> frys posisjon <strong>Y</strong> og rotasjon <strong>X</strong> og <strong>Y</strong>
-</li>
-<li>Så <strong>Add Component&gt;Physics&gt;Capsule Collider</strong>
-</li>
-<li>Sett <strong>Center Y</strong> til <strong>0.8</strong> og <strong>Height</strong> til <strong>1.5</strong>
-</li>
-<li>Deretter <strong>Add Component&gt;Physics&gt;Sphere Collider</strong>
-</li>
-<li>Huk av <strong>Is Trigger</strong>
-</li>
-<li>Sett <strong>Center Y</strong> og <strong>Radius</strong>, begge til <strong>0.8</strong>
-</li>
-<li><strong>Add Component&gt;Audio&gt;Audio Source</strong></li>
-<li>Velg <strong>Zombunny Hurt</strong> lydklippet</li>
-<li>Slå av <strong>Play On Awake</strong> boksen</li>
-<li><strong>Add Component&gt;Navigation&gt;Nav Mesh Agent</strong></li>
-<li>Sett så <strong>Radius</strong> til <strong>0.3</strong>
-</li>
-<li>Sett <strong>Speed</strong> til <strong>3</strong>
-</li>
-<li>Sett <strong>Stopping Distance</strong> til <strong>1.3</strong>
-</li>
-<li>Sett <strong>Height</strong> til <strong>1.1</strong>
-</li>
-<li>Gå til <strong>Window&gt;Navigation</strong>
-</li>
-<li>Velg <strong>Bake</strong> tabben øverst</li>
-<li>Sett <strong>Radius</strong> til <strong>0.75</strong>
-</li>
-<li>Sett <strong>Height</strong> til <strong>1.2</strong> og <strong>Step Height</strong> til <strong>0.1</strong>
-</li>
-<li>I <strong>Advanced</strong> området, sett <strong>Width Inaccuracy %</strong> til <strong>1</strong>
-</li>
-<li>Klikk <strong>Bake</strong> nederst.</li>
-<li>Velg <strong>Animation</strong> mappen i <strong>Project</strong> panelet.</li>
-<li>Høyreklikk den og <strong>Create&gt;Animation Controller</strong>
-</li>
-<li>Navngi den <strong>EnemyAC</strong>, og dra den på <strong>Zombunny</strong> parent objektet i hierarkiet.</li>
-<li>Dobbelklikk <strong>EnemyAC</strong> for å åpne den i <strong>Animator</strong> vinduet.</li>
-<li>Expander <strong>Zombunny</strong> modellen i <strong>Models&gt;Characters</strong> mappen i prosjekt panelet</li>
-<li>Det er 3 animasjoner der, <strong>Idle, Move</strong> og <strong>Death</strong>
-</li>
-<li>Dra hver av dem til Animatoren, begynn med <strong>Move</strong>
-</li>
-<li>Posisjoner <strong>Idle</strong> og <strong>Move</strong> nær hverandre, og put <strong>Death</strong> nær <strong>Any State</strong>
-</li>
-<li>Dobbelsjekk at <strong>Move</strong> er standard animasjonen/default, den burde være farget orange. Hvis ikke, så høyreklikk å velg <strong>Set as Default</strong>
-</li>
-<li>I <strong>Animator</strong> vinduet's <strong>Parameters</strong>, klikk på <strong>+</strong> og lag en <strong>Trigger</strong> parameter som heter <strong>PlayerDead</strong>
-</li>
-<li>Lag enda en <strong>Trigger</strong> parameter som heter <strong>Dead</strong>
-</li>
-<li>Høyreklikk på <strong>Move</strong> og lag en overgang/transition til <strong>Idle</strong>
-</li>
-<li>Høyreklikk på <strong>Any State</strong> og lag en overgang/transition til <strong>Death</strong>
-</li>
-<li>Sett <strong>Condition</strong> for <strong>Move -&gt; Idle</strong> til <strong>PlayerDead</strong>
-</li>
-<li>Sett <strong>Condition</strong> for <strong>Any State -&gt; Death</strong> til <strong>Dead</strong>
-</li>
-<li>Under <strong>Scripts&gt;Enemy</strong> mappen, i prosjektet, finn <strong>EnemyMovement</strong> scriptet, og dra det på <strong>Zombunny</strong>
-</li>
-<li>Lagre scenen din.</li>
-<li>Dobbelklikk på script ikonet for å åpne det for redigering.</li>
-<li>Skriv inn koden under</li>
-</ul>
-
-<pre><code>using UnityEngine;
-using System.Collections;
-
-public class EnemyMovement : MonoBehaviour
-{
-    Transform player;               // Reference to the player's position.
-    PlayerHealth playerHealth;      // Reference to the player's health.
-    EnemyHealth enemyHealth;        // Reference to this enemy's health.
-    NavMeshAgent nav;               // Reference to the nav mesh agent.
-
-
-    void Awake ()
-    {
-        // Set up the references.
-        player = GameObject.FindGameObjectWithTag ("Player").transform;
-        playerHealth = player.GetComponent &lt;PlayerHealth&gt; ();
-        enemyHealth = GetComponent &lt;EnemyHealth&gt; ();
-        nav = GetComponent &lt;NavMeshAgent&gt; ();
-    }
-
-
-    void Update ()
-    {
-        // If the enemy and the player have health left...
-        if(enemyHealth.currentHealth &gt; 0 &amp;&amp; playerHealth.currentHealth &gt; 0)
-        {
-            // ... set the destination of the nav mesh agent to the player.
-            nav.SetDestination (player.position);
-        }
-        // Otherwise...
-        else
-        {
-            // ... disable the nav mesh agent.
-            nav.enabled = false;
-        }
-    } 
-}
-
-</code></pre>
-
-<ul>
-<li>Trykk på <strong>Play</strong> for å teste spillet.</li>
-</ul>
-
-<h2>
-<a id="health-hud" class="anchor" href="#health-hud" aria-hidden="true"><span class="octicon octicon-link"></span></a>Health HUD</h2>
-
-<ul>
-<li>Klikk på <strong>2D</strong> mode knappen.</li>
-<li>Velg <strong>GameObject&gt;UI&gt;Canvas</strong> fra menyen</li>
-<li>Gi nytt navn til ditt <strong>Canvas</strong>, det skal hete <strong>HUDCanvas</strong>
-</li>
-<li><strong>Add Component&gt;Miscellaneous&gt;Canvas Group</strong></li>
-<li>Slå av <strong>Interactable</strong> og <strong>Blocks Raycasts</strong> boksene.</li>
-<li>Høyreklikk <strong>HUDCanvas&gt;Create Empty</strong>
-</li>
-<li>Kall den for <strong>HealthUI</strong>
-</li>
-<li>I <strong>Rect Transform</strong> klikk på <strong>Anchor Presets</strong>, og sett <strong>HealthUI</strong>'s <strong>Anchor, Position</strong> og <strong>Pivot</strong> til det nedre venstre hjørnet ved å holde inne <strong>Alt-Shift</strong> å så klikke på ankerpunktet.</li>
-<li>I <strong>Rect Transform</strong>, sett <strong>Width</strong> til <strong>75</strong> og <strong>Height</strong> til <strong>60</strong>
-</li>
-<li>Høyreklikk <strong>HealthUI&gt;UI&gt;Image</strong> </li>
-<li>Kall Image for <strong>Heart</strong>
-</li>
-<li>I <strong>Rect Transform</strong> set <strong>Position X og Y</strong> til <strong>0</strong>
-</li>
-<li>Sett <strong>Width</strong> og <strong>Height</strong> til <strong>30</strong>
-</li>
-<li>I <strong>Image</strong> for <strong>Source Image</strong>, velg <strong>Heart</strong> spriten fra <strong>Assets</strong>
-</li>
-<li>Høyreklikk <strong>HealthUI&gt;UI&gt;Slider</strong>
-</li>
-<li>Kall <strong>Slider</strong> for <strong>HealthSlider</strong>
-</li>
-<li>I <strong>Rect Transform</strong>, set <strong>Position X</strong> til <strong>95</strong>, <strong>Y</strong> til <strong>0</strong>
-</li>
-<li>Ekspander <strong>HealthSlider</strong> for å vise children, velg <strong>Handle Slide Area</strong> childen til <strong>HealthSlider</strong> og slett den fra hierarkiet(delete).</li>
-<li>I <strong>Slider</strong> componenten til <strong>HealthSlider</strong>, sett <strong>Transition</strong> mode til <strong>None</strong>
-</li>
-<li>Set <strong>Max Value</strong> verdien til <strong>100</strong>, også sett <strong>Value</strong> til <strong>100</strong>.</li>
-<li>Høyreklikk <strong>HUDCanvas</strong> og lag et <strong>UI&gt;Image</strong>
-</li>
-<li>Kall det for <strong>DamageImage</strong> og sett <strong>Rect Transform</strong> ankerpunkt presetten til <strong>Stretch</strong> i begge dimensjoner, ved å holde inne <strong>Alt</strong> mens du klikker den nederste høyre presetten.</li>
-<li>I <strong>Image</strong> komponenten, klikk på <strong>Colour</strong> blokken og set <strong>Alpha</strong>(A) verdien til <strong>0</strong>
-</li>
-</ul>
-
-<h2>
-<a id="player-health" class="anchor" href="#player-health" aria-hidden="true"><span class="octicon octicon-link"></span></a>Player Health</h2>
-
-<ul>
-<li>I <strong>Scripts&gt;Player</strong> mappen, finn <strong>PlayerHealth</strong>, å dra denn inn på <strong>Player</strong> i hierarkiet.</li>
-<li>Åpne <strong>PlayerHealth</strong> scriptet å se på det.</li>
-</ul>
-
-<pre><code>using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-
-public class PlayerHealth : MonoBehaviour
-{
-    public int startingHealth = 100;                            // The amount of health the player starts the game with.
-    public int currentHealth;                                   // The current health the player has.
-    public Slider healthSlider;                                 // Reference to the UI's health bar.
-    public Image damageImage;                                   // Reference to an image to flash on the screen on being hurt.
-    public AudioClip deathClip;                                 // The audio clip to play when the player dies.
-    public float flashSpeed = 5f;                               // The speed the damageImage will fade at.
-    public Color flashColour = new Color(1f, 0f, 0f, 0.1f);     // The colour the damageImage is set to, to flash.
-
-
-    Animator anim;                                              // Reference to the Animator component.
-    AudioSource playerAudio;                                    // Reference to the AudioSource component.
-    PlayerMovement playerMovement;                              // Reference to the player's movement.
-    PlayerShooting playerShooting;                              // Reference to the PlayerShooting script.
-    bool isDead;                                                // Whether the player is dead.
-    bool damaged;                                               // True when the player gets damaged.
-
-
-    void Awake ()
-    {
-        // Setting up the references.
-        anim = GetComponent &lt;Animator&gt; ();
-        playerAudio = GetComponent &lt;AudioSource&gt; ();
-        playerMovement = GetComponent &lt;PlayerMovement&gt; ();
-        playerShooting = GetComponentInChildren &lt;PlayerShooting&gt; ();
-
-        // Set the initial health of the player.
-        currentHealth = startingHealth;
-    }
-
-
-    void Update ()
-    {
-        // If the player has just been damaged...
-        if(damaged)
-        {
-            // ... set the colour of the damageImage to the flash colour.
-            damageImage.color = flashColour;
-        }
-        // Otherwise...
-        else
-        {
-            // ... transition the colour back to clear.
-            damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
-        }
-
-        // Reset the damaged flag.
-        damaged = false;
-    }
-
-
-    public void TakeDamage (int amount)
-    {
-        // Set the damaged flag so the screen will flash.
-        damaged = true;
-
-        // Reduce the current health by the damage amount.
-        currentHealth -= amount;
-
-        // Set the health bar's value to the current health.
-        healthSlider.value = currentHealth;
-
-        // Play the hurt sound effect.
-        playerAudio.Play ();
-
-        // If the player has lost all it's health and the death flag hasn't been set yet...
-        if(currentHealth &lt;= 0 &amp;&amp; !isDead)
-        {
-            // ... it should die.
-            Death ();
-        }
-    }
-
-
-    void Death ()
-    {
-        // Set the death flag so this function won't be called again.
-        isDead = true;
-
-        // Turn off any remaining shooting effects.
-        playerShooting.DisableEffects ();
-
-        // Tell the animator that the player is dead.
-        anim.SetTrigger ("Die");
-
-        // Set the audiosource to play the death clip and play it (this will stop the hurt sound from playing).
-        playerAudio.clip = deathClip;
-        playerAudio.Play ();
-
-        // Turn off the movement and shooting scripts.
-        playerMovement.enabled = false;
-        playerShooting.enabled = false;
-    }       
-}
-
-</code></pre>
-
-<ul>
-<li>Legg skriptet over til i script filen</li>
-<li>Gå så tilbake til Unity å i <strong>PlayerHealth (Script)</strong> komponenten, legg til <strong>HealthSlider</strong> fra hierarkiet til <strong>Health Slider</strong> public variable, ved å dra det dit.</li>
-<li>På samme komponenten legg til <strong>DamageImage</strong> fra hierarkiet til <strong>Damage Image</strong> public variable, ved å dra det dit.</li>
-<li>På <strong>PlayerHealth (Script)</strong> komponenten, legg til <strong>Player Death</strong> lydklippet til <strong>Death Clip</strong>.</li>
-<li>Finn <strong>EnemyAttack</strong> i <strong>Scripts&gt;Enemy</strong> mappen til prosjektet, og dra den på <strong>Zombunny</strong> i hierarkiet.</li>
-<li>Åpne <strong>EnemyAttack</strong> scriptet for redigering ved å dobbelklikke på script ikonet i prosjektet.</li>
-</ul>
-
-<pre><code>using UnityEngine;
-using System.Collections;
-
-
-public class EnemyAttack : MonoBehaviour
-{
-    public float timeBetweenAttacks = 0.5f;     // The time in seconds between each attack.
-    public int attackDamage = 10;               // The amount of health taken away per attack.
-
-
-    Animator anim;                              // Reference to the animator component.
-    GameObject player;                          // Reference to the player GameObject.
-    PlayerHealth playerHealth;                  // Reference to the player's health.
-    EnemyHealth enemyHealth;                    // Reference to this enemy's health.
-    bool playerInRange;                         // Whether player is within the trigger collider and can be attacked.
-    float timer;                                // Timer for counting up to the next attack.
-
-
-    void Awake ()
-    {
-        // Setting up the references.
-        player = GameObject.FindGameObjectWithTag ("Player");
-        playerHealth = player.GetComponent &lt;PlayerHealth&gt; ();
-        enemyHealth = GetComponent&lt;EnemyHealth&gt;();
-        anim = GetComponent &lt;Animator&gt; ();
-    }
-
-
-    void OnTriggerEnter (Collider other)
-    {
-        // If the entering collider is the player...
-        if(other.gameObject == player)
-        {
-            // ... the player is in range.
-            playerInRange = true;
-        }
-    }
-
-
-    void OnTriggerExit (Collider other)
-    {
-        // If the exiting collider is the player...
-        if(other.gameObject == player)
-        {
-            // ... the player is no longer in range.
-            playerInRange = false;
-        }
-    }
-
-
-    void Update ()
-    {
-        // Add the time since Update was last called to the timer.
-        timer += Time.deltaTime;
-
-        // If the timer exceeds the time between attacks, the player is in range and this enemy is alive...
-        if(timer &gt;= timeBetweenAttacks &amp;&amp; playerInRange &amp;&amp; enemyHealth.currentHealth &gt; 0)
-        {
-            // ... attack.
-            Attack ();
-        }
-
-        // If the player has zero or less health...
-        if(playerHealth.currentHealth &lt;= 0)
-        {
-            // ... tell the animator the player is dead.
-            anim.SetTrigger ("PlayerDead");
-        }
-    }
-
-
-    void Attack ()
-    {
-        // Reset the timer.
-        timer = 0f;
-
-        // If the player has health to lose...
-        if(playerHealth.currentHealth &gt; 0)
-        {
-            // ... damage the player.
-            playerHealth.TakeDamage (attackDamage);
-        }
-    }
-}
-
-</code></pre>
-
-<ul>
-<li>Legg til scriptet ovenfor i scriptfilen.</li>
-<li>Gå så tilbake til unity å lagre prosjektet ditt.</li>
-</ul>
-
-<h2>
-<a id="harming-enemies" class="anchor" href="#harming-enemies" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/harming-enemies?playlist=17144">Harming enemies</a>
-</h2>
-
-<p>Nå skal vi gjøre det mulig å skade fiendene! </p>
-
-<ul>
-<li>I <code>Scripts -&gt; Enemy</code>-mappa finner du <code>EnemyHealth</code> scriptet. Dra og slipp det
-på <strong>Zombunny</strong> i hierarkiet </li>
-<li>I <code>Enemy Health</code> script componenten gir du <code>Zombunny death</code>-lydklippet til
-<code>Death Clip</code> variabelen: </li>
-<li>Åpne <code>EnemyHealth</code> scriptet og ta en titt på variablene. Her finner dere
-variabler for hvor mye liv fienden har, om den er død eller levende, om den
-synker gjennom gulvet osv. Om du vil ha en god gjennomgang av scriptet kan du
-se <a href="https://youtu.be/l86gpYbQFzY?t=1m">denne</a>. </li>
-</ul>
-
-<p>Nå skal vi få til litt skyting! </p>
-
-<ul>
-<li>I <code>Project &gt; Prefabs</code> trykk på GunParticles</li>
-<li>Klikk på tannhjulet til høyre og velg <code>Copy Component</code>
-</li>
-<li>Utvid <strong>Player</strong> game objektet i hierarkiet og velg <strong>GunBarrelEnd</strong>
-</li>
-<li>Klikk på tannhjulet og velg <strong>Paste Component as New</strong>
-</li>
-<li>Lukk den nye <strong>Particle System</strong> componenten og med <strong>GunBarrelEnd</strong> fortsatt
-valgt legger du til en <strong>Line Renderer</strong>-komponent: <code>Add Component &gt; Effects &gt;
-Line Renderer</code>. </li>
-<li>Utvid <strong>Materials</strong>-området og bruk sirkelen til å velge <strong>LineRenderMaterial</strong>. </li>
-<li>Utvid parametrene til <strong>Line Renderer</strong> og sett <strong>Line Renderer</strong> sin <strong>Start
-Width</strong> og <strong>End Width</strong> til <strong>0.05</strong>. </li>
-<li>Skru av <strong>Line Renderer</strong> komponenten ved å trkke bort krysset i boksen</li>
-</ul>
-
-<p>Nå trenger vi å lage litt lys som lyser opp når spilleren skyter </p>
-
-<ul>
-<li>La oss lage et lys, <code>Add Component &gt; Rendering &gt; Light</code>.</li>
-<li>Velg en gulfarge gra <strong>Color blick / Picker</strong>
-</li>
-<li>Skru av <strong>Light</strong>-komponenten ved å krysse den ut</li>
-<li>Legg til en ny <strong>Audio Source</strong> komponent: <code>Add Component &gt; Audio &gt; Audio
-Source</code> og velg <strong>Player Gunshot</strong> som lydklipp</li>
-<li>Klikk bort <strong>Play On Awake</strong> for denne lydkilden </li>
-<li>I <code>Project &gt; Scripts &gt; Player</code>-mappa gi <strong>PlayerShooting</strong> til
-<strong>GunBarrelEnd</strong> i hierarkiet</li>
-<li>Velg <strong>Player</strong> i hierarkiet og klikk på <strong>Apply</strong> på toppen av Inspector-en
-for å oppdatere <strong>Prefab</strong>-en vår. </li>
-</ul>
-
-<p>La oss teste at alt fungerer bra! </p>
-
-<ul>
-<li>Lagre scenen og trykk Play! </li>
-<li>Om du får noen feil åpne opp <strong>EnemyMovement</strong>-scriptet i <code>Scripts &gt; Enemy</code>
-og ta bort alle <code>//</code> i scriptet og lagre scriptet </li>
-<li>Det kan også være noe i <strong>PlayerHealth</strong> så åpne det også og fjern alle <code>//</code>.</li>
-</ul>
-
-<h2>
-<a id="scoring-points" class="anchor" href="#scoring-points" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/scoring-points?playlist=17144">Scoring Points</a>
-</h2>
-
-<p>Nå skal vi gi spilleren poeng for å skyte zombunnies og oppdatere denne for hver
-gang han skyter en! </p>
-
-<ul>
-<li>Velg <strong>HUDCanvas</strong> i hierarkiet og høyreklikk for å lage et nytt <strong>Tekst</strong>
-objekt. <code>UI &gt; Text</code>. Husk at den må ligge i <strong>HUDCanvas</strong> i
-Hierarkiet. </li>
-<li>Kall dette objektet <strong>ScoreTet</strong>
-</li>
-<li>Sett <strong>Anchor position</strong> i <strong>RectTransform</strong> til <strong>Top Center</strong>. </li>
-<li>Sett <code>x</code> posisjon til <strong>0</strong> og <code>y</code> posisjon til <strong>-55</strong>.</li>
-<li>Endre <code>width</code> til <strong>300</strong> og <code>height</code> til <strong>50</strong>
-</li>
-<li>I <strong>Text</strong> komponenten setter du teksten til <strong>"Score: "</strong>. Denne vil vi endre
-på etterhvert til å vise hvor mange poeng spilleren har</li>
-<li>Sett <strong>Font size</strong> til <strong>50</strong> for litt større skrift</li>
-<li>Sett <strong>Alignments</strong> til <strong>Center</strong> og <strong>Middle</strong>
-</li>
-<li>Endre skriftfargen til hvit ved å klikke på <strong>color</strong>-blokka </li>
-</ul>
-
-<p>Nå skal vi legge litt skygge til teksten.</p>
-
-<ul>
-<li>Trykk på <strong>Add Component</strong>, søk etter <strong>Shadow</strong> og legg den til. Velg
-<strong>Effect Distance</strong> til <code>(2, -2)</code>. </li>
-<li>I <code>Scripts &gt; Managers</code> finn fram <strong>ScoreManager</strong>-scriptet og dra den over
-<strong>ScoreText</strong>-spillobjektet. </li>
-</ul>
-
-<p>Nå skal vi oppdatere <strong>EnemyHealth</strong>-scriptet</p>
-
-<ul>
-<li>Velg <strong>Zombunny</strong> i hierarkie, finn <strong>EnemyHealth</strong> scirptet og åpne det. </li>
-<li>Fjern <code>//</code> på linje 77</li>
-<li>Lagre den og trykk <strong>Play</strong> i unity for å teste prosjektet! </li>
-</ul>
-
-<p>For å få flere fiende lagrer vi <strong>Zombunny</strong> som en prefab: </p>
-
-<ul>
-<li>Dra <strong>Zombunny</strong> inn i <strong>Prefabs</strong>-mappa</li>
-<li>Fjern <strong>Zombunny</strong> fra hierarkiet og lagre scenen</li>
-</ul>
-
-<h2>
-<a id="more-enemies" class="anchor" href="#more-enemies" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/more-enemies?playlist=17144">More Enemies</a>
-</h2>
-
-<p>La oss lage en <strong>Zombear</strong>! </p>
-
-<ul>
-<li>I prefabs-mappa velger du <strong>ZomBear</strong>
-</li>
-<li>Åpne <strong>Zombear</strong> sin <strong>Animator</strong> og fra prosjektet drar du inn <strong>EnemyAC</strong>
-fra <strong>Animation</strong>-mappa. Denne skal dras over til <strong>Animator controller</strong>
-</li>
-</ul>
-
-<p>Nå kommer en <strong>Hellephant</strong></p>
-
-<ul>
-<li>I <strong>prefabs</strong>-mappa velger du <strong>Hellephant</strong>, </li>
-<li>Velg <strong>Animation</strong>-mappa og lag en <strong>Animator Override Controller</strong>: <code>Create &gt;
-Animator Override Controller</code>.</li>
-<li>Kall den <strong>HellephanAOC</strong>
-</li>
-<li><p>Gi <strong>EnemyAC</strong> til <strong>Controller</strong> egenskapen til høyre i <strong>inspector</strong>-en</p></li>
-<li><p>I <code>Models &gt; Characters</code> utvid <strong>Hellephant</strong> for å se på animasjonene</p></li>
-<li>Dra <strong>Idle</strong>, <strong>Move</strong>, og <strong>Death</strong> til de ledige feltene i <strong>HellephanAOC
-Override</strong>-tabellen</li>
-<li>Velg <strong>Hellephant</strong> i prefabs-mappa og gi <strong>HellephanAOC</strong> til dens <strong>Animator
-Controller</strong>. </li>
-</ul>
-
-<p>La oss få styr på de nye fiendene våre </p>
-
-<ul>
-<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den <strong>EnemyManager</strong>
-</li>
-<li>I <code>Script &gt; Managers</code> finner du <strong>EnemyManager</strong> scriptet og drar den over til
-<strong>EnemyManager</strong>
-</li>
-</ul>
-
-<p>La oss lage noen spawn points to zombiene våre </p>
-
-<ul>
-<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
-<strong>ZombunnySpawnPoint</strong>
-</li>
-<li>I inspectoren setter du <strong>Gizmo</strong>-en til <strong>ZombunnySpawnPoint</strong> til en fin
-blåfarge.</li>
-<li>Sett posisjonnen til <code>(-20.5, 0, 12.5)</code> </li>
-<li>Sett rotasjon til <code>(0,130,0)</code>
-</li>
-</ul>
-
-<p>La oss lage spawn points to zombears også</p>
-
-<ul>
-<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
-<strong>ZombearSpawnPoint</strong>
-</li>
-<li>Sett <strong>Gizmo</strong>-en til <strong>ZombearSpawnPoint</strong> rosa</li>
-<li>Sett posisjonen til <code>(22.5,0,15)</code>
-</li>
-<li>Sett rotasjon til <code>(0,240,0)</code>
-</li>
-</ul>
-
-<p>La oss lage spawn points to hellephants også</p>
-
-<ul>
-<li>Lag et tomt objekt: <code>GameObject &gt; Create Empty</code> og kall den
-<strong>HellephantSpawnPoint</strong>
-</li>
-<li>Sett <strong>Gizmo</strong>-en til <strong>HellephantSpawnPoint</strong> gul</li>
-<li>Sett posisjonen til <code>(0,0,32)</code>
-</li>
-<li>Sett rotasjon til <code>(0,230,0)</code>
-</li>
-</ul>
-
-<p>La oss spawne noen fiender</p>
-
-<ul>
-<li>Velg <strong>EnemyManager</strong> i hierarkiet. I <strong>EnemyManager</strong> komponenten setter du
-<strong>Player</strong> til <strong>PlayerHealth</strong> variablen</li>
-<li>I prefabs-mappa drar du <strong>Zombunny</strong> inn som <strong>Enemy</strong> </li>
-<li>Dobbelsjekk at <strong>Spawn Time</strong> er satt til 3 sekunder, hvis ikke blir det
-kanskje litt for mange fiender! </li>
-<li>Dra inn <strong>ZombunnySpawnPoint</strong> fra hierarkiet til tittelen til
-<strong>SpawnPoints</strong>-arrayet </li>
-<li>Lagre og test spillet! </li>
-</ul>
-
-<p>Nå må vi få inn de andre fiendene våre også </p>
-
-<ul>
-<li>I <code>Scripts &gt; Managers</code>-mappa finner du <strong>EnemyManager</strong> scriptet og drar det
-inn i <strong>EnemyManager</strong> objektet 2 ganger til</li>
-<li>Sjekk at det er 3 <strong>EnemyManager</strong> spawner-komponenter i <strong>EnemyManager</strong>
-objektet</li>
-<li>Dra over <strong>Player</strong> objektet til <strong>PlayerHealth</strong> variablene til begge de nye
-<strong>EnemyManager</strong> komponentene. </li>
-<li>Fra <strong>Prefabs</strong>-mappa drar du <strong>Zombear</strong> til <strong>Enemy</strong>-feltet til den andre <strong>EnemyManager</strong> </li>
-<li>Fra <strong>Prefabs</strong>-mappa drar du <strong>Hellephant</strong> til <strong>Enemy</strong>-feltet til den tredje <strong>EnemyManager</strong> </li>
-<li>Dra inn <strong>ZombearSpawnPoint</strong> fra hierarkiet til tittelen til <strong>SpawnPoints</strong>
-arrayet til den andre <strong>EnemyManager</strong>
-</li>
-<li>Dra inn <strong>HellephantSpawnPoint</strong> fra hierarkiet til tittelen til <strong>SpawnPoints</strong>
-arrayet til den tredje <strong>EnemyManager</strong>
-</li>
-<li>I den tredje <strong>EnemyManager</strong> til <strong>Hellephant</strong>-en setter du <strong>Spawn Time</strong>
-til 10.</li>
-<li>Lagre og test spillet! </li>
-</ul>
-
-<h2>
-<a id="game-over" class="anchor" href="#game-over" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://unity3d.com/learn/tutorials/projects/survival-shooter/game-over?playlist=17144">Game Over</a>
-</h2>
-
-<p>La oss legge inn et bilde som vises når spillet er over</p>
-
-<ul>
-<li>Høyreklikk på <strong>HUDCanvas</strong> og lag en <strong>UI &gt; Image</strong>
-</li>
-<li>Kall denne <strong>ScreenFader</strong>
-</li>
-<li>I <strong>Rect Transform</strong> klikk på <strong>Anchor Presets</strong> og <strong>Alt-klikk</strong> på <strong>Stratch
-both</strong>.
-:make</li>
-<li><p>I <strong>Image</strong> komponenten klikker du på <strong>Color</strong> og velger en lys blåfarge</p></li>
-<li><p>Høyreklikk på <strong>HUDCanvas</strong> og lag en <strong>UI &gt; Text</strong></p></li>
-<li>Kall denne <strong>GameOverText</strong>
-</li>
-<li>I <strong>Rect Transform</strong> klikker du på <strong>Anchor Presets</strong> og <strong>Alt-klikk</strong> på
-<strong>Middle center</strong>
-</li>
-<li><p>Sett <code>width</code> til <strong>300</strong> og <code>height</code> til <strong>50</strong></p></li>
-<li><p>I <strong>Text</strong>-komponenten setter du teksten til å være <strong>'Game Over!'</strong></p></li>
-<li>Bytt <strong>skrifttype</strong> til <strong>Luckiest Guy</strong>
-</li>
-<li>Sett <strong>skriftstørrelse</strong> til <strong>50</strong> og <strong>Alignment</strong> til <strong>Middle</strong> og <strong>Center</strong>
-</li>
-<li>Sett <strong>sktiftfarge</strong> til hvit </li>
-<li><p>Legg til en <strong>Shadow</strong> komponent: <strong>Add component</strong> og søk etter <strong>Shadow</strong>. </p></li>
-<li><p>Stokk om i hierarkiet slik at det som ligger under HUDCanvas ser slik ut: </p></li>
-</ul>
-
-<pre><code>HUDCanvas
-- HealthUI
-- DamageImage
-- ScreenFader
-- GameOverText
-- ScoreText
-</code></pre>
-
-<ul>
-<li>Velg <strong>ScreenFader</strong> fra i hierarkiet</li>
-<li>I <strong>Image</strong> komponenten setter du <strong>Color</strong> sin <strong>alpha</strong>-verdi til 0</li>
-<li><p>Velg <strong>GameOverText</strong> i hierarkiet og sett <strong>Color</strong> sin <strong>alpha</strong>-verdi til 0</p></li>
-<li><p>Velg <strong>HUDCanvas</strong> i hierarkiet</p></li>
-<li>Gå til <strong>Window &gt; Animation</strong> og klikk på <strong>Create Animation</strong>
-</li>
-<li><p>I <strong>Create Animation</strong> vinduet velger du <strong>Animation</strong>-mappa som destinasjon
-og kall den <strong>GameOverClip</strong>. (Unity lager en <strong>Animator Controller</strong> også,
-men den trenger du ikke bry deg om nå)</p></li>
-<li><p>Lag <strong>Property</strong> til <strong>GameOverText &gt; Text &gt; Color</strong></p></li>
-<li>Lag <strong>Property</strong> til <strong>GameOverText &gt; RectTransform &gt; Scale</strong> </li>
-<li>Lag <strong>Property</strong> til <strong>ScreenFader &gt; Image &gt; Color</strong>
-</li>
-<li>Lag <strong>Property</strong> til <strong>ScoreText &gt; RectTransform &gt; Scale</strong> </li>
-<li><p>Velg og flytt alle <strong>end keyframes</strong> til <strong>0:30</strong> </p></li>
-<li><p>Flytt markøren i tidslinja til <strong>0:20</strong>, velg <strong>GameOverText &gt; RectTransform &gt; Scale</strong> og trykk <strong>K</strong> for å lage en <strong>keyframe</strong>. </p></li>
-<li>Gå til frame <strong>0</strong> og velg <strong>GameOverText &gt; RectTransform &gt; Scale</strong> og sett verdiene til <strong>0</strong>. </li>
-<li><p>Flytt markøren i tidslinja til <strong>0:20</strong> og sett <strong>GameOverText &gt; RectTransform &gt; Scale</strong> verdiene til <strong>1.2</strong></p></li>
-<li><p>Flytt markøren til <strong>0:30</strong> og sett: <strong>GameOverText &gt; Text &gt; Color &gt; Alpha</strong> til <strong>1</strong>, <strong>ScreenFader &gt; Image &gt; Color &gt; Alpha</strong> til <strong>1</strong>, <strong>Score Text &gt; RectTransform &gt; Scale</strong> til <strong>0.8</strong></p></li>
-<li><p>Velg alle <strong>Keyframes</strong> og flytt dem slik at de starter på <strong>1:30</strong> (frame 90) og disable <strong>Record</strong> mode </p></li>
-<li><p>I <strong>Project</strong> panelet åpner du <strong>Animation</strong> mappa og velger <strong>GameOverClip</strong>, klikk bort <strong>Loop time</strong></p></li>
-<li>Velg nå <strong>HUDCanvas</strong> og dobbel klikk på den for å åpne den i <strong>Animator</strong>-vinduet</li>
-<li>I <strong>Animator</strong>-vinduet høyreklikker du og velger <strong>Create State &gt; Empty</strong> og kall den <strong>Empty</strong>
-</li>
-<li>Høyreklikk på <strong>Empty state</strong> og <strong>Create Transition</strong> til <strong>GameoverClip</strong>-staten ved å velge den</li>
-<li><p>Lag en ny <strong>Animator Trigger</strong>-parameter <strong>GameOver</strong></p></li>
-<li><p>Høyreklikk på <strong>Empty</strong>-staten og velg <strong>Set as Default</strong></p></li>
-<li>Velg overgangen fra <strong>Empty</strong> til <strong>GameOverClip</strong> og sett <strong>Condition</strong> til <strong>GameOver</strong> </li>
-<li><p>Velg <strong>HUDCanvas</strong> fra hierarkiet og dra inn <strong>GameOverManager</strong> fra <strong>Scripts &gt; Managers</strong> mappa til <strong>HUDCanvas</strong>. </p></li>
-<li><p>Dra inn <strong>Player</strong> fra hierarkiet til <strong>Player Health</strong> variabelen til <strong>GameOverManager</strong> script-komponenten</p></li>
-<li>
-<strong>File &gt; Save Scene</strong> og <strong>File &gt; Save Project</strong>
-</li>
-</ul>
-
-<h2>
-<a id="spill-spillet-ditt" class="anchor" href="#spill-spillet-ditt" aria-hidden="true"><span class="octicon octicon-link"></span></a>SPILL SPILLET DITT!</h2>
+<a id="miniquiz" class="anchor" href="#miniquiz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Miniquiz</h1>
 
 <h3>
-<a id="bonus-lek-rundt-med-forskjellige-variabler-for-åendre-på-spawn-tidere-og-hastighet" class="anchor" href="#bonus-lek-rundt-med-forskjellige-variabler-for-%C3%A5endre-p%C3%A5-spawn-tidere-og-hastighet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bonus: Lek rundt med forskjellige variabler for å endre på spawn tidere og hastighet.</h3>
+<a id="hva-kalles-de-tre-koordinatene-vi-bruker-til-å-si-posisjonen-til-noe-i-unity" class="anchor" href="#hva-kalles-de-tre-koordinatene-vi-bruker-til-%C3%A5-si-posisjonen-til-noe-i-unity" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hva kalles de tre koordinatene vi bruker til å si posisjonen til noe i Unity?</h3>
+
+<ol>
+<li>ZXE</li>
+<li>BHD</li>
+<li>XYZ</li>
+<li>ABC</li>
+</ol>
+
+<h3>
+<a id="hvilke-3-farger-består-rgb-av" class="anchor" href="#hvilke-3-farger-best%C3%A5r-rgb-av" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hvilke 3 farger består RGB av?</h3>
+
+<ol>
+<li>Rød, Gul, Brun</li>
+<li>Rosa, Grønn, Beige</li>
+<li>Rosa, Grønn, Burgunder</li>
+<li>Rød, Grønn, Blå</li>
+</ol>
+
+<h2>
+<a id="2-lage-en-tank" class="anchor" href="#2-lage-en-tank" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2 Lage En Tank</h2>
+
+<ul>
+<li>Under mappen <code>Models</code> finner du en modell som heter <code>Tank</code>. Dra denne inn i hierarkiet, på samme måte som vi gjorde med <code>LevelArt</code>.</li>
+<li>Forandre <code>Layer</code> til tanksen slik at den ligger på <code>Players</code> layeret. I Dialogboksen velger du <code>No, for this object only</code>
+</li>
+</ul>
+
+<p><img src="Pictures/tanklayer.png" alt="ScreenShot"></p>
+
+<ul>
+<li>Legg til en <code>Rigidbody</code> til tanksen.</li>
+<li>Under <code>Constraints</code> inne i <code>Rigidbody</code>, huk av for <code>Freeze Position</code> på Y-aksen, og huk av for <code>Freeze Rotation</code> på X-aksen og Z-aksen.</li>
+<li>Legg til en <code>Box Collider</code> på tanksen og forandre <code>Center</code> til (0, 0.85, 0) og forandre størrelsen til (1.5, 1.7, 1.6).</li>
+<li>Legg til en <code>Audio Source</code> til tanksen vår og forandre <code>Audio Clip</code> til <code>Engine Idle</code>. Huk også av for <code>Loop</code>.</li>
+</ul>
+
+<p><img src="Pictures/audiosource.png" alt="ScreenShot"></p>
+
+<ul>
+<li>Legg til en ekstra <code>Audio Source</code> på tanksen vår og slå av <code>Play On Awake</code>.</li>
+<li>Velg <code>Prefabs</code> mappen i prosjektet vårt og dra tanksen ned til mappen, det som skjer er at vi lager en <code>Prefab</code> av tanksen vi har lagd til nå. En <code>Prefab</code> er et ferdiglaget objekt som inneholder alt vi har lagt til tanksen vår til nå.</li>
+</ul>
+
+<p><img src="Pictures/tankprefab.png" alt="ScreenShot"></p>
+
+<ul>
+<li>Fra <code>Prefabs</code> mappen, dra <code>DustTrail</code> prefaben til tanksen vår i hierarkiet, slik at den blir en <code>Child</code> av tanks objektet vårt.</li>
+<li>Dupliser <code>DustTrail</code> ved å bruke Ctrl + D slik at vi får to <code>DustTrail</code> på tanksen vår. Gi den nye <code>DustTrail</code> navnet <code>LeftDustTrail</code> og den andre navnet <code>RightDustTrail</code>.</li>
+<li>Sett posisjonen til <code>LeftDustTrail</code> til (-0.5, 0, -0.75) og posisjonen til <code>RightDustTrail</code> til (0.5, 0, -0.75)</li>
+</ul>
+
+<h3>
+<a id="tid-for-litt-kode" class="anchor" href="#tid-for-litt-kode" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tid for litt Kode</h3>
+
+<ul>
+<li>I <code>Scripts/Tank</code> folderen så finner vi et script som heter <code>TankMovement</code>, dra denne over på tanksen vår i hierarkiet.</li>
+<li>Dobbelklikk på <code>TankMovement</code> scriptet for å åpne scriptet i Visual Studio eller MonoDevelop.</li>
+<li>I scriptet så har vi noen ferdiglagde funksjoner, disse er kommentert ut, så vi må fjerne kommentar tegnene <code>/* */</code>
+</li>
+<li>Koden for scriptet ligger under, men vi vil gjerne tenke oss frem til hva vi vil gjøre først.</li>
+</ul>
+
+<pre><code>
+    private void Update ()
+    {
+        // Store the value of both input axes.
+        m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
+        m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
+
+        EngineAudio ();
+    }
+
+
+    private void EngineAudio ()
+    {
+        // If there is no input (the tank is stationary)...
+        if (Mathf.Abs (m_MovementInputValue) &lt; 0.1f &amp;&amp; Mathf.Abs (m_TurnInputValue) &lt; 0.1f)
+        {
+            // ... and if the audio source is currently playing the driving clip...
+            if (m_MovementAudio.clip == m_EngineDriving)
+            {
+                // ... change the clip to idling and play it.
+                m_MovementAudio.clip = m_EngineIdling;
+                m_MovementAudio.pitch = Random.Range (m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
+                m_MovementAudio.Play ();
+            }
+        }
+        else
+        {
+            // Otherwise if the tank is moving and if the idling clip is currently playing...
+            if (m_MovementAudio.clip == m_EngineIdling)
+            {
+                // ... change the clip to driving and play.
+                m_MovementAudio.clip = m_EngineDriving;
+                m_MovementAudio.pitch = Random.Range(m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
+                m_MovementAudio.Play();
+            }
+        }
+    }
+
+
+    private void FixedUpdate ()
+    {
+        // Adjust the rigidbodies position and orientation in FixedUpdate.
+        Move ();
+        Turn ();
+    }
+
+
+    private void Move ()
+    {
+        // Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
+        Vector3 movement = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
+
+        // Apply this movement to the rigidbody's position.
+        m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
+    }
+
+
+    private void Turn ()
+    {
+        // Determine the number of degrees to be turned based on the input, speed and time between frames.
+        float turn = m_TurnInputValue * m_TurnSpeed * Time.deltaTime;
+
+        // Make this into a rotation in the y axis.
+        Quaternion turnRotation = Quaternion.Euler (0f, turn, 0f);
+
+        // Apply this rotation to the rigidbody's rotation.
+        m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
+    }
+</code></pre>
+
+<h3>
+<a id="hva-er-en-prefab" class="anchor" href="#hva-er-en-prefab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hva er en Prefab?</h3>
+
+<ol>
+<li>En Unity pakke for Grafikk</li>
+<li>Et ferdiglagd objekt som vi kan bruke i Unity</li>
+<li>Et bilde</li>
+<li>En ny smarttelefon</li>
+</ol>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/kodeklubben-tromso/unity">Unity</a> is maintained by <a href="https://github.com/kodeklubben-tromso">kodeklubben-tromso</a>.</span>
