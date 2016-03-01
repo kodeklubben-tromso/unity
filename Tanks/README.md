@@ -177,7 +177,7 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
 - Sett posisjonen til `Camera Rig` tilbake til (0, 0, 0) og sett `Rotation` til (40, 60, 0)
 - I hierarkiet, dra `Main Camera` til det nye `Camera Rig` objektet vårt, slik at `Main Camera` blir et child av `Camera Rig`
 - Sett posisjonen til `Main Camera` (Ikke `Camera Rig`) til (0, 0, -65)
-- Create a new script in the `Scripts` folder called `CamerControl` and open it
+- Lag et nytt script under `Scripts` som heter `CameraControl` og åpne scriptet.
 - I dette scriptet så skal vi sette opp kameraet til å Zoome ved å sette størrelsen på the ortografiske kameraet.
 - Vi vil også at kameraet skal følge begge tanksene.
 
