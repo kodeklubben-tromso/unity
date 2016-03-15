@@ -758,3 +758,28 @@ Først så må vi starte Unity og velge et nytt prosjekt. Prosjektet kan man kal
 - Klikk `Apply` øverst i Tanks objektet vårt og lagre scenen
 
 # Tanksen vår er nå ferdig, test den ut :)
+
+## 7 Game Manager
+
+- Lag to nye `Empty GameObjects` i hierarkiet og kall dem for `SpawnPoint1` og `SpawnPoint2`
+- Sett posisjonen til første spawn til (-3, 0, 30) og andre og rotatsjon til (0, 180, 0)
+- Sett posisjonen til andre spawn til (13, 0, -5), rotasjon skal stå på (0, 0, 0)
+- Trykk på `Gizmoen` til SpawnPoint1 og forandre den til Blå
+- Trykk på `Gizmoen` til SpawnPoint2 og forandre den til Rød
+- Lag et nytt Canvas i hierarkiet og gi det navnet `MessageCanvas`
+- Klikk på 2D knappen øverst i scenen vår, og posisjoner deg så du kan se hele Canvaset
+- Høyreklikk på `MessageCanvas` og legg til et `Text` objekt
+- På `RectTransform` komponenten til `Text` objektet, sett Anchor for X og Y til Min: 0,1 og Max: 0,9
+- Skriv inn `TANKS!!` i tekstfeltet til `Text` objektet
+- Forandre `Font` til `BowlbyOne-regular` ved å bruke sirkelen ved siden av `Font` feltet
+- Forandre alignment til senter og midten
+- Klikk på `Enable Best Fit`, sett max size til 60 og forandre farge til hvit
+
+- Gå til `CameraRig` og forandre `Size` i target variablen til 0 og trykk enter
+- Lag et nytt `Empty GameObject` og kall objektet `GameManager`
+- Finn `GameManager` objektet i `Scripts/GameManager` og dra det til `GameManager` objektet
+- Dra inn alle objektene som skal være i `Public` variablene til `GameManager` scriptet
+- Åpne `Tanks` variablen (array) og sett størrelsen til 2
+- Dra `SpawnPoint1` til Element 0 og forandre farge, gjør det samme for Element 1
+- Lagre Scenen din
+
