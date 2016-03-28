@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace Complete
-{
+
     public class ShellExplosion : MonoBehaviour
     {
         public LayerMask m_TankMask;                        // Used to filter what the explosion affects, this should be set to "Players".
@@ -89,4 +88,3 @@ namespace Complete
             return damage;
         }
     }
-}

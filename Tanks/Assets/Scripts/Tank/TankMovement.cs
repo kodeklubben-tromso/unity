@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Complete
-{
+
     public class TankMovement : MonoBehaviour
     {
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
@@ -11,6 +10,8 @@ namespace Complete
         public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
         public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
 		public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
+		[HideInInspector] public bool m_IsOnlineMultiplayer = false;		//false = local multiplayer
+		[HideInInspector] public bool m_IsLocalPlayer = true;
 
 
         private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
@@ -19,7 +20,6 @@ namespace Complete
         private float m_MovementInputValue;         // The current value of the movement input.
         private float m_TurnInputValue;             // The current value of the turn input.
         private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
-
 
         private void Awake ()
         {
@@ -47,9 +47,14 @@ namespace Complete
 
         private void Start ()
         {
+        	//If online multiplayer, always use Keyset 1
+			var m_PlayerNumberTmp = m_PlayerNumber;
+        	if(m_IsOnlineMultiplayer){
+				m_PlayerNumberTmp=1;
+			}
             // The axes names are based on player number.
-            m_MovementAxisName = "Vertical" + m_PlayerNumber;
-            m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+			m_MovementAxisName = "Vertical" + m_PlayerNumberTmp;
+			m_TurnAxisName = "Horizontal" + m_PlayerNumberTmp;
 
             // Store the original pitch of the audio source.
             m_OriginalPitch = m_MovementAudio.pitch;
@@ -58,11 +63,14 @@ namespace Complete
 
         private void Update ()
         {
-            // Store the value of both input axes.
-            m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
-            m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
+			if(m_IsLocalPlayer){
 
-            EngineAudio ();
+				// Store the value of both input axes.
+	            m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
+	            m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
+
+	            EngineAudio ();
+			}
         }
 
 
@@ -124,4 +132,3 @@ namespace Complete
             m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
         }
     }
-}

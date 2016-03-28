@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Complete
-{
+
     public class UIDirectionControl : MonoBehaviour
     {
         // This class is used to make sure world space UI
@@ -25,4 +24,3 @@ namespace Complete
                 transform.rotation = m_RelativeRotation;
         }
     }
-}

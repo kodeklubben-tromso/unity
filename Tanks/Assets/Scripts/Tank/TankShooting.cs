@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Complete
-{
+
     public class TankShooting : MonoBehaviour
     {
         public int m_PlayerNumber = 1;              // Used to identify the different players.
@@ -15,13 +14,14 @@ namespace Complete
         public float m_MinLaunchForce = 15f;        // The force given to the shell if the fire button is not held.
         public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
         public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
-
+		[HideInInspector] public bool m_IsOnlineMultiplayer = false;		//false = local multiplayer
+		[HideInInspector] public bool m_IsLocalPlayer = true;
 
         private string m_FireButton;                // The input axis that is used for launching shells.
         private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
         private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
         private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
-
+		
 
         private void OnEnable()
         {
@@ -33,8 +33,14 @@ namespace Complete
 
         private void Start ()
         {
+			//If online multiplayer, always use Keyset 1
+			var m_PlayerNumberTmp = m_PlayerNumber;
+        	if(m_IsOnlineMultiplayer){
+				m_PlayerNumberTmp=1;
+			}
+
             // The fire axis is based on the player number.
-            m_FireButton = "Fire" + m_PlayerNumber;
+			m_FireButton = "Fire" + m_PlayerNumberTmp;
 
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
@@ -43,7 +49,11 @@ namespace Complete
 
         private void Update ()
         {
-            // The slider should have a default value of the minimum launch force.
+        	//Only spawn shells for local players
+			if(!m_IsLocalPlayer)
+				return;
+
+             // The slider should have a default value of the minimum launch force.
             m_AimSlider.value = m_MinLaunchForce;
 
             // If the max force has been exceeded and the shell hasn't yet been launched...
@@ -101,4 +111,3 @@ namespace Complete
             m_CurrentLaunchForce = m_MinLaunchForce;
         }
     }
-}
