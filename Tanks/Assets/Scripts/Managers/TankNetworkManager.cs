@@ -15,13 +15,11 @@ public class TankNetworkManager : NetworkManager {
 	{
 		Debug.Log("OnServerAddPlayer");
 
-		GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
-		var isLocalPlayer = gm.m_Tanks.Length == 0 ? true : false;//First tank is always local player on server
 		//Create and spawn the new tank
+		GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
 		TankManager tm = gm.AddTankManager(playerControllerId);
-		gm.SpawnSingleTank(tm,gm.m_Tanks.Length,isLocalPlayer);
+		gm.SpawnSingleTank(tm);
 
-		//var player = (GameObject)GameObject.Instantiate(playerPrefab, tm.m_SpawnPoint.position, Quaternion.identity);
 	    NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
 	   
 		//OnServerAddPlayer(conn, playerControllerId);
@@ -56,9 +54,11 @@ public class TankNetworkManager : NetworkManager {
 	    //ClientScene.Ready(conn);
 	    //ClientScene.AddPlayer(0);
 
-		GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
-		TankManager tm = gm.AddTankManager(0);
-		gm.SpawnSingleTank(tm,gm.m_Tanks.Length,true);
+		//GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
+		//gm.GetTankManagerListFromServer();
+
+		//TankManager tm = gm.AddTankManager(0);
+		//gm.SpawnSingleTank(tm,gm.m_Tanks.Length,true);
 
 	    base.OnClientConnect(conn);
 	}

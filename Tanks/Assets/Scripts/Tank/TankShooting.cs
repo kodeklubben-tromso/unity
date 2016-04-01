@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 
-    public class TankShooting : MonoBehaviour
+public class TankShooting : NetworkBehaviour
     {
         public int m_PlayerNumber = 1;              // Used to identify the different players.
         public Rigidbody m_Shell;                   // Prefab of the shell.
@@ -15,7 +16,6 @@ using UnityEngine.UI;
         public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
         public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
 		[HideInInspector] public bool m_IsOnlineMultiplayer = false;		//false = local multiplayer
-		[HideInInspector] public bool m_IsLocalPlayer = true;
 
         private string m_FireButton;                // The input axis that is used for launching shells.
         private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
@@ -50,7 +50,7 @@ using UnityEngine.UI;
         private void Update ()
         {
         	//Only spawn shells for local players
-			if(!m_IsLocalPlayer)
+			if(!isLocalPlayer)
 				return;
 
              // The slider should have a default value of the minimum launch force.

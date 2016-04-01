@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 
-    public class TankHealth : MonoBehaviour
+public class TankHealth : NetworkBehaviour
     {
         public float m_StartingHealth = 100f;               // The amount of health each tank starts with.
         public Slider m_Slider;                             // The slider to represent how much health the tank currently has.
@@ -14,8 +15,8 @@ using UnityEngine.UI;
         
         private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
         private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
-        private float m_CurrentHealth;                      // How much health the tank currently has.
-        private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
+        [SyncVar] private float m_CurrentHealth;                      // How much health the tank currently has.
+		[SyncVar]private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
 
 
         private void Awake ()
@@ -41,6 +42,13 @@ using UnityEngine.UI;
             SetHealthUI();
         }
 
+		private void Update()
+		{
+			if(!isLocalPlayer)
+			{
+				SetHealthUI ();
+			}
+		}
 
         public void TakeDamage (float amount)
         {

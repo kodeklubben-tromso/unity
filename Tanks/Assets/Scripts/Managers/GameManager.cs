@@ -59,15 +59,14 @@ public class GameManager : NetworkBehaviour//
             m_Tanks[i].m_Instance =
                 Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[i].m_PlayerNumber = i + 1;
-            m_Tanks[i].Setup(m_IsOnlineMultiplayer, true);
+            m_Tanks[i].Setup(m_IsOnlineMultiplayer);
         }
     }
-    public void SpawnSingleTank(TankManager tm, int playerNumber, bool isLocalPlayer)
+    public void SpawnSingleTank(TankManager tm)
     {
 		tm.m_Instance =
 			Instantiate(m_TankPrefab, tm.m_SpawnPoint.position, tm.m_SpawnPoint.rotation) as GameObject;
-		tm.m_PlayerNumber = playerNumber;
-		tm.Setup(m_IsOnlineMultiplayer, isLocalPlayer);
+		tm.Setup(m_IsOnlineMultiplayer);
     }
    
     private void SetCameraTargets()
@@ -297,7 +296,6 @@ public class GameManager : NetworkBehaviour//
 	{
 		TankNetworkManager tnm = (TankNetworkManager)this.gameObject.GetComponent(typeof(TankNetworkManager));
 		m_Tanks = tnm.GetTankManagerList();
-		//return m_Tanks
 	}
 
 	//Remove manually defined Tank managers
@@ -310,20 +308,25 @@ public class GameManager : NetworkBehaviour//
 	public TankManager AddTankManager(short playerControllerId)
 	{
 		Debug.Log("AddTankManager: "+playerControllerId);
-		GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
+		GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
 		TankManager newTankManager = new TankManager();
-		newTankManager.m_PlayerColor = new Color(
-			(float)Random.Range(0,254),
-			(float)Random.Range(0,254),
-			(float)Random.Range(0,254));
 		newTankManager.m_SpawnPoint = spawnPoints[Random.Range(0,spawnPoints.Length-1)].transform;
+
+		//Generate a random color for each player
+		newTankManager.m_PlayerColor = new Color(
+			Random.Range(0,101)/100f,
+			Random.Range(0,101)/100f,
+			Random.Range(0,101)/100f);
 		//newTankManager.m_PlayerControllerId = playerControllerId;
 
 		//Create a new TankManager array with the newly added Player
 		var m_TanksTmp = new TankManager[m_Tanks.Length+1];
 		m_Tanks.CopyTo(m_TanksTmp,0);
-		m_TanksTmp[m_TanksTmp.Length-1] = newTankManager;
+
+		newTankManager.m_PlayerNumber =m_TanksTmp.Length; //Increase player number by one
+		m_TanksTmp[m_TanksTmp.Length-1] = newTankManager; //add new tank manager as the last item
+
 		m_Tanks = m_TanksTmp;
 
 		return newTankManager;

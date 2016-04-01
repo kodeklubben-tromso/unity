@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-
-    public class TankMovement : MonoBehaviour
+	public class TankMovement : NetworkBehaviour
     {
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
@@ -11,8 +11,6 @@
         public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
 		public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
 		[HideInInspector] public bool m_IsOnlineMultiplayer = false;		//false = local multiplayer
-		[HideInInspector] public bool m_IsLocalPlayer = true;
-
 
         private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
         private string m_TurnAxisName;              // The name of the input axis for turning.
@@ -20,6 +18,8 @@
         private float m_MovementInputValue;         // The current value of the movement input.
         private float m_TurnInputValue;             // The current value of the turn input.
         private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
+	[SyncVar] private Vector3 m_CurrentPosition;		// Networking. Where is the player object
+	[SyncVar] private Quaternion m_CurrentRotation;
 
         private void Awake ()
         {
@@ -35,6 +35,8 @@
             // Also reset the input values.
             m_MovementInputValue = 0f;
             m_TurnInputValue = 0f;
+			m_CurrentPosition = this.transform.position;
+			m_CurrentRotation = this.transform.rotation;
         }
 
 
@@ -63,7 +65,7 @@
 
         private void Update ()
         {
-			if(m_IsLocalPlayer){
+			if(isLocalPlayer){
 
 				// Store the value of both input axes.
 	            m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
@@ -105,8 +107,15 @@
         private void FixedUpdate ()
         {
             // Adjust the rigidbodies position and orientation in FixedUpdate.
-            Move ();
-            Turn ();
+            if(isLocalPlayer)
+            {
+           	 	Move ();
+            	Turn ();
+            }
+            else{				
+				m_Rigidbody.MovePosition(m_CurrentPosition);				
+				m_Rigidbody.MoveRotation(m_CurrentRotation);
+            }
         }
 
 
@@ -117,6 +126,7 @@
 
             // Apply this movement to the rigidbody's position.
             m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
+			m_CurrentPosition =  m_Rigidbody.position + movement;
         }
 
 
@@ -130,5 +140,6 @@
 
             // Apply this rotation to the rigidbody's rotation.
             m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
+			m_CurrentRotation = m_Rigidbody.rotation * turnRotation;
         }
     }
