@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameManager : NetworkBehaviour//
+public class GameManager : MonoBehaviour//
 {
 	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
 	public int m_OnlineMultiplayerCount = 5;
@@ -14,7 +14,9 @@ public class GameManager : NetworkBehaviour//
 	public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
 	public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
 	public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
+
 	public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
+															  //public NetworkManager m_NetworkManager;
 
 	private int m_RoundNumber;                  // Which round the game is currently on.
 	private WaitForSeconds m_StartWait;         // Used to have a delay whilst the round starts.
@@ -28,8 +30,8 @@ public class GameManager : NetworkBehaviour//
 		m_StartWait = new WaitForSeconds(m_StartDelay);
 		m_EndWait = new WaitForSeconds(m_EndDelay);
 
-		var networkHUD = GetComponent<NetworkManagerHUD>();
-
+		var networkHUD = this.GetComponent<NetworkManagerHUD>();
+		Debug.Log("TEST");
 		if (m_IsOnlineMultiplayer)
 		{
 			networkHUD.enabled = true;
@@ -57,15 +59,8 @@ public class GameManager : NetworkBehaviour//
 			m_Tanks[i].m_Instance =
 				 Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
 			m_Tanks[i].m_PlayerNumber = i + 1;
-			m_Tanks[i].Setup(m_IsOnlineMultiplayer);
+			m_Tanks[i].Setup();
 		}
-	}
-
-	public void SpawnSingleTank(TankManager tm)
-	{
-		tm.m_Instance =
-			Instantiate(m_TankPrefab, tm.m_SpawnPoint.position, tm.m_SpawnPoint.rotation) as GameObject;
-		tm.Setup(m_IsOnlineMultiplayer);
 	}
 
 	private void SetCameraTargets()
@@ -118,8 +113,6 @@ public class GameManager : NetworkBehaviour//
 		Debug.Log("RoundMultiplayerWaiting");
 		while (m_Tanks.Length < m_OnlineMultiplayerCount)
 		{
-			GetTankManagerListFromServer();//Get the list
-
 			yield return new WaitForSeconds(1);
 		}
 
@@ -156,7 +149,6 @@ public class GameManager : NetworkBehaviour//
 		while (!OneTankLeft())
 		{
 			// ... return on the next frame.
-			GetTankManagerListFromServer();
 			yield return new WaitForSeconds(1);
 		}
 	}
@@ -289,13 +281,11 @@ public class GameManager : NetworkBehaviour//
 
 	#region Online Multiplayer
 
-	public void GetTankManagerListFromServer()
+	public void SpawnSingleTank(TankManager tm)
 	{
-		if (m_IsOnlineMultiplayer)
-		{
-			TankNetworkManager tnm = (TankNetworkManager) this.gameObject.GetComponent(typeof(TankNetworkManager));
-			m_Tanks = tnm.GetTankManagerList();
-		}
+		tm.m_Instance =
+			Instantiate(m_TankPrefab, tm.m_SpawnPoint.position, tm.m_SpawnPoint.rotation) as GameObject;
+		tm.Setup();
 	}
 
 	//Remove manually defined Tank managers
@@ -305,51 +295,57 @@ public class GameManager : NetworkBehaviour//
 	}
 
 	//Create new random managers based on predefined max player count
-	public TankManager AddTankManager(short playerControllerId)
+	public TankManager AddTankManager()
 	{
-		Debug.Log("AddTankManager: " + playerControllerId);
+		Debug.Log("AddTankManager");
 
 		GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+		int spawnPointNumber = Random.Range(0, spawnPoints.Length - 1);
 		TankManager newTankManager = new TankManager();
-		newTankManager.m_SpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length - 1)].transform;
+		newTankManager.m_SpawnPoint = spawnPoints[spawnPointNumber].transform;
 
 		//Generate a random color for each player
 		newTankManager.m_PlayerColor = new Color(
 			Random.Range(0, 101) / 100f,
 			Random.Range(0, 101) / 100f,
 			Random.Range(0, 101) / 100f);
-		//newTankManager.m_PlayerControllerId = playerControllerId;
 
+		AddTankToArray(newTankManager);
+
+		//if (isServer)
+		{
+			Debug.Log("Called from server");
+			//RpcAddTankOnClient(newTankManager.m_PlayerColor.r, newTankManager.m_PlayerColor.g, newTankManager.m_PlayerColor.b, spawnPointNumber);
+		}
+
+		return newTankManager;
+	}
+
+	private void AddTankToArray(TankManager newTankManager)
+	{
 		//Create a new TankManager array with the newly added Player
 		var m_TanksTmp = new TankManager[m_Tanks.Length + 1];
 		m_Tanks.CopyTo(m_TanksTmp, 0);
 
 		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
 		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
-
 		m_Tanks = m_TanksTmp;
-
-		return newTankManager;
 	}
 
-	public void RemoveTankManager(short playerControllerId)
+	//[ClientRpc]
+	private void RpcAddTankOnClient(float colorR, float colorG, float colorB, int spawnPointNumber)
 	{
-		//		Debug.Log("RemoveTankManager: "+playerControllerId);
-		//		TankManager[] m_TanksTmp = new TankManager[m_Tanks.Length-1];
-		//
-		//		int newCounter = 0;
-		//		for (int i = 0; i < m_Tanks.Length; i++)
-		//		{
-		//			//Recreate the tank manager array, ignoring the removed item
-		//			if(m_Tanks[i].m_PlayerControllerId != playerControllerId)
-		//			{
-		//				m_TanksTmp[newCounter] = m_Tanks[i];
-		//				newCounter++;
-		//			}
-		//		}
-		//		Debug.Log("RemoveTankManager: LenTmp "+m_TanksTmp.Length);
-		//		m_Tanks = m_TanksTmp;
-		//		Debug.Log("RemoveTankManager: LenNew "+m_Tanks.Length);
+		Debug.Log("Recieved at client");
+		//if (isLocalPlayer)
+		{
+			Debug.Log("Recieved at client2");
+			GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+			TankManager newTankManager = new TankManager();
+			newTankManager.m_SpawnPoint = spawnPoints[spawnPointNumber].transform;
+			newTankManager.m_PlayerColor = new Color(colorR, colorG, colorB);
+
+			AddTankToArray(newTankManager);
+		}
 	}
 
 	#endregion

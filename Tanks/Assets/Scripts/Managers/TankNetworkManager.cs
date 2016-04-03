@@ -4,13 +4,6 @@ using UnityEngine.Networking;
 
 public class TankNetworkManager : NetworkManager
 {
-	public TankManager[] GetTankManagerList()
-	{
-		//TODO: How to transfer from server to client
-		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
-		return gm.m_Tanks;
-	}
-
 	//Called when a player is added
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 	{
@@ -18,7 +11,7 @@ public class TankNetworkManager : NetworkManager
 
 		//Create and spawn the new tank
 		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
-		TankManager tm = gm.AddTankManager(playerControllerId);
+		TankManager tm = gm.AddTankManager();
 		gm.SpawnSingleTank(tm);
 
 		NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
@@ -34,9 +27,6 @@ public class TankNetworkManager : NetworkManager
 		{
 			NetworkServer.Destroy(player.gameObject);
 		}
-
-		//GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
-		//gm.RemoveTankManager(player.gameObject.);
 	}
 
 	public override void OnStopServer()
@@ -53,14 +43,6 @@ public class TankNetworkManager : NetworkManager
 		Debug.Log("OnClientConnect");
 		//ClientScene.Ready(conn);
 		//ClientScene.AddPlayer(0);
-
-		//Get the list of current Tanks in the game
-		GetTankManagerList();
-		//GameManager gm = (GameManager)this.gameObject.GetComponent(typeof(GameManager));
-		//gm.GetTankManagerListFromServer();
-
-		//TankManager tm = gm.AddTankManager(0);
-		//gm.SpawnSingleTank(tm,gm.m_Tanks.Length,true);
 
 		base.OnClientConnect(conn);
 	}

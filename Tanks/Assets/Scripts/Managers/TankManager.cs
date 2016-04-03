@@ -30,7 +30,7 @@ public class TankManager
 	private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
 	private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
 
-	public void Setup(bool isOnlineMultiplayer)
+	public void Setup()
 	{
 		// Get references to the components.
 		m_Movement = m_Instance.GetComponent<TankMovement>();
@@ -39,9 +39,7 @@ public class TankManager
 
 		// Set the player numbers to be consistent across the scripts.
 		m_Movement.m_PlayerNumber = m_PlayerNumber;
-		m_Movement.m_IsOnlineMultiplayer = isOnlineMultiplayer;
 		m_Shooting.m_PlayerNumber = m_PlayerNumber;
-		m_Shooting.m_IsOnlineMultiplayer = isOnlineMultiplayer;
 
 		// Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
 		m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";

@@ -15,13 +15,11 @@ public class TankShooting : NetworkBehaviour
 	public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
 	public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
 
-	[HideInInspector]
-	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
-
 	private string m_FireButton;                // The input axis that is used for launching shells.
 	private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
 	private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
 	private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
+	private GameManager m_GameManager;
 
 	private void OnEnable()
 	{
@@ -34,7 +32,8 @@ public class TankShooting : NetworkBehaviour
 	{
 		//If online multiplayer, always use Keyset 1
 		var m_PlayerNumberTmp = m_PlayerNumber;
-		if (m_IsOnlineMultiplayer)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
 		{
 			m_PlayerNumberTmp = 1;
 		}
@@ -49,7 +48,7 @@ public class TankShooting : NetworkBehaviour
 	private void Update()
 	{
 		//Only spawn shells for local players
-		if (!isLocalPlayer)
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
 			return;
 
 		// The slider should have a default value of the minimum launch force.
@@ -60,7 +59,7 @@ public class TankShooting : NetworkBehaviour
 		{
 			// ... use the max force and launch the shell.
 			m_CurrentLaunchForce = m_MaxLaunchForce;
-			CmdFire();
+			Fire();
 		}
 		// Otherwise, if the fire button has just started being pressed...
 		else if (Input.GetButtonDown(m_FireButton))
@@ -85,12 +84,19 @@ public class TankShooting : NetworkBehaviour
 		else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
 		{
 			// ... launch the shell.
-			CmdFire();
+			Fire();
 		}
 	}
 
-	[Command]
-	private void CmdFire()
+	private void Fire()
+	{
+		if (m_GameManager.m_IsOnlineMultiplayer)
+			CmdFire();
+		else
+			DoFire();
+	}
+
+	private GameObject DoFire()
 	{
 		// Set the fired flag so only Fire is only called once.
 		m_Fired = true;
@@ -109,6 +115,13 @@ public class TankShooting : NetworkBehaviour
 		// Reset the launch force.  This is a precaution in case of missing button events.
 		m_CurrentLaunchForce = m_MinLaunchForce;
 
-		NetworkServer.Spawn(shellInstance.gameObject);//Send information to server about the new bullet
+		return shellInstance.gameObject;
+	}
+
+	[Command]
+	private void CmdFire()
+	{
+		GameObject shell = DoFire();
+		NetworkServer.Spawn(shell);//Send information to server about the new bullet
 	}
 }

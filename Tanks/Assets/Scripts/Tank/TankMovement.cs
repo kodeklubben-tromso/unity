@@ -10,9 +10,7 @@ public class TankMovement : NetworkBehaviour
 	public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
 	public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
 	public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
-
-	[HideInInspector]
-	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
+	public GameManager m_GameManager;
 
 	private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
 	private string m_TurnAxisName;              // The name of the input axis for turning.
@@ -46,7 +44,9 @@ public class TankMovement : NetworkBehaviour
 	{
 		//If online multiplayer, always use Keyset 1
 		var m_PlayerNumberTmp = m_PlayerNumber;
-		if (m_IsOnlineMultiplayer)
+
+		GameManager gm = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (gm.m_IsOnlineMultiplayer)
 		{
 			m_PlayerNumberTmp = 1;
 		}
