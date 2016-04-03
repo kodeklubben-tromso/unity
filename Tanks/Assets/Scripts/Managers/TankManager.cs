@@ -24,17 +24,17 @@ public class TankManager
 	[HideInInspector]
 	public int m_Wins;                    // The number of wins this player has so far.
 
-	//HideInInspector] public short m_PlayerControllerId;	// Used for online multiplayer. Identifies the player on the network.
-
 	private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable and enable control.
 	private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
 	private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
+	private NetworkHelper m_NetworkHelper;
 
 	public void Setup()
 	{
 		// Get references to the components.
 		m_Movement = m_Instance.GetComponent<TankMovement>();
 		m_Shooting = m_Instance.GetComponent<TankShooting>();
+		m_NetworkHelper = m_Instance.GetComponent<NetworkHelper>();
 		m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
 		// Set the player numbers to be consistent across the scripts.
@@ -82,4 +82,32 @@ public class TankManager
 		m_Instance.SetActive(false);
 		m_Instance.SetActive(true);
 	}
+
+	#region Online multiplayer
+
+	public void SpawnTanksOnClients()
+	{
+		m_NetworkHelper.SendMissingTanksToClient();
+		m_NetworkHelper.AddTankOnClients(this);
+
+	}
+	public void SetMovementScipt(TankMovement m_Movement)
+	{
+		this.m_Movement = m_Movement; 
+	}
+	public void SetShootingScipt(TankShooting m_Shooting)
+	{
+		this.m_Shooting = m_Shooting; 
+	}
+
+	public void SetNetworkHelperScipt(NetworkHelper m_NetworkHelper)
+	{
+		this.m_NetworkHelper = m_NetworkHelper; 
+	}
+	public void SetCanvasGameObject(GameObject m_CanvasGameObject)
+	{
+		this.m_CanvasGameObject = m_CanvasGameObject; 
+	}
+
+	#endregion
 }

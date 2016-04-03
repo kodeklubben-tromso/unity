@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour//
 		m_EndWait = new WaitForSeconds(m_EndDelay);
 
 		var networkHUD = this.GetComponent<NetworkManagerHUD>();
-		Debug.Log("TEST");
 		if (m_IsOnlineMultiplayer)
 		{
 			networkHUD.enabled = true;
@@ -81,6 +80,7 @@ public class GameManager : MonoBehaviour//
 	// This is called from start and will run each phase of the game one after another.
 	private IEnumerator GameLoop()
 	{
+		
 		if (m_IsOnlineMultiplayer)
 		{
 			yield return StartCoroutine(RoundMultiplayerWaiting());
@@ -150,6 +150,7 @@ public class GameManager : MonoBehaviour//
 		{
 			// ... return on the next frame.
 			yield return new WaitForSeconds(1);
+			m_MessageText.text = m_Tanks.Length.ToString();
 		}
 	}
 
@@ -288,6 +289,11 @@ public class GameManager : MonoBehaviour//
 		tm.Setup();
 	}
 
+	public void SpawnSingleTankOnClients(TankManager tm)
+	{
+		tm.SpawnTanksOnClients();
+	}
+
 	//Remove manually defined Tank managers
 	public void RemoveAllTankManagers()
 	{
@@ -310,14 +316,8 @@ public class GameManager : MonoBehaviour//
 			Random.Range(0, 101) / 100f,
 			Random.Range(0, 101) / 100f);
 
-		AddTankToArray(newTankManager);
-
-		//if (isServer)
-		{
-			Debug.Log("Called from server");
-			//RpcAddTankOnClient(newTankManager.m_PlayerColor.r, newTankManager.m_PlayerColor.g, newTankManager.m_PlayerColor.b, spawnPointNumber);
-		}
-
+		//AddTankToArray(newTankManager);
+		SpawnSingleTank(newTankManager);
 		return newTankManager;
 	}
 
@@ -330,22 +330,6 @@ public class GameManager : MonoBehaviour//
 		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
 		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
 		m_Tanks = m_TanksTmp;
-	}
-
-	//[ClientRpc]
-	private void RpcAddTankOnClient(float colorR, float colorG, float colorB, int spawnPointNumber)
-	{
-		Debug.Log("Recieved at client");
-		//if (isLocalPlayer)
-		{
-			Debug.Log("Recieved at client2");
-			GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-			TankManager newTankManager = new TankManager();
-			newTankManager.m_SpawnPoint = spawnPoints[spawnPointNumber].transform;
-			newTankManager.m_PlayerColor = new Color(colorR, colorG, colorB);
-
-			AddTankToArray(newTankManager);
-		}
 	}
 
 	#endregion

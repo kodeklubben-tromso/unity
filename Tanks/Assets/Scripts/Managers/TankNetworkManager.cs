@@ -11,18 +11,20 @@ public class TankNetworkManager : NetworkManager
 
 		//Create and spawn the new tank
 		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
+
 		TankManager tm = gm.AddTankManager();
-		gm.SpawnSingleTank(tm);
 
 		NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
 
+		//We have to spawn the tanks on client AFTER the Tank have been spawned in the network
+		tm.SpawnTanksOnClients();
 		//OnServerAddPlayer(conn, playerControllerId);
 	}
 
 	// called when a player is removed for a client
 	public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
 	{
-		Debug.Log("OnServerRemovePlayer");
+		//Debug.Log("OnServerRemovePlayer");
 		if (player.gameObject != null)
 		{
 			NetworkServer.Destroy(player.gameObject);
@@ -40,7 +42,7 @@ public class TankNetworkManager : NetworkManager
 	// called when connected to a server
 	public override void OnClientConnect(NetworkConnection conn)
 	{
-		Debug.Log("OnClientConnect");
+		//Debug.Log("OnClientConnect");
 		//ClientScene.Ready(conn);
 		//ClientScene.AddPlayer(0);
 
@@ -50,7 +52,7 @@ public class TankNetworkManager : NetworkManager
 	// called when disconnected from a server
 	public override void OnClientDisconnect(NetworkConnection conn)
 	{
-		Debug.Log("OnClientConnect");
+		//Debug.Log("OnClientConnect");
 		base.OnClientDisconnect(conn);
 	}
 }
