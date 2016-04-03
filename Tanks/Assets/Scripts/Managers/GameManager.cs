@@ -309,6 +309,7 @@ public class GameManager : MonoBehaviour//
 		int spawnPointNumber = Random.Range(0, spawnPoints.Length - 1);
 		TankManager newTankManager = new TankManager();
 		newTankManager.m_SpawnPoint = spawnPoints[spawnPointNumber].transform;
+		//newTankManager.m_PlayerNumber = m_Tanks.Length;
 
 		//Generate a random color for each player
 		newTankManager.m_PlayerColor = new Color(
@@ -316,11 +317,11 @@ public class GameManager : MonoBehaviour//
 			Random.Range(0, 101) / 100f,
 			Random.Range(0, 101) / 100f);
 
-		//AddTankToArray(newTankManager);
+		AddTankToArray(newTankManager);
 		SpawnSingleTank(newTankManager);
 		return newTankManager;
 	}
-
+	//Update the server-side m_Tank
 	private void AddTankToArray(TankManager newTankManager)
 	{
 		//Create a new TankManager array with the newly added Player

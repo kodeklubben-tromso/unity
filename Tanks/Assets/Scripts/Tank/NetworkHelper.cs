@@ -8,7 +8,6 @@ public class NetworkHelper : NetworkBehaviour
 
 	public void SendMissingTanksToClient()
 	{
-		Debug.Log("SendMissingTanksToClient() ");
 		if (m_GameManager == null)
 			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
 		if (m_GameManager.m_IsOnlineMultiplayer)
@@ -20,16 +19,6 @@ public class NetworkHelper : NetworkBehaviour
 
 		}
 	}
-	public void AddTankOnClients(TankManager tm)//Color color, Transform spawnPoint)
-	{
-		Debug.Log("AddTankOnClients(): "+tm.m_PlayerNumber);
-		if (m_GameManager == null)
-			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-		if (m_GameManager.m_IsOnlineMultiplayer)
-		{
-			RpcAddTankOnClient(tm);
-		}
-	}
 
 	[ClientRpc]
 	private void RpcAddTankOnClient(TankManager newTankManager)
@@ -39,27 +28,19 @@ public class NetworkHelper : NetworkBehaviour
 		newTankManager.SetNetworkHelperScipt(newTankManager.m_Instance.GetComponent<NetworkHelper>());
 		newTankManager.SetCanvasGameObject(newTankManager.m_Instance.GetComponentInChildren<Canvas>().gameObject);
 
-		//Debug.Log("Recieved at client: isLocalPlayer: " + isLocalPlayer);
-		//if (!isLocalPlayer)//make sure we dont add the same tank twice
-		{
-			AddTankToArray(newTankManager);
-		}
+		AddTankToArray(newTankManager);
 	}
 
 	private void AddTankToArray(TankManager newTankManager)
 	{
-		Debug.Log("AddTankToArray()");
 		if (m_GameManager == null)
 			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-		//Debug.Log("Add Tank with number?: "+newTankManager.m_PlayerNumber);
 
-		//if(m_GameManager.m_Tanks.Count(lt=>lt.m_PlayerNumber == newTankManager.m_PlayerNumber) > 0)
-		//{
-		//	Debug.Log("NO");
-		//	return;
-		//}
-		//Debug.Log("YES");
-
+		//Dont add existing tanks
+		if(m_GameManager.m_Tanks.Count(lt=>lt.m_PlayerNumber == newTankManager.m_PlayerNumber) > 0)
+		{
+			return;
+		}
 		var m_TanksTmp = new TankManager[m_GameManager.m_Tanks.Length + 1];
 		m_GameManager.m_Tanks.CopyTo(m_TanksTmp, 0);
 
