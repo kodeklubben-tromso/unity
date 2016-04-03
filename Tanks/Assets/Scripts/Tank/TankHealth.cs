@@ -10,7 +10,7 @@ public class TankHealth : NetworkBehaviour
 	public Color m_FullHealthColor = Color.green;       // The color the health bar will be when on full health.
 	public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
 	public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
-	public GameManager m_GameManager;
+	private GameManager m_GameManager;
 
 	private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
 	private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
@@ -31,6 +31,8 @@ public class TankHealth : NetworkBehaviour
 
 		// Disable the prefab so it can be activated when it's required.
 		m_ExplosionParticles.gameObject.SetActive(false);
+
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
 	}
 
 	private void OnEnable()
@@ -51,8 +53,7 @@ public class TankHealth : NetworkBehaviour
 	public void TakeDamage(float amount)
 	{
 		//Dont calculate damage on clients if playing in online mode
-		GameManager gm = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-		if (gm.m_IsOnlineMultiplayer && !isServer)
+		if (m_GameManager.m_IsOnlineMultiplayer && !isServer)
 		{
 			return;
 		}

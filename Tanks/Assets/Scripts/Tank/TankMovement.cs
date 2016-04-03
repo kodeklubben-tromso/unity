@@ -10,7 +10,6 @@ public class TankMovement : NetworkBehaviour
 	public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
 	public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
 	public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
-	public GameManager m_GameManager;
 
 	private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
 	private string m_TurnAxisName;              // The name of the input axis for turning.
@@ -18,6 +17,7 @@ public class TankMovement : NetworkBehaviour
 	private float m_MovementInputValue;         // The current value of the movement input.
 	private float m_TurnInputValue;             // The current value of the turn input.
 	private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
+	private GameManager m_GameManager;
 
 	private void Awake()
 	{
@@ -45,8 +45,8 @@ public class TankMovement : NetworkBehaviour
 		//If online multiplayer, always use Keyset 1
 		var m_PlayerNumberTmp = m_PlayerNumber;
 
-		GameManager gm = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-		if (gm.m_IsOnlineMultiplayer)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
 		{
 			m_PlayerNumberTmp = 1;
 		}
@@ -60,7 +60,7 @@ public class TankMovement : NetworkBehaviour
 
 	private void Update()
 	{
-		if (!isLocalPlayer)
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
 		{
 			return;
 		}
@@ -101,7 +101,7 @@ public class TankMovement : NetworkBehaviour
 	private void FixedUpdate()
 	{
 		// Adjust the rigidbodies position and orientation in FixedUpdate.
-		if (!isLocalPlayer)
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
 		{
 			return;
 		}
