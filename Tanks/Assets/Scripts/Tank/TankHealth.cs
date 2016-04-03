@@ -20,6 +20,9 @@ public class TankHealth : NetworkBehaviour
 	[SyncVar]
 	private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
 
+	[HideInInspector]
+	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
+
 	private void Awake()
 	{
 		// Instantiate the explosion prefab and get a reference to the particle system on it.
@@ -44,14 +47,18 @@ public class TankHealth : NetworkBehaviour
 
 	private void Update()
 	{
-		if (!isLocalPlayer)
-		{
-			SetHealthUI();
-		}
+		SetHealthUI();
 	}
 
 	public void TakeDamage(float amount)
 	{
+		//Dont calculate damage on clients if playing in online mode
+		TankMovement tm = (TankMovement) this.gameObject.GetComponent(typeof(TankMovement));
+		if (tm.m_IsOnlineMultiplayer && !isServer)
+		{
+			return;
+		}
+
 		// Reduce current health by the amount of damage done.
 		m_CurrentHealth -= amount;
 
