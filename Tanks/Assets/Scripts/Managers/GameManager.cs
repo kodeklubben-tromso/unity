@@ -150,7 +150,6 @@ public class GameManager : MonoBehaviour//
 		{
 			// ... return on the next frame.
 			yield return new WaitForSeconds(1);
-			m_MessageText.text = m_Tanks.Length.ToString();
 		}
 	}
 
