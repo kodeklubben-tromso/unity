@@ -1137,7 +1137,7 @@ For å få spillet til å fungere mellom ulike maskiner, må det gjøres en del 
 ###Endringer på eksisterende objekter
 
 SPAWNPOINTS
-- Åpne "SpawnPoint" i hierarkiet og velg den første underliggende (SpawnPoint1)
+- Åpne "SpawnPoint1" i hierarkiet 
 - Vær sikker på at "Inspector" er synlig
 - Opprett en ny tag
 - Åpne "Tag" nedtrekksmenyen i "Inspector", velg "Add tag", trykk "+" og skriv "SpawnPoint" i feltet som dukker opp
