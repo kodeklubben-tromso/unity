@@ -1158,6 +1158,7 @@ SPAWNPOINTS
 GAME MANAGER
 - Åpne GameManager i hierarkiet
 - Legg til komponenten NetworkManagerHUD
+- Opprett og tildel Taggen "GameManager"
 - Lagre
 
 PREFABS
@@ -2136,6 +2137,8 @@ GAME MANAGER
 - I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
  - Klikk på "+" slik at det kommer opp et nytt element i listen
  - Dra Prefaben Shell (fra katalogen Prefabs) til det nye elementet som dukket opp i listen (den som nå heter Empty)
+- Det finnes allerede et script med samme funksjon, denne må slettes.
+ - Slett komponenten: "Network Manager (script) "
 - Lagre
 
 TANK PREFAB
