@@ -1134,24 +1134,30 @@ using UnityEngine;
 ## 8 Online Multiplayer
 For å få spillet til å fungere mellom ulike maskiner, må det gjøres en del endringer på eksisterende kode og objekter. Vi må også legge til noen nye kode-filer.
 
-#Endringer på eksisterende objekter
+###Endringer på eksisterende objekter
 
 SPAWNPOINTS
 - Åpne "SpawnPoint" i hierarkiet og velg den første underliggende (SpawnPoint1)
 - Vær sikker på at "Inspector" er synlig
 - Opprett en ny tag
 - Åpne "Tag" nedtrekksmenyen i "Inspector", velg "Add tag", trykk "+" og skriv "SpawnPoint" i feltet som dukker opp
+![ScreenShot](Pictures/newspawnpoint.png)
 - For hvert spawnpoint (1 og 2), sett den nye Taggen
 - For hvert spawnpoint, legg til to nye komponenter, "NetworkStartPosition" og "NetworkIdentity" (Trykk "Add component")
 - Kopier SpawnPoint1 tre ganger
 - Gi de nye elementene navnene: SpawnPoint3, SpawnPoint4, SpawnPoint5
-- Gi hver av de nye spanwpoints nye koordinater (x og z) TODO: SPESIFISER
+- Oppdatert koordinatene til alle SpawnPoints (i Transform)
+ - 1: X =46, Y=0, Z=25
+ - 2: X =-18, Y=0, Z=55
+ - 3: X =-26, Y=0, Z=8
+ - 4: X =7, Y=0, Z=-2
+ - 5: X =25, Y=0, Z=50
+ - NB: Det er viktig at alle har de samme tallene her!
 - Lagre
 
 GAME MANAGER
-- Åpe GameManager i hierarkiet
+- Åpne GameManager i hierarkiet
 - Legg til komponenten NetworkManagerHUD
-- NYTT SKCRIPT (todo)
 - Lagre
 
 PREFABS
@@ -1163,9 +1169,9 @@ PREFABS
 - Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
 - Lagre
 
- # Nye script
+### Nye script
  
- - Lag et nytt scipt under Scripts/Tank som heter NetworkHelper og skriv inn følgende innhold
+- Lag et nytt script under Scripts/Tank som heter NetworkHelper og skriv inn følgende innhold
 
 ```
 using System.Linq;
@@ -1221,9 +1227,9 @@ public class NetworkHelper : NetworkBehaviour
 }
 
 ```
+- Lagre
 
-- Lag et nytt script under Scripts/Managers som heter TankNetworkManager og skriv inn følgende innhold
-
+Lag et nytt script under Scripts/Managers som heter TankNetworkManager og skriv inn følgende innhold
 ```
 using System.Collections;
 using UnityEngine;
@@ -1279,9 +1285,28 @@ public class TankNetworkManager : NetworkManager
 	}
 }
 ```
-#Gå gjennom følgende script og legg inn det som mangler i din kode
+- Lagre
 
-#TankManager.cs
+### Knytt de nye scriptene til objekter
+GAME MANAGER
+- Åpne GameManager i hierarkiet
+- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
+- I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
+ - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
+- I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
+ - Klikk på "+" slik at det kommer opp et nytt element i listen
+ - Dra Prefaben Shell (fra katalogen Prefabs) til det nye elementet som dukket opp i listen (den som nå heter Empty)
+- Lagre
+
+TANK PREFAB
+- Velg Prefaben Tank (i katalogen Prefabs)
+- Dra scriptet NetworkHelper fra katalogen Scripts/Tank til Tank-prefaben
+- Lagre
+
+###Gå gjennom følgende script og legg inn det som mangler i din kode
+Til neste gang skal jeg dele opp dette steget slik at kun det som er nytt vises.
+
+####TankManager.cs
 ```
 using System;
 using UnityEngine;
@@ -1395,11 +1420,10 @@ public class TankManager
 
 	#endregion
 }
-
-
 ```
+- Lagre
 
-#TankShooting.cs
+####TankShooting.cs
 ```
 using UnityEngine;
 using UnityEngine.Networking;
@@ -1528,9 +1552,10 @@ public class TankShooting : NetworkBehaviour
 		NetworkServer.Spawn(shell);//Send information to server about the new bullet
 	}
 }
-
 ```
-#TankMovement.cs
+- Lagre
+
+####TankMovement.cs
 ```
 using System.Linq;
 using UnityEngine;
@@ -1665,9 +1690,10 @@ public class TankMovement : NetworkBehaviour
 		m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
 	}
 }
-
 ```
-#TankHealth.cs
+- Lagre
+
+####TankHealth.cs
 
 ```
 using UnityEngine;
@@ -1771,10 +1797,10 @@ public class TankHealth : NetworkBehaviour
 		gameObject.SetActive(false);
 	}
 }
-
 ```
+- Lagre
 
-#GameManager.cs
+####GameManager.cs
 ```
 using System.Collections;
 using UnityEngine;
@@ -2115,5 +2141,14 @@ public class GameManager : MonoBehaviour//
 }
 
 ```
-# Sett manglende public variabler
+- Lagre
+ 
+### Sett manglende public variabler
+GAME MANAGER
+- Velg GameManager i hierarkiet
+- Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
+- Sett "Num Rounds to Win" til 1. Det er viktig at alle har det samme nummeret her.
+- Lagre
 
+## Online multiplayer Del 2
+Det er fortsatt en del småting som må til for at dette skal fungere optimalt. Dette kommer vi tilbake til.
