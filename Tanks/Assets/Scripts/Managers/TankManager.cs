@@ -88,7 +88,6 @@ public class TankManager
 	public void SpawnTanksOnClients()
 	{
 		m_NetworkHelper.SendMissingTanksToClient();
-		//m_NetworkHelper.AddTankOnClients(this);
 
 	}
 	public void SetMovementScipt(TankMovement m_Movement)
