@@ -1131,4 +1131,1029 @@ using UnityEngine;
     }
 
 ```
+## 8 Online Multiplayer
+For å få spillet til å fungere mellom ulike maskiner, må det gjøres en del endringer på eksisterende kode og objekter. Vi må også legge til noen nye kode-filer.
 
+###Endringer på eksisterende objekter
+
+SPAWNPOINTS
+- Åpne "SpawnPoint1" i hierarkiet 
+- Vær sikker på at "Inspector" er synlig
+- Opprett en ny tag
+- Åpne "Tag" nedtrekksmenyen i "Inspector", velg "Add tag", trykk "+" og skriv "SpawnPoint" i feltet som dukker opp
+![ScreenShot](Pictures/newspawnpoint.png)
+- For hvert spawnpoint (1 og 2), sett den nye Taggen
+- For hvert spawnpoint, legg til to nye komponenter, "NetworkStartPosition" og "NetworkIdentity" (Trykk "Add component")
+- Kopier SpawnPoint1 tre ganger
+- Gi de nye elementene navnene: SpawnPoint3, SpawnPoint4, SpawnPoint5
+- Oppdatert koordinatene til alle SpawnPoints (i Transform)
+ - 1: X= 42, Y= 0, Z= 17
+ - 2: X= -26, Y= 0, Z= 37
+ - 3: X= -36, Y= 0, Z= -8
+ - 4: X= -4, Y= 0, Z= -26
+ - 5: X= 20, Y= 0, Z= 33
+ - NB: Det er viktig at alle har de samme tallene her!
+- Lagre
+
+GAME MANAGER
+- Åpne GameManager i hierarkiet
+- Legg til komponenten NetworkManagerHUD
+- Opprett og tildel Taggen "GameManager"
+- Lagre
+
+PREFABS
+- Åpne Prefabs-katalogn
+- Velg Tank
+- Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
+- Slå på "Local player authority" på "Network Identity"-komponenten
+- Lagre
+- Velg Shell
+- Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
+- Lagre
+
+###Gå gjennom følgende script og legg inn det som mangler i din kode
+Til neste gang skal jeg dele opp dette steget slik at kun det som er nytt vises.
+
+####TankManager.cs
+```
+using System;
+using UnityEngine;
+
+[Serializable]
+public class TankManager
+{
+	// This class is to manage various settings on a tank.
+	// It works with the GameManager class to control how the tanks behave
+	// and whether or not players have control of their tank in the
+	// different phases of the game.
+
+	public Color m_PlayerColor;                             // This is the color this tank will be tinted.
+	public Transform m_SpawnPoint;                          // The position and direction the tank will have when it spawns.
+
+	[HideInInspector]
+	public int m_PlayerNumber;            // This specifies which player this the manager for.
+
+	[HideInInspector]
+	public string m_ColoredPlayerText;    // A string that represents the player with their number colored to match their tank.
+
+	[HideInInspector]
+	public GameObject m_Instance;         // A reference to the instance of the tank when it is created.
+
+	[HideInInspector]
+	public int m_Wins;                    // The number of wins this player has so far.
+
+	private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable and enable control.
+	private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
+	private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
+	private NetworkHelper m_NetworkHelper;
+
+	public void Setup()
+	{
+		// Get references to the components.
+		m_Movement = m_Instance.GetComponent<TankMovement>();
+		m_Shooting = m_Instance.GetComponent<TankShooting>();
+		m_NetworkHelper = m_Instance.GetComponent<NetworkHelper>();
+		m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
+
+		// Set the player numbers to be consistent across the scripts.
+		m_Movement.m_PlayerNumber = m_PlayerNumber;
+		m_Shooting.m_PlayerNumber = m_PlayerNumber;
+
+		// Create a string using the correct color that says 'PLAYER 1' etc based on the tank's color and the player's number.
+		m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
+
+		// Get all of the renderers of the tank.
+		MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
+
+		// Go through all the renderers...
+		for (int i = 0; i < renderers.Length; i++)
+		{
+			// ... set their material color to the color specific to this tank.
+			renderers[i].material.color = m_PlayerColor;
+		}
+	}
+
+	// Used during the phases of the game where the player shouldn't be able to control their tank.
+	public void DisableControl()
+	{
+		m_Movement.enabled = false;
+		m_Shooting.enabled = false;
+
+		m_CanvasGameObject.SetActive(false);
+	}
+
+	// Used during the phases of the game where the player should be able to control their tank.
+	public void EnableControl()
+	{
+		m_Movement.enabled = true;
+		m_Shooting.enabled = true;
+
+		m_CanvasGameObject.SetActive(true);
+	}
+
+	// Used at the start of each round to put the tank into it's default state.
+	public void Reset()
+	{
+		m_Instance.transform.position = m_SpawnPoint.position;
+		m_Instance.transform.rotation = m_SpawnPoint.rotation;
+
+		m_Instance.SetActive(false);
+		m_Instance.SetActive(true);
+	}
+
+	#region Online multiplayer
+
+	public void SpawnTanksOnClients()
+	{
+		m_NetworkHelper.SendMissingTanksToClient();
+
+	}
+	public void SetMovementScipt(TankMovement m_Movement)
+	{
+		this.m_Movement = m_Movement; 
+	}
+	public void SetShootingScipt(TankShooting m_Shooting)
+	{
+		this.m_Shooting = m_Shooting; 
+	}
+
+	public void SetNetworkHelperScipt(NetworkHelper m_NetworkHelper)
+	{
+		this.m_NetworkHelper = m_NetworkHelper; 
+	}
+	public void SetCanvasGameObject(GameObject m_CanvasGameObject)
+	{
+		this.m_CanvasGameObject = m_CanvasGameObject; 
+	}
+
+	#endregion
+}
+```
+- Lagre
+
+####TankShooting.cs
+```
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+
+public class TankShooting : NetworkBehaviour
+{
+	public int m_PlayerNumber = 1;              // Used to identify the different players.
+	public Rigidbody m_Shell;                   // Prefab of the shell.
+	public Transform m_FireTransform;           // A child of the tank where the shells are spawned.
+	public Slider m_AimSlider;                  // A child of the tank that displays the current launch force.
+	public AudioSource m_ShootingAudio;         // Reference to the audio source used to play the shooting audio. NB: different to the movement audio source.
+	public AudioClip m_ChargingClip;            // Audio that plays when each shot is charging up.
+	public AudioClip m_FireClip;                // Audio that plays when each shot is fired.
+	public float m_MinLaunchForce = 15f;        // The force given to the shell if the fire button is not held.
+	public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
+	public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
+
+	private string m_FireButton;                // The input axis that is used for launching shells.
+	private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
+	private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
+	private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
+	private GameManager m_GameManager;
+
+	private void OnEnable()
+	{
+		// When the tank is turned on, reset the launch force and the UI
+		m_CurrentLaunchForce = m_MinLaunchForce;
+		m_AimSlider.value = m_MinLaunchForce;
+	}
+
+	private void Start()
+	{
+		//If online multiplayer, always use Keyset 1
+		var m_PlayerNumberTmp = m_PlayerNumber;
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
+		{
+			m_PlayerNumberTmp = 1;
+		}
+
+		// The fire axis is based on the player number.
+		m_FireButton = "Fire" + m_PlayerNumberTmp;
+
+		// The rate that the launch force charges up is the range of possible forces by the max charge time.
+		m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+	}
+
+	private void Update()
+	{
+		//Only spawn shells for local players
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
+			return;
+
+		// The slider should have a default value of the minimum launch force.
+		m_AimSlider.value = m_MinLaunchForce;
+
+		// If the max force has been exceeded and the shell hasn't yet been launched...
+		if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+		{
+			// ... use the max force and launch the shell.
+			m_CurrentLaunchForce = m_MaxLaunchForce;
+			Fire();
+		}
+		// Otherwise, if the fire button has just started being pressed...
+		else if (Input.GetButtonDown(m_FireButton))
+		{
+			// ... reset the fired flag and reset the launch force.
+			m_Fired = false;
+			m_CurrentLaunchForce = m_MinLaunchForce;
+
+			// Change the clip to the charging clip and start it playing.
+			m_ShootingAudio.clip = m_ChargingClip;
+			m_ShootingAudio.Play();
+		}
+		// Otherwise, if the fire button is being held and the shell hasn't been launched yet...
+		else if (Input.GetButton(m_FireButton) && !m_Fired)
+		{
+			// Increment the launch force and update the slider.
+			m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+
+			m_AimSlider.value = m_CurrentLaunchForce;
+		}
+		// Otherwise, if the fire button is released and the shell hasn't been launched yet...
+		else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
+		{
+			// ... launch the shell.
+			Fire();
+		}
+	}
+
+	private void Fire()
+	{
+		if (m_GameManager.m_IsOnlineMultiplayer)
+			CmdFire();
+		else
+			DoFire();
+	}
+
+	private GameObject DoFire()
+	{
+		// Set the fired flag so only Fire is only called once.
+		m_Fired = true;
+
+		// Create an instance of the shell and store a reference to it's rigidbody.
+		Rigidbody shellInstance =
+			 Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+		// Set the shell's velocity to the launch force in the fire position's forward direction.
+		shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+
+		// Change the clip to the firing clip and play it.
+		m_ShootingAudio.clip = m_FireClip;
+		m_ShootingAudio.Play();
+
+		// Reset the launch force.  This is a precaution in case of missing button events.
+		m_CurrentLaunchForce = m_MinLaunchForce;
+
+		return shellInstance.gameObject;
+	}
+
+	[Command]
+	private void CmdFire()
+	{
+		GameObject shell = DoFire();
+		NetworkServer.Spawn(shell);//Send information to server about the new bullet
+	}
+}
+```
+- Lagre
+
+####TankMovement.cs
+```
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class TankMovement : NetworkBehaviour
+{
+	public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
+	public float m_Speed = 12f;                 // How fast the tank moves forward and back.
+	public float m_TurnSpeed = 180f;            // How fast the tank turns in degrees per second.
+	public AudioSource m_MovementAudio;         // Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
+	public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
+	public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
+	public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
+
+	private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
+	private string m_TurnAxisName;              // The name of the input axis for turning.
+	private Rigidbody m_Rigidbody;              // Reference used to move the tank.
+	private float m_MovementInputValue;         // The current value of the movement input.
+	private float m_TurnInputValue;             // The current value of the turn input.
+	private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
+	private GameManager m_GameManager;
+
+	private void Awake()
+	{
+		m_Rigidbody = GetComponent<Rigidbody>();
+	}
+
+	private void OnEnable()
+	{
+		// When the tank is turned on, make sure it's not kinematic.
+		m_Rigidbody.isKinematic = false;
+
+		// Also reset the input values.
+		m_MovementInputValue = 0f;
+		m_TurnInputValue = 0f;
+	}
+
+	private void OnDisable()
+	{
+		// When the tank is turned off, set it to kinematic so it stops moving.
+		m_Rigidbody.isKinematic = true;
+	}
+
+	private void Start()
+	{
+		//If online multiplayer, always use Keyset 1
+		var m_PlayerNumberTmp = m_PlayerNumber;
+
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
+		{
+			m_PlayerNumberTmp = 1;
+		}
+		// The axes names are based on player number.
+		m_MovementAxisName = "Vertical" + m_PlayerNumberTmp;
+		m_TurnAxisName = "Horizontal" + m_PlayerNumberTmp;
+
+		// Store the original pitch of the audio source.
+		m_OriginalPitch = m_MovementAudio.pitch;
+	}
+
+	private void Update()
+	{
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
+		{
+			return;
+		}
+		// Store the value of both input axes.
+		m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+		m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+
+		EngineAudio();
+	}
+
+	private void EngineAudio()
+	{
+		// If there is no input (the tank is stationary)...
+		if (Mathf.Abs(m_MovementInputValue) < 0.1f && Mathf.Abs(m_TurnInputValue) < 0.1f)
+		{
+			// ... and if the audio source is currently playing the driving clip...
+			if (m_MovementAudio.clip == m_EngineDriving)
+			{
+				// ... change the clip to idling and play it.
+				m_MovementAudio.clip = m_EngineIdling;
+				m_MovementAudio.pitch = Random.Range(m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
+				m_MovementAudio.Play();
+			}
+		}
+		else
+		{
+			// Otherwise if the tank is moving and if the idling clip is currently playing...
+			if (m_MovementAudio.clip == m_EngineIdling)
+			{
+				// ... change the clip to driving and play.
+				m_MovementAudio.clip = m_EngineDriving;
+				m_MovementAudio.pitch = Random.Range(m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
+				m_MovementAudio.Play();
+			}
+		}
+	}
+
+	private void FixedUpdate()
+	{
+		// Adjust the rigidbodies position and orientation in FixedUpdate.
+		if (m_GameManager.m_IsOnlineMultiplayer && !isLocalPlayer)
+		{
+			return;
+		}
+		Move();
+		Turn();
+	}
+
+	private void Move()
+	{
+		// Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
+		Vector3 movement = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
+
+		// Apply this movement to the rigidbody's position.
+		m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
+	}
+
+	private void Turn()
+	{
+		// Determine the number of degrees to be turned based on the input, speed and time between frames.
+		float turn = m_TurnInputValue * m_TurnSpeed * Time.deltaTime;
+
+		// Make this into a rotation in the y axis.
+		Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
+
+		// Apply this rotation to the rigidbody's rotation.
+		m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
+	}
+}
+```
+- Lagre
+
+####TankHealth.cs
+
+```
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+
+public class TankHealth : NetworkBehaviour
+{
+	public float m_StartingHealth = 100f;               // The amount of health each tank starts with.
+	public Slider m_Slider;                             // The slider to represent how much health the tank currently has.
+	public Image m_FillImage;                           // The image component of the slider.
+	public Color m_FullHealthColor = Color.green;       // The color the health bar will be when on full health.
+	public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
+	public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
+	private GameManager m_GameManager;
+
+	private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
+	private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
+
+	[SyncVar]
+	private float m_CurrentHealth;                      // How much health the tank currently has.
+
+	[SyncVar]
+	private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
+
+	private void Awake()
+	{
+		// Instantiate the explosion prefab and get a reference to the particle system on it.
+		m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
+
+		// Get a reference to the audio source on the instantiated prefab.
+		m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
+
+		// Disable the prefab so it can be activated when it's required.
+		m_ExplosionParticles.gameObject.SetActive(false);
+
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+	}
+
+	private void OnEnable()
+	{
+		// When the tank is enabled, reset the tank's health and whether or not it's dead.
+		m_CurrentHealth = m_StartingHealth;
+		m_Dead = false;
+
+		// Update the health slider's value and color.
+		SetHealthUI();
+	}
+
+	private void Update()
+	{
+		SetHealthUI();
+	}
+
+	public void TakeDamage(float amount)
+	{
+		//Dont calculate damage on clients if playing in online mode
+		if (m_GameManager.m_IsOnlineMultiplayer && !isServer)
+		{
+			return;
+		}
+
+		// Reduce current health by the amount of damage done.
+		m_CurrentHealth -= amount;
+
+		// Change the UI elements appropriately.
+		SetHealthUI();
+
+		// If the current health is at or below zero and it has not yet been registered, call OnDeath.
+		if (m_CurrentHealth <= 0f && !m_Dead)
+		{
+			OnDeath();
+		}
+	}
+
+	private void SetHealthUI()
+	{
+		// Set the slider's value appropriately.
+		m_Slider.value = m_CurrentHealth;
+
+		// Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
+		m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+	}
+
+	private void OnDeath()
+	{
+		// Set the flag so that this function is only called once.
+		m_Dead = true;
+
+		// Move the instantiated explosion prefab to the tank's position and turn it on.
+		m_ExplosionParticles.transform.position = transform.position;
+		m_ExplosionParticles.gameObject.SetActive(true);
+
+		// Play the particle system of the tank exploding.
+		m_ExplosionParticles.Play();
+
+		// Play the tank explosion sound effect.
+		m_ExplosionAudio.Play();
+
+		// Turn the tank off.
+		gameObject.SetActive(false);
+	}
+}
+```
+- Lagre
+
+####GameManager.cs
+```
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour//
+{
+	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
+	public int m_OnlineMultiplayerCount = 5;
+	public int m_NumRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
+	public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
+	public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
+	public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
+	public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
+	public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
+
+	public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
+															  //public NetworkManager m_NetworkManager;
+
+	private int m_RoundNumber;                  // Which round the game is currently on.
+	private WaitForSeconds m_StartWait;         // Used to have a delay whilst the round starts.
+	private WaitForSeconds m_EndWait;           // Used to have a delay whilst the round or game ends.
+	private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
+	private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
+
+	private void Start()
+	{
+		// Create the delays so they only have to be made once.
+		m_StartWait = new WaitForSeconds(m_StartDelay);
+		m_EndWait = new WaitForSeconds(m_EndDelay);
+
+		var networkHUD = this.GetComponent<NetworkManagerHUD>();
+		if (m_IsOnlineMultiplayer)
+		{
+			networkHUD.enabled = true;
+			//wait until at least two players are online
+			RemoveAllTankManagers();
+		}
+		else
+		{
+			networkHUD.enabled = false;
+
+			// Once the tanks have been created and the camera is using them as targets, start the game.
+			SpawnAllTanks();
+			SetCameraTargets();
+		}
+
+		StartCoroutine(GameLoop());
+	}
+
+	private void SpawnAllTanks()
+	{
+		// For all the tanks...
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			// ... create them, set their player number and references needed for control.
+			m_Tanks[i].m_Instance =
+				 Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+			m_Tanks[i].m_PlayerNumber = i + 1;
+			m_Tanks[i].Setup();
+		}
+	}
+
+	private void SetCameraTargets()
+	{
+		// Create a collection of transforms the same size as the number of tanks.
+		Transform[] targets = new Transform[m_Tanks.Length];
+		// For each of these transforms...
+		for (int i = 0; i < targets.Length; i++)
+		{
+			// ... set it to the appropriate tank transform.
+			targets[i] = m_Tanks[i].m_Instance.transform;
+		}
+
+		// These are the targets the camera should follow.
+		m_CameraControl.m_Targets = targets;
+	}
+
+	// This is called from start and will run each phase of the game one after another.
+	private IEnumerator GameLoop()
+	{
+		
+		if (m_IsOnlineMultiplayer)
+		{
+			yield return StartCoroutine(RoundMultiplayerWaiting());
+		}
+		// Start off by running the 'RoundStarting' coroutine but don't return until it's finished.
+		yield return StartCoroutine(RoundStarting());
+
+		// Once the 'RoundStarting' coroutine is finished, run the 'RoundPlaying' coroutine but don't return until it's finished.
+		yield return StartCoroutine(RoundPlaying());
+
+		// Once execution has returned here, run the 'RoundEnding' coroutine, again don't return until it's finished.
+		yield return StartCoroutine(RoundEnding());
+
+		// This code is not run until 'RoundEnding' has finished.  At which point, check if a game winner has been found.
+		if (m_GameWinner != null)
+		{
+			// If there is a game winner, restart the level.
+			SceneManager.LoadScene(0);
+		}
+		else
+		{
+			// If there isn't a winner yet, restart this coroutine so the loop continues.
+			// Note that this coroutine doesn't yield.  This means that the current version of the GameLoop will end.
+			StartCoroutine(GameLoop());
+		}
+	}
+
+	private IEnumerator RoundMultiplayerWaiting()
+	{
+		Debug.Log("RoundMultiplayerWaiting");
+		while (m_Tanks.Length < m_OnlineMultiplayerCount)
+		{
+			yield return new WaitForSeconds(1);
+		}
+
+		//SpawnAllTanks();
+		SetCameraTargets();
+	}
+
+	private IEnumerator RoundStarting()
+	{
+		// As soon as the round starts reset the tanks and make sure they can't move.
+		ResetAllTanks();
+		DisableTankControl();
+
+		// Snap the camera's zoom and position to something appropriate for the reset tanks.
+		m_CameraControl.SetStartPositionAndSize();
+
+		// Increment the round number and display text showing the players what round it is.
+		m_RoundNumber++;
+		m_MessageText.text = "ROUND " + m_RoundNumber;
+
+		// Wait for the specified length of time until yielding control back to the game loop.
+		yield return m_StartWait;
+	}
+
+	private IEnumerator RoundPlaying()
+	{
+		// As soon as the round begins playing let the players control the tanks.
+		EnableTankControl();
+
+		// Clear the text from the screen.
+		m_MessageText.text = string.Empty;
+
+		// While there is not one tank left...
+		while (!OneTankLeft())
+		{
+			// ... return on the next frame.
+			yield return new WaitForSeconds(1);
+		}
+	}
+
+	private IEnumerator RoundEnding()
+	{
+		// Stop tanks from moving.
+		DisableTankControl();
+
+		// Clear the winner from the previous round.
+		m_RoundWinner = null;
+
+		// See if there is a winner now the round is over.
+		m_RoundWinner = GetRoundWinner();
+
+		// If there is a winner, increment their score.
+		if (m_RoundWinner != null)
+			m_RoundWinner.m_Wins++;
+
+		// Now the winner's score has been incremented, see if someone has one the game.
+		m_GameWinner = GetGameWinner();
+
+		// Get a message based on the scores and whether or not there is a game winner and display it.
+		string message = EndMessage();
+		m_MessageText.text = message;
+
+		// Wait for the specified length of time until yielding control back to the game loop.
+		yield return m_EndWait;
+	}
+
+	// This is used to check if there is one or fewer tanks remaining and thus the round should end.
+	private bool OneTankLeft()
+	{
+		// Start the count of tanks left at zero.
+		int numTanksLeft = 0;
+
+		// Go through all the tanks...
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			// ... and if they are active, increment the counter.
+			if (m_Tanks[i].m_Instance.activeSelf)
+				numTanksLeft++;
+		}
+
+		// If there are one or fewer tanks remaining return true, otherwise return false.
+		return numTanksLeft <= 1;
+	}
+
+	// This function is to find out if there is a winner of the round.
+	// This function is called with the assumption that 1 or fewer tanks are currently active.
+	private TankManager GetRoundWinner()
+	{
+		// Go through all the tanks...
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			// ... and if one of them is active, it is the winner so return it.
+			if (m_Tanks[i].m_Instance.activeSelf)
+				return m_Tanks[i];
+		}
+
+		// If none of the tanks are active it is a draw so return null.
+		return null;
+	}
+
+	// This function is to find out if there is a winner of the game.
+	private TankManager GetGameWinner()
+	{
+		// Go through all the tanks...
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			// ... and if one of them has enough rounds to win the game, return it.
+			if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
+				return m_Tanks[i];
+		}
+
+		// If no tanks have enough rounds to win, return null.
+		return null;
+	}
+
+	// Returns a string message to display at the end of each round.
+	private string EndMessage()
+	{
+		// By default when a round ends there are no winners so the default end message is a draw.
+		string message = "DRAW!";
+
+		// If there is a winner then change the message to reflect that.
+		if (m_RoundWinner != null)
+			message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
+
+		// Add some line breaks after the initial message.
+		message += "\n\n\n\n";
+
+		// Go through all the tanks and add each of their scores to the message.
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
+		}
+
+		// If there is a game winner, change the entire message to reflect that.
+		if (m_GameWinner != null)
+			message = m_GameWinner.m_ColoredPlayerText + " WINS THE GAME!";
+
+		return message;
+	}
+
+	// This function is used to turn all the tanks back on and reset their positions and properties.
+	private void ResetAllTanks()
+	{
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			m_Tanks[i].Reset();
+		}
+	}
+
+	private void EnableTankControl()
+	{
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			m_Tanks[i].EnableControl();
+		}
+	}
+
+	private void DisableTankControl()
+	{
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			m_Tanks[i].DisableControl();
+		}
+	}
+
+	#region Online Multiplayer
+
+	public void SpawnSingleTank(TankManager tm)
+	{
+		tm.m_Instance =
+			Instantiate(m_TankPrefab, tm.m_SpawnPoint.position, tm.m_SpawnPoint.rotation) as GameObject;
+		tm.Setup();
+	}
+
+	public void SpawnSingleTankOnClients(TankManager tm)
+	{
+		tm.SpawnTanksOnClients();
+	}
+
+	//Remove manually defined Tank managers
+	public void RemoveAllTankManagers()
+	{
+		m_Tanks = new TankManager[0];
+	}
+
+	//Create new random managers based on predefined max player count
+	public TankManager AddTankManager()
+	{
+		Debug.Log("AddTankManager");
+
+		GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+		int spawnPointNumber = Random.Range(0, spawnPoints.Length - 1);
+		TankManager newTankManager = new TankManager();
+		newTankManager.m_SpawnPoint = spawnPoints[spawnPointNumber].transform;
+		//newTankManager.m_PlayerNumber = m_Tanks.Length;
+
+		//Generate a random color for each player
+		newTankManager.m_PlayerColor = new Color(
+			Random.Range(0, 101) / 100f,
+			Random.Range(0, 101) / 100f,
+			Random.Range(0, 101) / 100f);
+
+		AddTankToArray(newTankManager);
+		SpawnSingleTank(newTankManager);
+		return newTankManager;
+	}
+	//Update the server-side m_Tank
+	private void AddTankToArray(TankManager newTankManager)
+	{
+		//Create a new TankManager array with the newly added Player
+		var m_TanksTmp = new TankManager[m_Tanks.Length + 1];
+		m_Tanks.CopyTo(m_TanksTmp, 0);
+
+		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
+		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
+		m_Tanks = m_TanksTmp;
+	}
+
+	#endregion
+}
+
+```
+- Lagre
+
+### Nye script
+ 
+- Lag et nytt script under Scripts/Tank som heter NetworkHelper og skriv inn følgende innhold
+
+```
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class NetworkHelper : NetworkBehaviour
+{
+	private GameManager m_GameManager;
+
+	public void SendMissingTanksToClient()
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
+		{
+			foreach(TankManager tm in m_GameManager.m_Tanks)
+			{
+				RpcAddTankOnClient(tm);		
+			}
+
+		}
+	}
+
+	[ClientRpc]
+	private void RpcAddTankOnClient(TankManager newTankManager)
+	{
+		newTankManager.SetMovementScipt(newTankManager.m_Instance.GetComponent<TankMovement>());
+		newTankManager.SetShootingScipt(newTankManager.m_Instance.GetComponent<TankShooting>());
+		newTankManager.SetNetworkHelperScipt(newTankManager.m_Instance.GetComponent<NetworkHelper>());
+		newTankManager.SetCanvasGameObject(newTankManager.m_Instance.GetComponentInChildren<Canvas>().gameObject);
+
+		AddTankToArray(newTankManager);
+	}
+
+	private void AddTankToArray(TankManager newTankManager)
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+
+		//Dont add existing tanks
+		if(m_GameManager.m_Tanks.Count(lt=>lt.m_PlayerNumber == newTankManager.m_PlayerNumber) > 0)
+		{
+			return;
+		}
+		var m_TanksTmp = new TankManager[m_GameManager.m_Tanks.Length + 1];
+		m_GameManager.m_Tanks.CopyTo(m_TanksTmp, 0);
+
+		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
+		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
+		m_GameManager.m_Tanks = m_TanksTmp;
+	}
+}
+
+```
+- Lagre
+
+Lag et nytt script under Scripts/Managers som heter TankNetworkManager og skriv inn følgende innhold
+```
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class TankNetworkManager : NetworkManager
+{
+	//Called when a player is added
+	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+	{
+		Debug.Log("OnServerAddPlayer");
+
+		//Create and spawn the new tank
+		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
+
+		TankManager tm = gm.AddTankManager();
+
+		NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
+
+		//We have to spawn the tanks on client AFTER the Tank have been spawned in the network
+		tm.SpawnTanksOnClients();
+	}
+
+	// called when a player is removed for a client
+	public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
+	{
+		if (player.gameObject != null)
+		{
+			NetworkServer.Destroy(player.gameObject);
+		}
+	}
+
+	public override void OnStopServer()
+	{
+		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
+		gm.RemoveAllTankManagers();
+
+		base.OnStopServer();
+	}
+
+	// called when connected to a server
+	public override void OnClientConnect(NetworkConnection conn)
+	{
+		//ClientScene.Ready(conn);
+		//ClientScene.AddPlayer(0);
+		base.OnClientConnect(conn);
+	}
+
+	// called when disconnected from a server
+	public override void OnClientDisconnect(NetworkConnection conn)
+	{
+		base.OnClientDisconnect(conn);
+	}
+}
+```
+- Lagre
+
+### Knytt de nye scriptene til objekter
+GAME MANAGER
+- Åpne GameManager i hierarkiet
+- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
+- I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
+ - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
+- I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
+ - Klikk på "+" slik at det kommer opp et nytt element i listen
+ - Dra Prefaben Shell (fra katalogen Prefabs) til det nye elementet som dukket opp i listen (den som nå heter Empty)
+- Det finnes allerede et script med samme funksjon, denne må slettes.
+ - Slett komponenten: "Network Manager (script) "
+- Lagre
+
+TANK PREFAB
+- Velg Prefaben Tank (i katalogen Prefabs)
+- Dra scriptet NetworkHelper fra katalogen Scripts/Tank til Tank-prefaben
+- Lagre
+
+
+ 
+### Sett manglende public variabler
+GAME MANAGER
+- Velg GameManager i hierarkiet
+- Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
+- Sett "Num Rounds to Win" til 1. Det er viktig at alle har det samme nummeret her.
+- Lagre
+
+## Online multiplayer Del 2
+Det er fortsatt en del småting som må til for at dette skal fungere optimalt. Dette kommer vi tilbake til.
