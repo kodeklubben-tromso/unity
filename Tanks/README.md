@@ -1147,11 +1147,11 @@ SPAWNPOINTS
 - Kopier SpawnPoint1 tre ganger
 - Gi de nye elementene navnene: SpawnPoint3, SpawnPoint4, SpawnPoint5
 - Oppdatert koordinatene til alle SpawnPoints (i Transform)
- - 1: X =46, Y=0, Z=25
- - 2: X =-18, Y=0, Z=55
- - 3: X =-26, Y=0, Z=8
- - 4: X =7, Y=0, Z=-2
- - 5: X =25, Y=0, Z=50
+ - 1: X= 42, Y= 0, Z= 17
+ - 2: X= -26, Y= 0, Z= 37
+ - 3: X= -36, Y= 0, Z= -8
+ - 4: X= -4, Y= 0, Z= -26
+ - 5: X= 20, Y= 0, Z= 33
  - NB: Det er viktig at alle har de samme tallene her!
 - Lagre
 
@@ -1165,6 +1165,7 @@ PREFABS
 - Åpne Prefabs-katalogn
 - Velg Tank
 - Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
+- Slå på "Local player authority" på "Network Identity"-komponenten
 - Lagre
 - Velg Shell
 - Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
@@ -1821,7 +1822,6 @@ public class GameManager : MonoBehaviour//
 		{
 			// ... return on the next frame.
 			yield return new WaitForSeconds(1);
-			m_MessageText.text = m_Tanks.Length.ToString();
 		}
 	}
 
