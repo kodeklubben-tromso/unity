@@ -2151,9 +2151,12 @@ TANK PREFAB
 ### Sett manglende public variabler
 GAME MANAGER
 - Velg GameManager i hierarkiet
+- Vi må sette noen verdier. Det er viktig at alle har det samme innstillingene her.
 - Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
-- Sett "Num Rounds to Win" til 1. Det er viktig at alle har det samme nummeret her.
+- Sett "Online multiplayer count" til 2. Dette er minimum antall spillere som må være med for å kunne spille.
+- Sett "Num Rounds to Win" til 1. 
 - Lagre
 
 ## Online multiplayer Del 2
-Det er fortsatt en del småting som må til for at dette skal fungere optimalt. Dette kommer vi tilbake til.
+Det er fortsatt en del småting som må til for at dette skal fungere optimalt. 
+Det er også en del feil som må rettes. Dette kommer vi tilbake til.
