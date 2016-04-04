@@ -1169,140 +1169,6 @@ PREFABS
 - Legg til to nye komponenter (NetworkIdentity, NetworkTransform)
 - Lagre
 
-### Nye script
- 
-- Lag et nytt script under Scripts/Tank som heter NetworkHelper og skriv inn følgende innhold
-
-```
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
-
-public class NetworkHelper : NetworkBehaviour
-{
-	private GameManager m_GameManager;
-
-	public void SendMissingTanksToClient()
-	{
-		if (m_GameManager == null)
-			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-		if (m_GameManager.m_IsOnlineMultiplayer)
-		{
-			foreach(TankManager tm in m_GameManager.m_Tanks)
-			{
-				RpcAddTankOnClient(tm);		
-			}
-
-		}
-	}
-
-	[ClientRpc]
-	private void RpcAddTankOnClient(TankManager newTankManager)
-	{
-		newTankManager.SetMovementScipt(newTankManager.m_Instance.GetComponent<TankMovement>());
-		newTankManager.SetShootingScipt(newTankManager.m_Instance.GetComponent<TankShooting>());
-		newTankManager.SetNetworkHelperScipt(newTankManager.m_Instance.GetComponent<NetworkHelper>());
-		newTankManager.SetCanvasGameObject(newTankManager.m_Instance.GetComponentInChildren<Canvas>().gameObject);
-
-		AddTankToArray(newTankManager);
-	}
-
-	private void AddTankToArray(TankManager newTankManager)
-	{
-		if (m_GameManager == null)
-			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
-
-		//Dont add existing tanks
-		if(m_GameManager.m_Tanks.Count(lt=>lt.m_PlayerNumber == newTankManager.m_PlayerNumber) > 0)
-		{
-			return;
-		}
-		var m_TanksTmp = new TankManager[m_GameManager.m_Tanks.Length + 1];
-		m_GameManager.m_Tanks.CopyTo(m_TanksTmp, 0);
-
-		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
-		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
-		m_GameManager.m_Tanks = m_TanksTmp;
-	}
-}
-
-```
-- Lagre
-
-Lag et nytt script under Scripts/Managers som heter TankNetworkManager og skriv inn følgende innhold
-```
-using System.Collections;
-using UnityEngine;
-using UnityEngine.Networking;
-
-public class TankNetworkManager : NetworkManager
-{
-	//Called when a player is added
-	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-	{
-		Debug.Log("OnServerAddPlayer");
-
-		//Create and spawn the new tank
-		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
-
-		TankManager tm = gm.AddTankManager();
-
-		NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
-
-		//We have to spawn the tanks on client AFTER the Tank have been spawned in the network
-		tm.SpawnTanksOnClients();
-	}
-
-	// called when a player is removed for a client
-	public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
-	{
-		if (player.gameObject != null)
-		{
-			NetworkServer.Destroy(player.gameObject);
-		}
-	}
-
-	public override void OnStopServer()
-	{
-		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
-		gm.RemoveAllTankManagers();
-
-		base.OnStopServer();
-	}
-
-	// called when connected to a server
-	public override void OnClientConnect(NetworkConnection conn)
-	{
-		//ClientScene.Ready(conn);
-		//ClientScene.AddPlayer(0);
-		base.OnClientConnect(conn);
-	}
-
-	// called when disconnected from a server
-	public override void OnClientDisconnect(NetworkConnection conn)
-	{
-		base.OnClientDisconnect(conn);
-	}
-}
-```
-- Lagre
-
-### Knytt de nye scriptene til objekter
-GAME MANAGER
-- Åpne GameManager i hierarkiet
-- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
-- I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
- - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
-- I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
- - Klikk på "+" slik at det kommer opp et nytt element i listen
- - Dra Prefaben Shell (fra katalogen Prefabs) til det nye elementet som dukket opp i listen (den som nå heter Empty)
-- Lagre
-
-TANK PREFAB
-- Velg Prefaben Tank (i katalogen Prefabs)
-- Dra scriptet NetworkHelper fra katalogen Scripts/Tank til Tank-prefaben
-- Lagre
-
 ###Gå gjennom følgende script og legg inn det som mangler i din kode
 Til neste gang skal jeg dele opp dette steget slik at kun det som er nytt vises.
 
@@ -2142,6 +2008,142 @@ public class GameManager : MonoBehaviour//
 
 ```
 - Lagre
+
+### Nye script
+ 
+- Lag et nytt script under Scripts/Tank som heter NetworkHelper og skriv inn følgende innhold
+
+```
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class NetworkHelper : NetworkBehaviour
+{
+	private GameManager m_GameManager;
+
+	public void SendMissingTanksToClient()
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
+		{
+			foreach(TankManager tm in m_GameManager.m_Tanks)
+			{
+				RpcAddTankOnClient(tm);		
+			}
+
+		}
+	}
+
+	[ClientRpc]
+	private void RpcAddTankOnClient(TankManager newTankManager)
+	{
+		newTankManager.SetMovementScipt(newTankManager.m_Instance.GetComponent<TankMovement>());
+		newTankManager.SetShootingScipt(newTankManager.m_Instance.GetComponent<TankShooting>());
+		newTankManager.SetNetworkHelperScipt(newTankManager.m_Instance.GetComponent<NetworkHelper>());
+		newTankManager.SetCanvasGameObject(newTankManager.m_Instance.GetComponentInChildren<Canvas>().gameObject);
+
+		AddTankToArray(newTankManager);
+	}
+
+	private void AddTankToArray(TankManager newTankManager)
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+
+		//Dont add existing tanks
+		if(m_GameManager.m_Tanks.Count(lt=>lt.m_PlayerNumber == newTankManager.m_PlayerNumber) > 0)
+		{
+			return;
+		}
+		var m_TanksTmp = new TankManager[m_GameManager.m_Tanks.Length + 1];
+		m_GameManager.m_Tanks.CopyTo(m_TanksTmp, 0);
+
+		newTankManager.m_PlayerNumber = m_TanksTmp.Length; //Increase player number by one
+		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
+		m_GameManager.m_Tanks = m_TanksTmp;
+	}
+}
+
+```
+- Lagre
+
+Lag et nytt script under Scripts/Managers som heter TankNetworkManager og skriv inn følgende innhold
+```
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class TankNetworkManager : NetworkManager
+{
+	//Called when a player is added
+	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+	{
+		Debug.Log("OnServerAddPlayer");
+
+		//Create and spawn the new tank
+		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
+
+		TankManager tm = gm.AddTankManager();
+
+		NetworkServer.AddPlayerForConnection(conn, tm.m_Instance, playerControllerId);
+
+		//We have to spawn the tanks on client AFTER the Tank have been spawned in the network
+		tm.SpawnTanksOnClients();
+	}
+
+	// called when a player is removed for a client
+	public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
+	{
+		if (player.gameObject != null)
+		{
+			NetworkServer.Destroy(player.gameObject);
+		}
+	}
+
+	public override void OnStopServer()
+	{
+		GameManager gm = (GameManager) this.gameObject.GetComponent(typeof(GameManager));
+		gm.RemoveAllTankManagers();
+
+		base.OnStopServer();
+	}
+
+	// called when connected to a server
+	public override void OnClientConnect(NetworkConnection conn)
+	{
+		//ClientScene.Ready(conn);
+		//ClientScene.AddPlayer(0);
+		base.OnClientConnect(conn);
+	}
+
+	// called when disconnected from a server
+	public override void OnClientDisconnect(NetworkConnection conn)
+	{
+		base.OnClientDisconnect(conn);
+	}
+}
+```
+- Lagre
+
+### Knytt de nye scriptene til objekter
+GAME MANAGER
+- Åpne GameManager i hierarkiet
+- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
+- I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
+ - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
+- I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
+ - Klikk på "+" slik at det kommer opp et nytt element i listen
+ - Dra Prefaben Shell (fra katalogen Prefabs) til det nye elementet som dukket opp i listen (den som nå heter Empty)
+- Lagre
+
+TANK PREFAB
+- Velg Prefaben Tank (i katalogen Prefabs)
+- Dra scriptet NetworkHelper fra katalogen Scripts/Tank til Tank-prefaben
+- Lagre
+
+
  
 ### Sett manglende public variabler
 GAME MANAGER
