@@ -2152,7 +2152,7 @@ TANK PREFAB
 GAME MANAGER
 - Velg GameManager i hierarkiet
 - Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
-- Sett "Num Rounds to Win" til 1. Det er viktig at alle har det samme nummeret her.
+- Sett "Num Rounds to Win" til 15. Det er viktig at alle har det samme nummeret her.
 - Lagre
 
 ## Online multiplayer Del 2
