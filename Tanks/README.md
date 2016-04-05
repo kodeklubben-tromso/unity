@@ -2131,7 +2131,7 @@ public class TankNetworkManager : NetworkManager
 ### Knytt de nye scriptene til objekter
 GAME MANAGER
 - Åpne GameManager i hierarkiet
-- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
+- Dra TankNetworkManager-scriptet fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
 - I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
  - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
 - I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
