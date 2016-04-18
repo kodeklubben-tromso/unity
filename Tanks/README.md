@@ -2151,8 +2151,10 @@ TANK PREFAB
 ### Sett manglende public variabler
 GAME MANAGER
 - Velg GameManager i hierarkiet
+- Vi må sette noen verdier. Det er viktig at alle har det samme innstillingene her.
 - Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
-- Sett "Num Rounds to Win" til 15. Det er viktig at alle har det samme nummeret her.
+- Sett "Online multiplayer count" til 5 (settes til det antallet som det er spillere, men det må være likt på alle klienter)
+- Sett "Num Rounds to Win" til 10 (Kan settes lavere, men det er viktig at alle har det samme nummeret her)
 - Lagre
 
 ## Online multiplayer Del 2
@@ -2160,7 +2162,7 @@ Den viktigste feilen som er rettet i del 2 er at TankManager holders oppdatert p
 Slik at det faktisk blir mulig å spille.
 
 ### TankHealth.cs
-Ny kode i OnDeath() metoden
+- Oppdatert OnDeath() metoden slik:
 ```
 private void OnDeath()
 {
@@ -2186,9 +2188,10 @@ private void OnDeath()
 	}
 }
 ```
-### NetworkHelper.cs
-To nye metoder:
+- Lagre
 
+### NetworkHelper.cs
+- Opprett to nye metoder
 ```
 public void SendMissingTanksToClient()
 {
@@ -2220,17 +2223,20 @@ public void DeactivateTankOnClients(TankManager tankManagerToRemove)
 	}
 }
 ```
+- Lagre
+- 
 ### TankManager.cs
-En ny metode:
-
+- Opprett en ny metode
 ```
 public void DeactiveTankManagerOnClients()
 {
 	m_NetworkHelper.DeactivateTankOnClients(this);	
 }
 ```
+- Lagre
+
 ### GameManager.cs
-En ny metode:
+- Opprett en ny metode
 ```
 public void DeactiveTankManagerOnClients(GameObject tank)
 {
@@ -2244,3 +2250,4 @@ public void DeactiveTankManagerOnClients(GameObject tank)
 	}
 }
 ```
+- Lagre

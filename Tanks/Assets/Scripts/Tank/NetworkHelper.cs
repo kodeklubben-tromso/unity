@@ -19,6 +19,38 @@ public class NetworkHelper : NetworkBehaviour
 
 		}
 	}
+	public void DeactivateTankOnClients(TankManager tankManagerToRemove)
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+		if (m_GameManager.m_IsOnlineMultiplayer)
+		{
+			foreach(TankManager tm in m_GameManager.m_Tanks)
+			{
+				if(tankManagerToRemove.m_PlayerNumber == tm.m_PlayerNumber)
+				{
+					RpcDeactivateTankOnClient(tm);		 
+				}
+			}
+
+		}
+	}
+
+	[ClientRpc]
+	private void RpcDeactivateTankOnClient(TankManager deactiveTankManager)
+	{
+		if (m_GameManager == null)
+			m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+
+		foreach(TankManager tm in m_GameManager.m_Tanks)
+		{
+			if(tm.m_PlayerNumber == deactiveTankManager.m_PlayerNumber)
+			{
+				tm.m_Instance.SetActive(false);
+				break;//skip the rest
+			}
+		}
+	}
 
 	[ClientRpc]
 	private void RpcAddTankOnClient(TankManager newTankManager)
@@ -31,6 +63,7 @@ public class NetworkHelper : NetworkBehaviour
 		AddTankToArray(newTankManager);
 	}
 
+	//Helper function. Increases the TankManager size by one and adds the new tank manager
 	private void AddTankToArray(TankManager newTankManager)
 	{
 		if (m_GameManager == null)
