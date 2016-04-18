@@ -2131,7 +2131,7 @@ public class TankNetworkManager : NetworkManager
 ### Knytt de nye scriptene til objekter
 GAME MANAGER
 - Åpne GameManager i hierarkiet
-- Dra TankManagerScript fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
+- Dra TankNetworkManager-scriptet fra /Scripts/Managers/TankNetworkManager til GameManager-objektet
 - I innstillingene for scriptet, finn innstillingen som heter "Spawn Info" -> Player Prefab
  - Dra Prefaben Tank (fra katalogen Prefabs) til denne innstillingen
 - I innstillingen "Registered spawnable prefabs" må vi legge inn Shell som ny Prefab
@@ -2153,10 +2153,95 @@ GAME MANAGER
 - Velg GameManager i hierarkiet
 - Vi må sette noen verdier. Det er viktig at alle har det samme innstillingene her.
 - Kryss av på "Is online multiplayer". Hvis denne er på, spiller vi i online modus.
-- Sett "Online multiplayer count" til 2. Dette er minimum antall spillere som må være med for å kunne spille.
-- Sett "Num Rounds to Win" til 1. 
+- Sett "Num Rounds to Win" til 15. Det er viktig at alle har det samme nummeret her.
 - Lagre
 
 ## Online multiplayer Del 2
-Det er fortsatt en del småting som må til for at dette skal fungere optimalt. 
-Det er også en del feil som må rettes. Dette kommer vi tilbake til.
+Den viktigste feilen som er rettet i del 2 er at TankManager holders oppdatert på alle klienter. 
+Slik at det faktisk blir mulig å spille.
+
+### TankHealth.cs
+Ny kode i OnDeath() metoden
+```
+private void OnDeath()
+{
+	// Set the flag so that this function is only called once.
+	m_Dead = true;
+
+	// Move the instantiated explosion prefab to the tank's position and turn it on.
+	m_ExplosionParticles.transform.position = transform.position;
+	m_ExplosionParticles.gameObject.SetActive(true);
+
+	// Play the particle system of the tank exploding.
+	m_ExplosionParticles.Play();
+
+	// Play the tank explosion sound effect.
+	m_ExplosionAudio.Play();
+
+	// Turn the tank off.
+	gameObject.SetActive(false);
+
+	if(m_GameManager.m_IsOnlineMultiplayer)
+	{
+		m_GameManager.DeactiveTankManagerOnClients(gameObject);
+	}
+}
+```
+### NetworkHelper.cs
+To nye metoder:
+
+```
+public void SendMissingTanksToClient()
+{
+	if (m_GameManager == null)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+	if (m_GameManager.m_IsOnlineMultiplayer)
+	{
+		foreach(TankManager tm in m_GameManager.m_Tanks)
+		{
+			RpcAddTankOnClient(tm);		
+		}
+
+	}
+}
+public void DeactivateTankOnClients(TankManager tankManagerToRemove)
+{
+	if (m_GameManager == null)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+	if (m_GameManager.m_IsOnlineMultiplayer)
+	{
+		foreach(TankManager tm in m_GameManager.m_Tanks)
+		{
+			if(tankManagerToRemove.m_PlayerNumber == tm.m_PlayerNumber)
+			{
+				RpcDeactivateTankOnClient(tm);		 
+			}
+		}
+
+	}
+}
+```
+### TankManager.cs
+En ny metode:
+
+```
+public void DeactiveTankManagerOnClients()
+{
+	m_NetworkHelper.DeactivateTankOnClients(this);	
+}
+```
+### GameManager.cs
+En ny metode:
+```
+public void DeactiveTankManagerOnClients(GameObject tank)
+{
+	for (int i = 0; i < m_Tanks.Length; i++)
+	{
+		if(m_Tanks[i].m_Instance == tank)
+		{
+			m_Tanks[i].DeactiveTankManagerOnClients();
+			break;
+		}
+	}
+}
+```
