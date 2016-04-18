@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour//
 {
 	public bool m_IsOnlineMultiplayer = false;      //false = local multiplayer
-	public int m_OnlineMultiplayerCount = 5;
+	public int m_OnlineMultiplayerCount = 5;	// Minimum number of online players
 	public int m_NumRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
 	public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
 	public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
@@ -133,6 +133,7 @@ public class GameManager : MonoBehaviour//
 		m_RoundNumber++;
 		m_MessageText.text = "ROUND " + m_RoundNumber;
 
+
 		// Wait for the specified length of time until yielding control back to the game loop.
 		yield return m_StartWait;
 	}
@@ -150,7 +151,6 @@ public class GameManager : MonoBehaviour//
 		{
 			// ... return on the next frame.
 			yield return new WaitForSeconds(1);
-			m_MessageText.text = m_Tanks.Length.ToString();
 		}
 	}
 
@@ -292,6 +292,7 @@ public class GameManager : MonoBehaviour//
 	public void SpawnSingleTankOnClients(TankManager tm)
 	{
 		tm.SpawnTanksOnClients();
+		tm.SpawnTanksOnClients();
 	}
 
 	//Remove manually defined Tank managers
@@ -299,7 +300,17 @@ public class GameManager : MonoBehaviour//
 	{
 		m_Tanks = new TankManager[0];
 	}
-
+	public void DeactiveTankManagerOnClients(GameObject tank)
+	{
+		for (int i = 0; i < m_Tanks.Length; i++)
+		{
+			if(m_Tanks[i].m_Instance == tank)
+			{
+				m_Tanks[i].DeactiveTankManagerOnClients();
+				break;
+			}
+		}
+	}
 	//Create new random managers based on predefined max player count
 	public TankManager AddTankManager()
 	{
@@ -332,6 +343,7 @@ public class GameManager : MonoBehaviour//
 		m_TanksTmp[m_TanksTmp.Length - 1] = newTankManager; //add new tank manager as the last item
 		m_Tanks = m_TanksTmp;
 	}
+
 
 	#endregion
 }

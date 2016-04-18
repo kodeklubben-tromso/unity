@@ -85,6 +85,11 @@ public class TankManager
 
 	#region Online multiplayer
 
+	public void DeactiveTankManagerOnClients()
+	{
+		m_NetworkHelper.DeactivateTankOnClients(this);	
+	}
+
 	public void SpawnTanksOnClients()
 	{
 		m_NetworkHelper.SendMissingTanksToClient();

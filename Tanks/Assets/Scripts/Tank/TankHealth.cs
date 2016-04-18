@@ -97,5 +97,10 @@ public class TankHealth : NetworkBehaviour
 
 		// Turn the tank off.
 		gameObject.SetActive(false);
+
+		if(m_GameManager.m_IsOnlineMultiplayer)
+		{
+			m_GameManager.DeactiveTankManagerOnClients(gameObject);
+		}
 	}
 }
