@@ -2156,4 +2156,91 @@ GAME MANAGER
 - Lagre
 
 ## Online multiplayer Del 2
-Det er fortsatt en del småting som må til for at dette skal fungere optimalt. Dette kommer vi tilbake til.
+Den viktigste feilen som er rettet i del 2 er at TankManager holders oppdatert på alle klienter. 
+Slik at det faktisk blir mulig å spille.
+
+### TankHealth.cs
+Ny kode i OnDeath() metoden
+```
+private void OnDeath()
+{
+	// Set the flag so that this function is only called once.
+	m_Dead = true;
+
+	// Move the instantiated explosion prefab to the tank's position and turn it on.
+	m_ExplosionParticles.transform.position = transform.position;
+	m_ExplosionParticles.gameObject.SetActive(true);
+
+	// Play the particle system of the tank exploding.
+	m_ExplosionParticles.Play();
+
+	// Play the tank explosion sound effect.
+	m_ExplosionAudio.Play();
+
+	// Turn the tank off.
+	gameObject.SetActive(false);
+
+	if(m_GameManager.m_IsOnlineMultiplayer)
+	{
+		m_GameManager.DeactiveTankManagerOnClients(gameObject);
+	}
+}
+```
+### NetworkHelper.cs
+To nye metoder:
+
+```
+public void SendMissingTanksToClient()
+{
+	if (m_GameManager == null)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+	if (m_GameManager.m_IsOnlineMultiplayer)
+	{
+		foreach(TankManager tm in m_GameManager.m_Tanks)
+		{
+			RpcAddTankOnClient(tm);		
+		}
+
+	}
+}
+public void DeactivateTankOnClients(TankManager tankManagerToRemove)
+{
+	if (m_GameManager == null)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+	if (m_GameManager.m_IsOnlineMultiplayer)
+	{
+		foreach(TankManager tm in m_GameManager.m_Tanks)
+		{
+			if(tankManagerToRemove.m_PlayerNumber == tm.m_PlayerNumber)
+			{
+				RpcDeactivateTankOnClient(tm);		 
+			}
+		}
+
+	}
+}
+```
+### TankManager.cs
+En ny metode:
+
+```
+public void DeactiveTankManagerOnClients()
+{
+	m_NetworkHelper.DeactivateTankOnClients(this);	
+}
+```
+### GameManager.cs
+En ny metode:
+```
+public void DeactiveTankManagerOnClients(GameObject tank)
+{
+	for (int i = 0; i < m_Tanks.Length; i++)
+	{
+		if(m_Tanks[i].m_Instance == tank)
+		{
+			m_Tanks[i].DeactiveTankManagerOnClients();
+			break;
+		}
+	}
+}
+```
