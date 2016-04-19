@@ -2159,10 +2159,11 @@ GAME MANAGER
 
 ## Online multiplayer Del 2
 Den viktigste feilen som er rettet i del 2 er at TankManager holders oppdatert på alle klienter. 
-Slik at det faktisk blir mulig å spille.
+Det gjør at det faktisk blir mulig å spille spillet.
 
 ### TankHealth.cs
-- Oppdatert OnDeath() metoden slik:
+TankHealth holder order på helsen til Tankene og vet derfor også om en Tank er i live eller ikke. 
+- Oppdatert OnDeath() metoden slik at den gir beskjed til alle klienter når en Tank eksploderer
 ```
 private void OnDeath()
 {
@@ -2191,7 +2192,9 @@ private void OnDeath()
 - Lagre
 
 ### NetworkHelper.cs
-- Opprett to nye metoder
+- Opprett to nye metoder.
+- SendMissingTanksToClient() deler TankManager arrayet til andre klienter slik at det blir likt over alt
+- DeactivateTankOnClient() oppdaterer Tankmanager arrayet og deaktiverer tanker som har eksplodert
 ```
 public void SendMissingTanksToClient()
 {
@@ -2227,6 +2230,7 @@ public void DeactivateTankOnClients(TankManager tankManagerToRemove)
 - 
 ### TankManager.cs
 - Opprett en ny metode
+- DeactivateTankManagerOnClients() er bare en støttefunksjon som kaller en tilstvarende funsjon på NetworkHelper (funksjonen som ble beskrevet over)
 ```
 public void DeactiveTankManagerOnClients()
 {
@@ -2237,6 +2241,7 @@ public void DeactiveTankManagerOnClients()
 
 ### GameManager.cs
 - Opprett en ny metode
+- DeactiveTankManagerOnClients() er også en støttefunksjon som kaller en tilstvarende funsjon på TankManager (funksjonen som ble beskrevet over)
 ```
 public void DeactiveTankManagerOnClients(GameObject tank)
 {
@@ -2251,3 +2256,11 @@ public void DeactiveTankManagerOnClients(GameObject tank)
 }
 ```
 - Lagre
+
+##Spill spillet
+Det er nå mulig å spille spillet over et nettverk. 
+NB: Husk at alle må ha samme verdier på "Online multiplayer count" og "Num Rounds to win" i GameManager-objektet.
+En spiller må velge "LAN Host (H)". Alle andre må velge "LAN Client (C)".
+De som velger "LAN Client (C)" må oppgi ip-adressen til den som valgte "LAN Host (H)".
+
+
