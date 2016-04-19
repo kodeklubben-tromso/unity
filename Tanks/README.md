@@ -1673,7 +1673,7 @@ public class TankHealth : NetworkBehaviour
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour//
@@ -1770,7 +1770,7 @@ public class GameManager : MonoBehaviour//
 		if (m_GameWinner != null)
 		{
 			// If there is a game winner, restart the level.
-			SceneManager.LoadScene(0);
+			Application.LoadLevel(Application.loadedLevel);
 		}
 		else
 		{
