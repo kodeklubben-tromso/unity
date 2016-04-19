@@ -2195,6 +2195,7 @@ private void OnDeath()
 - Opprett to nye metoder.
 - SendMissingTanksToClient() deler TankManager arrayet til andre klienter slik at det blir likt over alt
 - DeactivateTankOnClient() oppdaterer Tankmanager arrayet og deaktiverer tanker som har eksplodert
+- RpcDeactivateTankOnClient() kalles av DeactivateTankOnClient(), men på alle klientene
 ```
 public void SendMissingTanksToClient()
 {
@@ -2223,6 +2224,22 @@ public void DeactivateTankOnClients(TankManager tankManagerToRemove)
 			}
 		}
 
+	}
+}
+
+[ClientRpc]
+private void RpcDeactivateTankOnClient(TankManager deactiveTankManager)
+{
+	if (m_GameManager == null)
+		m_GameManager = (GameManager) GameObject.FindWithTag("GameManager").GetComponent(typeof(GameManager));
+
+	foreach(TankManager tm in m_GameManager.m_Tanks)
+	{
+		if(tm.m_PlayerNumber == deactiveTankManager.m_PlayerNumber)
+		{
+			tm.m_Instance.SetActive(false);
+			break;//skip the rest
+		}
 	}
 }
 ```
